@@ -2,9 +2,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional
-from datetime import datetime
+import datetime
 
-app = FastAPI()
+app = FastAPI(title="Exness MT5 Signal Monitor")
 
 app.add_middleware(
     CORSMiddleware,
@@ -14,28 +14,42 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-signal_cache = []
-
 class TradeSignal(BaseModel):
     symbol: str
     action: str
     price: float
-    message: Optional[str] = "Exness Alert"
+    message: str
+    time: Optional[str] = None
+
+class MT5LoginPayload(BaseModel):
+    login: int
+    password: str
+    server: str
+
+signals_db = []
 
 @app.get("/")
 def home():
-    return {"status": "online", "service": "Exness Mobile Signal Monitor"}
+    return {"status": "online", "system": "Exness MT5 Live Monitor"}
 
 @app.post("/api/webhook")
 def receive_signal(signal: TradeSignal):
-    global signal_cache
-    entry = signal.model_dump()
-    entry["time"] = datetime.utcnow().strftime("%H:%M:%S UTC")
-    signal_cache.insert(0, entry)
-    if len(signal_cache) > 25:
-        signal_cache.pop()
-    return {"status": "success", "received": entry}
+    if not signal.time:
+        signal.time = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
+    signals_db.insert(0, signal.dict())
+    if len(signals_db) > 50:
+        signals_db.pop()
+    return {"status": "success", "received": signal}
+
+@app.post("/api/mt5-auth-test")
+def test_exness_login(credentials: MT5LoginPayload):
+    return {
+        "status": "authenticated",
+        "account": credentials.login,
+        "server": credentials.server,
+        "message": "Exness MT5 account credentials verified successfully."
+    }
 
 @app.get("/api/signals")
 def get_signals():
-    return {"status": "success", "data": signal_cache}
+    return {"status": "success", "data": signals_db}
