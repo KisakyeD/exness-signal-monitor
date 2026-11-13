@@ -10,11 +10,22 @@
     <div class="max-w-md mx-auto space-y-4">
         <header class="flex justify-between items-center bg-gray-900 p-4 rounded-2xl border border-gray-800">
             <div>
-                <h1 class="font-bold text-sm text-emerald-400">EXNESS SIGNAL MONITOR</h1>
+                <h1 class="font-bold text-sm text-emerald-400">EXNESS MT5 MONITOR</h1>
                 <p id="statusText" class="text-[11px] text-gray-400">Connecting...</p>
             </div>
             <button onclick="fetchSignals()" class="bg-emerald-500 active:scale-95 text-gray-950 px-3 py-1.5 rounded-xl text-xs font-bold">Refresh</button>
         </header>
+
+        <!-- Exness MT5 Login Card -->
+        <div class="bg-gray-900 border border-gray-800 p-4 rounded-2xl space-y-3">
+            <h2 class="text-xs font-bold text-gray-300 uppercase tracking-wider">Exness MT5 Account Login</h2>
+            <div class="space-y-2">
+                <input type="number" id="mt5Login" placeholder="MT5 Account ID / Login" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-3 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500">
+                <input type="password" id="mt5Password" placeholder="MT5 Password" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-3 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500">
+                <input type="text" id="mt5Server" placeholder="Server (e.g. Exness-Real11)" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-3 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500">
+                <button onclick="saveExnessLogin()" class="w-full bg-emerald-500 hover:bg-emerald-400 active:scale-95 text-gray-950 py-2.5 rounded-xl text-xs font-bold transition">Connect Account</button>
+            </div>
+        </div>
 
         <div id="signalsContainer" class="space-y-3">
             <div class="bg-gray-900 border border-gray-800 p-6 rounded-2xl text-center text-xs text-gray-400">
@@ -25,6 +36,30 @@
 
     <script>
         const BACKEND_URL = "https://exness-monitor-api.onrender.com/api/signals";
+        const AUTH_URL = "https://exness-monitor-api.onrender.com/api/mt5-auth-test";
+
+        async function saveExnessLogin() {
+            const login = document.getElementById('mt5Login').value;
+            const password = document.getElementById('mt5Password').value;
+            const server = document.getElementById('mt5Server').value;
+
+            if (!login || !password || !server) {
+                alert("Please fill in all Exness login fields.");
+                return;
+            }
+
+            try {
+                const res = await fetch(AUTH_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ login: parseInt(login), password, server })
+                });
+                const data = await res.json();
+                alert("Successfully linked Exness Account: " + data.account);
+            } catch (err) {
+                alert("Error connecting account: " + err);
+            }
+        }
 
         async function fetchSignals() {
             const statusText = document.getElementById('statusText');
@@ -51,7 +86,7 @@
                     `).join('');
                 }
             } catch (err) {
-                statusText.textContent = "Waking up server (wait 30s)...";
+                statusText.textContent = "Waking up server...";
                 statusText.className = "text-[11px] text-amber-400";
             }
         }
