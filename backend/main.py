@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional
@@ -14,7 +14,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Your verified Exness account ID
+VERIFIED_ACCOUNT_ID = 436888140
+
 class TradeSignal(BaseModel):
+    account_id: int
     symbol: str
     action: str
     price: float
@@ -34,6 +38,9 @@ def home():
 
 @app.post("/api/webhook")
 def receive_signal(signal: TradeSignal):
+    if signal.account_id != VERIFIED_ACCOUNT_ID:
+        raise HTTPException(status_code=403, detail="Unauthorized Exness Account ID")
+    
     if not signal.time:
         signal.time = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
     signals_db.insert(0, signal.dict())
@@ -43,11 +50,13 @@ def receive_signal(signal: TradeSignal):
 
 @app.post("/api/mt5-auth-test")
 def test_exness_login(credentials: MT5LoginPayload):
+    if credentials.login != VERIFIED_ACCOUNT_ID:
+        raise HTTPException(status_code=401, detail="Invalid Account ID credentials")
     return {
         "status": "authenticated",
         "account": credentials.login,
         "server": credentials.server,
-        "message": "Exness MT5 account credentials verified successfully."
+        "message": "Exness MT5 account credentials verified and secured successfully."
     }
 
 @app.get("/api/signals")
