@@ -26,20 +26,20 @@
         }
     </style>
 </head>
-<body class="bg-gray-950 text-gray-100 min-h-screen flex flex-col font-sans transition-colors duration-300">
+<body class="bg-white text-gray-900 dark:bg-gray-950 dark:text-gray-100 min-h-screen flex flex-col font-sans transition-colors duration-300">
 
     <!-- Drawer Backdrop -->
     <div id="drawerBackdrop" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden"></div>
 
     <!-- Slide-out Navigation Drawer -->
-    <aside id="drawerMenu" class="fixed top-0 left-0 bottom-0 w-80 bg-gray-900 border-r border-gray-800 z-50 transform -translate-x-full transition-transform duration-300 flex flex-col justify-between p-4 overflow-y-auto no-scrollbar">
+    <aside id="drawerMenu" class="fixed top-0 left-0 bottom-0 w-80 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 z-50 transform -translate-x-full transition-transform duration-300 flex flex-col justify-between p-4 overflow-y-auto no-scrollbar">
         <div class="space-y-5">
-            <div class="flex items-center justify-between pb-3 border-b border-gray-800">
+            <div class="flex items-center justify-between pb-3 border-b border-gray-200 dark:border-gray-800">
                 <div onclick="goToHomepage()" class="flex items-center space-x-3 cursor-pointer group">
                     <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-amber-500 to-yellow-300 flex items-center justify-center font-black text-gray-950 text-base shadow-lg shadow-amber-500/10 group-hover:scale-105 transition">W1</div>
-                    <span class="font-extrabold text-base text-white group-hover:text-amber-400 transition">WINS1 <span class="text-amber-400">VIP</span></span>
+                    <span class="font-extrabold text-base text-gray-900 dark:text-white group-hover:text-amber-400 transition">WINS1 <span class="text-amber-400">VIP</span></span>
                 </div>
-                <button id="closeDrawerBtn" class="p-2 rounded-lg bg-gray-800 text-gray-400 hover:text-white">
+                <button id="closeDrawerBtn" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
@@ -50,50 +50,52 @@
                 </div>
                 <button onclick="switchCategory('single_home')" id="nav_single_home" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-amber-500/20 text-amber-400 font-bold text-xs border border-amber-500/40 transition">
                     <span class="flex items-center gap-1.5">🏆 Top Home Favorite (1)</span>
-                    <span class="text-[10px] font-mono bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded font-bold">LIVE</span>
                 </button>
-                <button onclick="switchCategory('single_away')" id="nav_single_away" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-gray-400 hover:text-white hover:bg-gray-800 font-medium text-xs transition">
+                <button onclick="switchCategory('single_away')" id="nav_single_away" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 font-medium text-xs transition">
                     <span class="flex items-center gap-1.5">🚀 Top Away Favorite (2)</span>
-                    <span class="text-[10px] font-mono bg-emerald-500/20 text-emerald-400 px-1.5 py-0.5 rounded font-bold">LIVE</span>
                 </button>
-                <button onclick="switchCategory('single_over15')" id="nav_single_over15" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-gray-400 hover:text-white hover:bg-gray-800 font-medium text-xs transition">
+                <button onclick="switchCategory('single_over15')" id="nav_single_over15" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 font-medium text-xs transition">
                     <span class="flex items-center gap-1.5">⚽ High-Scoring Over 1.5</span>
-                    <span class="text-[10px] font-mono bg-emerald-500/20 text-emerald-400 px-1.5 py-0.5 rounded font-bold">LIVE</span>
                 </button>
-                <button onclick="switchCategory('single_over')" id="nav_single_over" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-gray-400 hover:text-white hover:bg-gray-800 font-medium text-xs transition">
-                    <span class="flex items-center gap-1.5">⚽ High-Scoring Over 2.5</span>
-                    <span class="text-[10px] font-mono bg-emerald-500/20 text-emerald-400 px-1.5 py-0.5 rounded font-bold">LIVE</span>
-                </button>
-                <button onclick="switchCategory('single_btts')" id="nav_single_btts" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-gray-400 hover:text-white hover:bg-gray-800 font-medium text-xs transition">
+                <button onclick="switchCategory('single_btts')" id="nav_single_btts" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 font-medium text-xs transition">
                     <span class="flex items-center gap-1.5">⚡ Even-Attack BTTS Yes</span>
-                    <span class="text-[10px] font-mono bg-emerald-500/20 text-emerald-400 px-1.5 py-0.5 rounded font-bold">LIVE</span>
                 </button>
             </nav>
 
-            <div class="pt-3 border-t border-gray-800 space-y-2">
-                <label class="text-[11px] text-gray-400 font-mono block">Jump to Calendar Date (-60 to +30):</label>
-                <input type="date" id="drawerCalendarInput" onchange="jumpToDate(this.value)" class="w-full bg-gray-800 border border-gray-700 text-gray-200 text-xs rounded-xl px-3 py-2 focus:outline-none focus:border-amber-500">
+            <!-- SETTINGS: DARK / LIGHT MODE - ADDED AS YOU ASKED -->
+            <div class="pt-3 border-t border-gray-200 dark:border-gray-800 space-y-2">
+                <label class="text-[11px] text-gray-500 dark:text-gray-400 font-mono block font-bold">⚙️ SETTINGS</label>
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="setTheme('dark')" id="settingsDarkBtn" class="px-3 py-2.5 rounded-xl text-xs font-bold bg-gray-900 text-white border border-gray-700 transition">🌙 Dark Mode</button>
+                    <button onclick="setTheme('light')" id="settingsLightBtn" class="px-3 py-2.5 rounded-xl text-xs font-bold bg-white text-gray-900 border border-gray-300 transition">☀️ Light Mode</button>
+                </div>
+                <p class="text-[10px] text-gray-500 dark:text-gray-500 font-mono">Theme is saved on this device.</p>
+            </div>
+
+            <div class="pt-3 border-t border-gray-200 dark:border-gray-800 space-y-2">
+                <label class="text-[11px] text-gray-500 dark:text-gray-400 font-mono block">Jump to Calendar Date (-60 to +30):</label>
+                <input type="date" id="drawerCalendarInput" onchange="jumpToDate(this.value)" class="w-full bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-200 text-xs rounded-xl px-3 py-2 focus:outline-none focus:border-amber-500">
             </div>
         </div>
 
-        <div class="pt-4 border-t border-gray-800 text-center my-2">
-            <span class="text-[10px] text-emerald-400 font-mono block font-bold">Real-Time Standings & Market Odds Engine</span>
+        <div class="pt-4 border-t border-gray-200 dark:border-gray-800 text-center my-2">
+            <span class="text-[10px] text-emerald-500 font-mono block font-bold">Real-Time Standings & Market Odds Engine</span>
         </div>
     </aside>
 
     <!-- Header Navigation -->
-    <header class="sticky top-0 z-40 bg-gray-900/90 border-b border-gray-800 px-4 py-3 backdrop-blur-md">
+    <header class="sticky top-0 z-40 bg-white/90 dark:bg-gray-900/90 border-b border-gray-200 dark:border-gray-800 px-4 py-3 backdrop-blur-md">
         <div class="max-w-4xl mx-auto flex items-center justify-between">
             <div class="flex items-center space-x-3">
-                <button id="openDrawerBtn" class="p-2 rounded-lg bg-gray-800 border border-gray-700 text-gray-300 hover:text-white">
+                <button id="openDrawerBtn" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                 </button>
                 <div onclick="goToHomepage()" class="flex items-center space-x-3 cursor-pointer group">
                     <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-500 to-yellow-300 flex items-center justify-center font-black text-gray-950 text-lg group-hover:scale-105 transition shadow-lg">W1</div>
                     <div>
                         <div class="flex items-center space-x-2">
-                            <h1 class="font-extrabold text-lg text-white group-hover:text-amber-400 transition">WINS1 <span class="text-amber-400">VIP</span></h1>
-                            <span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
+                            <h1 class="font-extrabold text-lg text-gray-900 dark:text-white group-hover:text-amber-400 transition">WINS1 <span class="text-amber-400">VIP</span></h1>
+                            <span class="bg-emerald-500/10 text-emerald-500 dark:text-emerald-400 border border-emerald-500/20 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
                                 <span class="w-2 h-2 rounded-full bg-emerald-400 pulse-live"></span> <span id="headerCategoryBadge">TOP HOME FAVORITE (1)</span>
                             </span>
                         </div>
@@ -101,11 +103,11 @@
                 </div>
             </div>
             <div class="flex items-center space-x-2">
-                <button onclick="triggerRefresh()" id="refreshBtn" title="Refresh Match Data" class="p-2 rounded-lg bg-gray-800 border border-gray-700 text-gray-300 hover:text-white transition flex items-center gap-1.5 text-xs font-mono">
+                <button onclick="triggerRefresh()" id="refreshBtn" title="Refresh Match Data" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition flex items-center gap-1.5 text-xs font-mono">
                     <svg id="refreshIcon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                     <span class="hidden sm:inline">Refresh</span>
                 </button>
-                <button id="themeToggleBtn" class="p-2 rounded-lg bg-gray-800 border border-gray-700 text-gray-300 hover:text-white">
+                <button id="themeToggleBtn" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white">
                     <span id="themeIcon">☀️</span>
                 </button>
             </div>
@@ -115,20 +117,20 @@
     <main class="flex-grow max-w-4xl w-full mx-auto px-4 py-6 space-y-6">
 
         <!-- Date Ribbon (-60 to +30 Days) -->
-        <div class="flex items-center justify-between bg-gray-900 border border-gray-800 rounded-xl p-1.5 no-scrollbar overflow-x-auto gap-2" id="dateRibbon"></div>
+        <div class="flex items-center justify-between bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-1.5 no-scrollbar overflow-x-auto gap-2" id="dateRibbon"></div>
 
         <!-- Ticket Section Header -->
         <section class="space-y-4">
             <div class="flex items-center justify-between flex-wrap gap-2">
                 <div>
-                    <h3 class="font-bold text-white text-base flex items-center gap-2">
+                    <h3 class="font-bold text-gray-900 dark:text-white text-base flex items-center gap-2">
                         <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 pulse-live" id="sectionHeaderDot"></span> <span id="sectionTitleDate">TODAY'S</span> <span id="sectionTitleCategory">TOP HOME FAVORITE (1)</span>
                     </h3>
-                    <p class="text-[11px] text-emerald-400 font-mono mt-0.5">
+                    <p class="text-[11px] text-emerald-500 dark:text-emerald-400 font-mono mt-0.5">
                         <span id="strategySubtext">📊 Live API Filter: Season Win %, Implied Market Odds, Form & Table Gap</span>
                     </p>
                 </div>
-                <span class="text-xs bg-amber-500/10 text-amber-400 border border-amber-500/30 px-3 py-1.5 rounded-xl font-mono font-bold shadow-lg shadow-amber-500/5" id="totalOddsBadge">
+                <span class="text-xs bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30 px-3 py-1.5 rounded-xl font-mono font-bold shadow-lg shadow-amber-500/5" id="totalOddsBadge">
                     ODDS: 0.00
                 </span>
             </div>
@@ -139,9 +141,9 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-gray-900 border-t border-gray-800 py-6 px-4 text-center mt-auto">
-        <p class="text-xs text-gray-400">
-            Sponsored by <a href="https://one.exnessonelink.com/a/m3alh1ljmu?source=app" target="_blank" class="text-amber-400 font-semibold underline">Exness Global Markets</a>
+    <footer class="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 py-6 px-4 text-center mt-auto">
+        <p class="text-xs text-gray-500 dark:text-gray-400">
+            Sponsored by <a href="https://one.exnessonelink.com/a/m3alh1ljmu?source=app" target="_blank" class="text-amber-500 font-semibold underline">Exness Global Markets</a>
         </p>
     </footer>
 
@@ -153,12 +155,41 @@
         const themeToggleBtn = document.getElementById('themeToggleBtn');
         const themeIcon = document.getElementById('themeIcon');
 
+        // SETTINGS THEME - ADDED AS YOU ASKED, SAVED IN localStorage
+        function setTheme(mode) {
+            if (mode === 'dark') {
+                document.documentElement.classList.add('dark');
+                if (themeIcon) themeIcon.textContent = '☀️';
+            } else {
+                document.documentElement.classList.remove('dark');
+                if (themeIcon) themeIcon.textContent = '🌙';
+            }
+            try { localStorage.setItem('wins1_theme', mode); } catch(e) {}
+            updateSettingsButtons(mode);
+        }
+        function updateSettingsButtons(mode) {
+            const dBtn = document.getElementById('settingsDarkBtn');
+            const lBtn = document.getElementById('settingsLightBtn');
+            if (!dBtn || !lBtn) return;
+            if (mode === 'dark') {
+                dBtn.className = "px-3 py-2.5 rounded-xl text-xs font-bold bg-gray-900 text-white border-2 border-amber-500 transition";
+                lBtn.className = "px-3 py-2.5 rounded-xl text-xs font-bold bg-white text-gray-900 border border-gray-300 transition";
+            } else {
+                dBtn.className = "px-3 py-2.5 rounded-xl text-xs font-bold bg-gray-900 text-white border border-gray-700 transition";
+                lBtn.className = "px-3 py-2.5 rounded-xl text-xs font-bold bg-white text-gray-900 border-2 border-amber-500 transition";
+            }
+        }
+        // Load saved theme on start, default dark
+        (function(){
+            let saved = 'dark';
+            try { saved = localStorage.getItem('wins1_theme') || 'dark'; } catch(e) {}
+            setTheme(saved);
+        })();
+
         if (themeToggleBtn) {
             themeToggleBtn.addEventListener('click', () => {
-                document.documentElement.classList.toggle('dark');
-                if (themeIcon) {
-                    themeIcon.textContent = document.documentElement.classList.contains('dark') ? '☀️' : '🌙';
-                }
+                const isDark = document.documentElement.classList.contains('dark');
+                setTheme(isDark ? 'light' : 'dark');
             });
         }
 
@@ -187,7 +218,7 @@
 
         let selectedDateObj = new Date();
         let currentCategory = 'single_home';
-        const categories = ['single_home', 'single_away', 'single_over15', 'single_over', 'single_btts'];
+        const categories = ['single_home', 'single_away', 'single_over15', 'single_btts'];
 
         function initRibbon() {
             const ribbon = document.getElementById('dateRibbon');
@@ -214,7 +245,7 @@
                     <button type="button" onclick="jumpToDate('${isoVal}')" class="shrink-0 px-3 py-1.5 rounded-lg text-left transition ${
                         isSelected
                             ? 'bg-amber-500 text-gray-950 font-bold shadow'
-                            : 'bg-gray-800/70 text-gray-300 hover:bg-gray-800 hover:text-white'
+                            : 'bg-gray-100 dark:bg-gray-800/70 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-800 hover:text-black dark:hover:text-white'
                     }">
                         <div class="text-[10px] font-mono leading-tight">${dayLabel}</div>
                         <div class="text-xs font-bold leading-tight">${dateLabel}</div>
@@ -259,7 +290,7 @@
                     if (c === cat) {
                         navBtn.className = "w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-amber-500/20 text-amber-400 font-bold text-xs border border-amber-500/40 transition";
                     } else {
-                        navBtn.className = "w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-gray-400 hover:text-white hover:bg-gray-800 font-medium text-xs transition";
+                        navBtn.className = "w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 font-medium text-xs transition";
                     }
                 }
             });
@@ -268,7 +299,6 @@
                 'single_home': "TOP HOME FAVORITE (1)",
                 'single_away': "TOP AWAY FAVORITE (2)",
                 'single_over15': "HIGH-SCORING OVER 1.5",
-                'single_over': "HIGH-SCORING OVER 2.5",
                 'single_btts': "EVEN-ATTACK BTTS YES"
             };
 
@@ -385,12 +415,6 @@
                 winProb = over15Prob;
                 scoreRank = (over15Prob * 100) + (realOverUnder ? realOverUnder * 5 : 0);
                 if (match.statusState === 'post') isWon = (match.homeScore + match.awayScore) >= 2;
-            } else if (category === 'single_over') {
-                label = "Total Goals: Over 2.5 Goals";
-                odd = parseFloat(Math.max(1.45, (1 / over25Prob)).toFixed(2));
-                winProb = over25Prob;
-                scoreRank = (over25Prob * 100) + (realOverUnder ? realOverUnder * 8 : 0);
-                if (match.statusState === 'post') isWon = (match.homeScore + match.awayScore) >= 3;
             } else if (category === 'single_btts') {
                 label = "Both Teams To Score: Yes (BTTS)";
                 odd = parseFloat(Math.max(1.50, (1 / bttsProb)).toFixed(2));
@@ -409,11 +433,11 @@
                 : `Model Fair Odds Derived from Season Standings`;
 
             const detailedAnalysis = `
-                <div>• <strong class="text-white">Home Season Record:</strong> ${match.home} (${hRec.summary} — ${(hRec.winRate * 100).toFixed(0)}% Win Rate)</div>
-                <div>• <strong class="text-white">Away Season Record:</strong> ${match.away} (${aRec.summary} — ${(aRec.winRate * 100).toFixed(0)}% Win Rate)</div>
-                <div>• <strong class="text-white">Market & Odds Feed:</strong> ${oddsSourceText}</div>
-                <div>• <strong class="text-white">Model Win Probability:</strong> ${confidencePct} Calculated Edge</div>
-                <div>• <strong class="text-white">Recent Form & Venue:</strong> ${match.homeForm ? `Home Form: ${match.homeForm}` : 'Official League Fixture'} ${match.venue ? `at ${match.venue}` : ''}</div>
+                <div>• <strong class="text-gray-900 dark:text-white">Home Season Record:</strong> ${match.home} (${hRec.summary} — ${(hRec.winRate * 100).toFixed(0)}% Win Rate)</div>
+                <div>• <strong class="text-gray-900 dark:text-white">Away Season Record:</strong> ${match.away} (${aRec.summary} — ${(aRec.winRate * 100).toFixed(0)}% Win Rate)</div>
+                <div>• <strong class="text-gray-900 dark:text-white">Market & Odds Feed:</strong> ${oddsSourceText}</div>
+                <div>• <strong class="text-gray-900 dark:text-white">Model Win Probability:</strong> ${confidencePct} Calculated Edge</div>
+                <div>• <strong class="text-gray-900 dark:text-white">Recent Form & Venue:</strong> ${match.homeForm ? `Home Form: ${match.homeForm}` : 'Official League Fixture'} ${match.venue ? `at ${match.venue}` : ''}</div>
             `;
 
             return {
@@ -507,9 +531,9 @@
 
             if (!isBackground) {
                 container.innerHTML = `
-                    <div class="bg-gray-900 border border-gray-800 rounded-2xl p-8 text-center space-y-3">
+                    <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-8 text-center space-y-3">
                         <div class="inline-block w-8 h-8 border-4 border-emerald-400 border-t-transparent rounded-full animate-spin"></div>
-                        <p class="text-xs text-gray-400 font-mono">Analyzing Live Standings & Market Odds...</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 font-mono">Analyzing Live Standings & Market Odds...</p>
                     </div>
                 `;
             }
@@ -518,8 +542,8 @@
 
             if (matches.length === 0) {
                 container.innerHTML = `
-                    <div class="bg-gray-900 border border-gray-800 rounded-2xl p-8 text-center space-y-3">
-                        <p class="text-xs text-gray-300 font-mono">No matches found for this date. Please select another date (-60 to +30 days).</p>
+                    <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-8 text-center space-y-3">
+                        <p class="text-xs text-gray-600 dark:text-gray-300 font-mono">No matches found for this date. Please select another date (-60 to +30 days).</p>
                     </div>
                 `;
                 document.getElementById('totalOddsBadge').textContent = `ODDS: 0.00`;
@@ -559,28 +583,28 @@
                     badgeHtml = `<span class="bg-red-500 text-white px-3 py-1 rounded-xl text-xs font-mono font-black shadow-lg flex items-center gap-1">❌ LOST (${m.homeScore}-${m.awayScore})</span>`;
                 }
             } else if (m.statusState === 'in') {
-                badgeHtml = `<span class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-xl text-xs font-mono font-bold flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-400 pulse-live"></span> LIVE (${m.homeScore}-${m.awayScore})</span>`;
+                badgeHtml = `<span class="bg-emerald-500/20 text-emerald-500 dark:text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-xl text-xs font-mono font-bold flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-400 pulse-live"></span> LIVE (${m.homeScore}-${m.awayScore})</span>`;
             }
 
             container.innerHTML = `
-                <div class="bg-gradient-to-br from-gray-900 to-gray-900/90 border-2 border-emerald-500/50 rounded-2xl p-5 space-y-4 shadow-xl">
-                    <div class="flex items-center justify-between text-xs text-amber-400 font-mono font-bold">
+                <div class="bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-900/90 border-2 border-emerald-500/50 rounded-2xl p-5 space-y-4 shadow-xl">
+                    <div class="flex items-center justify-between text-xs text-amber-500 font-mono font-bold">
                         <span>🏆 ${m.league}</span>
                         <span>⏰ ${m.time}</span>
                     </div>
-                    <div class="flex items-center justify-between font-extrabold text-lg text-white">
+                    <div class="flex items-center justify-between font-extrabold text-lg text-gray-900 dark:text-white">
                         <span>${m.home} vs ${m.away}</span>
                         ${badgeHtml}
                     </div>
-                    <div class="bg-gray-950 border border-gray-800 rounded-xl p-4 space-y-2.5 text-xs">
-                        <div class="flex items-center justify-between text-emerald-400 font-bold">
+                    <div class="bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-xl p-4 space-y-2.5 text-xs">
+                        <div class="flex items-center justify-between text-emerald-500 dark:text-emerald-400 font-bold">
                             <span>📊 Live Data Highest-Probability Pick</span>
-                            <span class="bg-emerald-500/20 border border-emerald-500/30 px-2.5 py-0.5 rounded text-[11px] font-mono font-extrabold text-emerald-300">Model Prob: ${evaluation.confidence}</span>
+                            <span class="bg-emerald-500/20 border border-emerald-500/30 px-2.5 py-0.5 rounded text-[11px] font-mono font-extrabold text-emerald-600 dark:text-emerald-300">Model Prob: ${evaluation.confidence}</span>
                         </div>
-                        <div class="text-white font-bold text-sm bg-gray-900 p-2.5 rounded-lg border border-gray-800/80">
+                        <div class="text-gray-900 dark:text-white font-bold text-sm bg-white dark:bg-gray-900 p-2.5 rounded-lg border border-gray-200 dark:border-gray-800/80">
                             ${evaluation.label}
                         </div>
-                        <div class="space-y-1 text-gray-300 font-mono text-[11px] pt-1">
+                        <div class="space-y-1 text-gray-600 dark:text-gray-300 font-mono text-[11px] pt-1">
                             ${evaluation.analysis}
                         </div>
                     </div>
