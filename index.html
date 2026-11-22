@@ -71,7 +71,7 @@
         <div class="flex items-center justify-between bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-1.5 no-scrollbar overflow-x-auto gap-2" id="dateRibbon"></div>
         <p class="hidden text-[10px] text-gray-500 dark:text-gray-400 font-mono text-center -mt-3">Calendar is continuous — scroll left/right or pick any date. Picks never stop.</p>
 
-        <!-- PROFESSIONAL TICKET - Hidden until hamburger -->
+        <!-- PROFESSIONAL TICKET -->
         <section class="space-y-3 relative hidden" id="ticketSection">
             <div class="flex items-center justify-between">
                 <h3 class="font-black text-gray-900 dark:text-white text-base flex items-center gap-2">🎫 DAILY TICKET</h3>
@@ -79,20 +79,33 @@
                     <span id="ticketDateLabel" class="text-[11px] font-mono text-gray-500">TODAY</span>
                     <div class="relative">
                         <button onclick="toggleTicketMenu(event)" id="ticketMenuBtn" class="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 text-lg font-black leading-none">⋮</button>
-                        <div id="ticketHistoryMenu" class="hidden absolute right-0 top-10 w-80 max-w-[calc(100vw-2rem)] bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-2xl z-30 overflow-hidden">
+                        <!-- PRO TICKET HISTORY -->
+                        <div id="ticketHistoryMenu" class="hidden absolute right-0 top-10 w-[340px] max-w-[calc(100vw-2rem)] bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-2xl z-30 overflow-hidden">
                             <div class="p-3 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
                                 <div>
                                     <div class="text-xs font-black text-gray-900 dark:text-white">🎫 Ticket History</div>
-                                    <div class="text-[10px] font-mono text-gray-500">Last 60 Days • ⬆️ Won • ⬇️ Lost</div>
+                                    <div class="text-[10px] font-mono text-gray-500">Last 60 Days • Verified Results</div>
                                 </div>
                                 <button onclick="toggleTicketMenu(event)" class="w-6 h-6 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-xs">✕</button>
                             </div>
-                            <div id="ticketHistorySummary" class="grid grid-cols-3 gap-2 p-3 border-b border-gray-200 dark:border-gray-700 text-center">
-                                <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-2"><div class="text-base font-black text-emerald-500" id="ticketHistWins">0</div><div class="text-[9px] font-mono text-gray-500">TICKETS WON ⬆️</div></div>
-                                <div class="bg-red-500/10 border border-red-500/30 rounded-xl p-2"><div class="text-base font-black text-red-500" id="ticketHistLosses">0</div><div class="text-[9px] font-mono text-gray-500">TICKETS LOST ⬇️</div></div>
+                            <!-- Stats -->
+                            <div class="grid grid-cols-3 gap-2 p-3 pb-2 text-center">
+                                <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-2"><div class="text-base font-black text-emerald-500" id="ticketHistWins">0</div><div class="text-[9px] font-mono text-gray-500">WON ⬆️</div></div>
+                                <div class="bg-red-500/10 border border-red-500/30 rounded-xl p-2"><div class="text-base font-black text-red-500" id="ticketHistLosses">0</div><div class="text-[9px] font-mono text-gray-500">LOST ⬇️</div></div>
                                 <div class="bg-amber-500/10 border border-amber-500/30 rounded-xl p-2"><div class="text-base font-black text-amber-500" id="ticketHistRate">0%</div><div class="text-[9px] font-mono text-gray-500">WIN RATE</div></div>
                             </div>
-                            <div id="ticketHistoryList" class="max-h-[340px] overflow-y-auto p-2 space-y-1.5 no-scrollbar">
+                            <!-- Streak + Profit -->
+                            <div class="mx-3 mb-2 bg-gray-50 dark:bg-gray-800/70 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 flex items-center justify-between">
+                                <div class="text-[11px]"><span class="font-black text-gray-900 dark:text-white" id="ticketStreakLabel">🔥 Streak: —</span><div class="text-[10px] font-mono text-gray-500" id="ticketProfitLabel">Profit (10k stake): —</div></div>
+                                <div class="text-right"><div class="text-[11px] font-black" id="ticketRoiLabel">ROI —</div><div class="text-[9px] font-mono text-gray-500">Return on stake</div></div>
+                            </div>
+                            <!-- Filters -->
+                            <div class="flex gap-1.5 px-3 pb-2">
+                                <button onclick="setTicketHistoryFilter('all')" id="ticketFilterAll" class="flex-1 py-1.5 rounded-lg text-[11px] font-black bg-amber-500 text-gray-950 transition">All</button>
+                                <button onclick="setTicketHistoryFilter('won')" id="ticketFilterWon" class="flex-1 py-1.5 rounded-lg text-[11px] font-black bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 transition">Won ⬆️</button>
+                                <button onclick="setTicketHistoryFilter('lost')" id="ticketFilterLost" class="flex-1 py-1.5 rounded-lg text-[11px] font-black bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 transition">Lost ⬇️</button>
+                            </div>
+                            <div id="ticketHistoryList" class="max-h-[340px] overflow-y-auto p-2 pt-0 space-y-2 no-scrollbar">
                                 <div class="text-center p-4 text-xs font-mono text-gray-500">Tap ⋮ to load ticket history...</div>
                             </div>
                             <div class="p-2 border-t border-gray-200 dark:border-gray-700 text-center">
@@ -102,11 +115,8 @@
                     </div>
                 </div>
             </div>
-            <!-- PRO TICKET CARD -->
             <div id="comboTicketContainer" class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl overflow-hidden shadow-lg">
-                <div class="p-4 space-y-3">
-                    <div class="text-center p-4 text-xs font-mono text-gray-500">Loading ticket...</div>
-                </div>
+                <div class="p-4 space-y-3"><div class="text-center p-4 text-xs font-mono text-gray-500">Loading ticket...</div></div>
             </div>
         </section>
 
@@ -273,19 +283,55 @@
             return fixtures;
         }
         let ticketMenuOpen=false; let ticketHistoryLoaded=false; let ticketHistoryLoading=false;
+        let ticketHistoryData=[]; let ticketHistoryFilter='all';
         function toggleTicketMenu(e){ if(e) e.stopPropagation(); const menu=document.getElementById('ticketHistoryMenu'); if(!menu) return; ticketMenuOpen=!menu.classList.contains('hidden'); if(ticketMenuOpen){ menu.classList.add('hidden'); ticketMenuOpen=false; } else { menu.classList.remove('hidden'); ticketMenuOpen=true; if(!ticketHistoryLoaded) loadTicketHistory(false); } }
         document.addEventListener('click', (e)=>{ const menu=document.getElementById('ticketHistoryMenu'); const btn=document.getElementById('ticketMenuBtn'); if(menu && !menu.classList.contains('hidden') && btn && !menu.contains(e.target) && !btn.contains(e.target)){ menu.classList.add('hidden'); ticketMenuOpen=false; } });
+        function setTicketHistoryFilter(f){ ticketHistoryFilter=f; const all=document.getElementById('ticketFilterAll'); const won=document.getElementById('ticketFilterWon'); const lost=document.getElementById('ticketFilterLost'); const active="flex-1 py-1.5 rounded-lg text-[11px] font-black bg-amber-500 text-gray-950 transition"; const inactive="flex-1 py-1.5 rounded-lg text-[11px] font-black bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 transition"; if(all) all.className = f==='all'?active:inactive; if(won) won.className = f==='won'? "flex-1 py-1.5 rounded-lg text-[11px] font-black bg-emerald-500 text-white transition" : inactive; if(lost) lost.className = f==='lost'? "flex-1 py-1.5 rounded-lg text-[11px] font-black bg-red-500 text-white transition" : inactive; renderTicketHistoryList(); }
+        function shortName(n){ return n.replace('Real Salt Lake','RSL').replace('Tottenham Hotspur','Tottenham').replace('Nottingham Forest','Nottm Forest').replace('Wolverhampton Wanderers','Wolves').replace('Brighton & Hove Albion','Brighton').replace('West Ham United','West Ham').replace('Newcastle United','Newcastle').replace('Manchester United','Man United').replace('Manchester City','Man City'); }
+        function renderTicketHistoryList(){
+            const list=document.getElementById('ticketHistoryList'); if(!list) return;
+            let filtered=ticketHistoryData.filter(t=> ticketHistoryFilter==='all' ? true : ticketHistoryFilter==='won' ? t.won : !t.won);
+            if(filtered.length===0){ list.innerHTML=`<div class="text-center p-4 text-xs text-gray-500">${ticketHistoryFilter==='won'?'No won tickets yet.': ticketHistoryFilter==='lost'?'No lost tickets. Great!':'No finished tickets yet.'}</div>`; return; }
+            let html='';
+            filtered.forEach(t=>{
+                const arrow = t.won ? '⬆️' : '⬇️';
+                const badge = t.won ? `<span class="bg-emerald-500 text-white px-2 py-0.5 rounded-full text-[10px] font-black nowrap-badge">⬆️ WON</span>` : `<span class="bg-red-500 text-white px-2 py-0.5 rounded-full text-[10px] font-black nowrap-badge">⬇️ LOST</span>`;
+                const border = t.won ? 'border-emerald-500/30' : 'border-red-500/30';
+                html+=`<div class="border ${border} bg-gray-50 dark:bg-gray-800/40 rounded-xl p-2.5 space-y-1.5">
+                    <div class="flex items-center justify-between gap-2"><div class="text-[11px] font-black text-gray-900 dark:text-white truncate">${arrow} ${t.day} ${t.date} • @ ${t.combined}</div>${badge}</div>
+                    <div class="flex items-center justify-between gap-2 text-[11px]"><span class="text-gray-700 dark:text-gray-200 truncate">⚽ ${shortName(t.overHome)} vs ${shortName(t.overAway)} <b>${t.overScore}</b> ${t.overWon?'✅':'❌'}</span><span class="text-[10px] font-bold text-amber-600 dark:text-amber-400 bg-amber-500/10 border border-amber-500/30 px-1.5 py-0.5 rounded-full nowrap-badge">Over 1.5</span></div>
+                    <div class="flex items-center justify-between gap-2 text-[11px]"><span class="text-gray-700 dark:text-gray-200 truncate">🔒 ${shortName(t.underHome)} vs ${shortName(t.underAway)} <b>${t.underScore}</b> ${t.underWon?'✅':'❌'}</span><span class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-1.5 py-0.5 rounded-full nowrap-badge">Under 4.5</span></div>
+                </div>`;
+            });
+            list.innerHTML=html;
+        }
+        function updateTicketHistoryStats(){
+            let wins=0, losses=0, profit=0, stakeTotal=0;
+            ticketHistoryData.forEach(t=>{ if(t.won){ wins++; profit += 10000*(parseFloat(t.combined)-1); } else { losses++; profit -= 10000; } stakeTotal += 10000; });
+            document.getElementById('ticketHistWins').textContent=wins;
+            document.getElementById('ticketHistLosses').textContent=losses;
+            const total=wins+losses;
+            document.getElementById('ticketHistRate').textContent= total>0 ? Math.round((wins/total)*100)+'%' : '0%';
+            let streak=0; for(let i=0;i<ticketHistoryData.length;i++){ if(ticketHistoryData[i].won) streak++; else break; }
+            const streakEl=document.getElementById('ticketStreakLabel');
+            if(streakEl) streakEl.textContent = streak>0 ? `🔥 Streak: ${streak} WON` : (ticketHistoryData.length>0 ? `🔥 Streak: 0 — Last Lost` : `🔥 Streak: —`);
+            const profitEl=document.getElementById('ticketProfitLabel');
+            if(profitEl) profitEl.textContent = `Profit (10k stake): ${profit>=0?'+':''}${Math.round(profit).toLocaleString()} UGX`;
+            if(profitEl) profitEl.className = `text-[10px] font-mono ${profit>=0?'text-emerald-600 dark:text-emerald-400':'text-red-500'}`;
+            const roiEl=document.getElementById('ticketRoiLabel');
+            if(roiEl){ const roi = stakeTotal>0 ? (profit/stakeTotal*100) : 0; roiEl.textContent = `ROI ${roi>=0?'+':''}${roi.toFixed(1)}%`; roiEl.className = `text-[11px] font-black ${roi>=0?'text-emerald-500':'text-red-500'}`; }
+        }
         async function loadTicketHistory(force){
             if(ticketHistoryLoading) return; if(ticketHistoryLoaded && !force) return;
+            if(force){ ticketHistoryData=[]; }
             ticketHistoryLoading=true; ticketHistoryLoaded=true;
             const list=document.getElementById('ticketHistoryList');
             if(list) list.innerHTML=`<div class="text-center p-4 text-xs font-mono text-gray-500">Loading 60 days ticket history...</div>`;
-            let wins=0, losses=0, html='';
             for(let back=1; back<=60; back++){
                 const d=new Date(); d.setDate(d.getDate()-back);
                 try{
                     const matches=await fetchRealFixtures(d);
-                    if(matches.length===0) continue;
+                    if(matches.length===0){ ticketHistoryData.push({ day: d.toLocaleDateString('en-US',{weekday:'short'}), date: d.toLocaleDateString('en-US',{month:'short',day:'numeric'}), won:false, combined:'0.00', isEmpty:true, overHome:'No Matches', overAway:'', overScore:'-', overWon:false, underHome:'', underAway:'', underScore:'-', underWon:false }); continue; }
                     const dateKey=getYYYYMMDD(d);
                     const dateLabel=d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
                     const dayLabel=d.toLocaleDateString('en-US',{weekday:'short'});
@@ -297,25 +343,17 @@
                     if(underPick && overPick && underPick.match.id===overPick.match.id) underPick=null;
                     if(!underPick){ const avail=underEv.filter(x=>!overPick || x.match.id!==overPick.match.id); avail.sort((a,b)=>b.eval.scoreRank-a.eval.scoreRank); underPick=avail[0]||underEv[0]; }
                     if(!overPick || !underPick) continue;
-                    if(overPick.match.statusState!=='post' || underPick.match.statusState!=='post') continue;
+                    if(overPick.match.statusState!=='post' || underPick.match.statusState!=='post'){ ticketHistoryData.push({ day: dayLabel, date: dateLabel, won:false, combined:(overPick.eval.odd*underPick.eval.odd).toFixed(2), isEmpty:true, overHome:'Not Finished', overAway:'', overScore:'-', overWon:false, underHome:'', underAway:'', underScore:'-', underWon:false }); continue; }
                     const ticketWon = overPick.eval.isWon && underPick.eval.isWon;
-                    if(ticketWon) wins++; else losses++;
                     const combined=(overPick.eval.odd * underPick.eval.odd).toFixed(2);
-                    const arrow = ticketWon ? '⬆️' : '⬇️';
-                    const arrowColor = ticketWon ? 'text-emerald-500' : 'text-red-500';
-                    const bg = ticketWon ? 'bg-emerald-500/10 border-emerald-500/30' : 'bg-red-500/10 border-red-500/30';
-                    html+=`<div class="flex items-center justify-between border ${bg} rounded-xl px-2.5 py-2"><div class="flex items-center gap-2"><span class="text-base ${arrowColor} font-black">${arrow}</span><div><div class="text-[11px] font-bold text-gray-900 dark:text-white">${dayLabel} ${dateLabel} • @ ${combined}</div><div class="text-[10px] font-mono text-gray-500 leading-tight">${overPick.match.home} vs ${overPick.match.away} ${overPick.match.homeScore}-${overPick.match.awayScore} ${overPick.eval.isWon?'✅':'❌'}<br>${underPick.match.home} vs ${underPick.match.away} ${underPick.match.homeScore}-${underPick.match.awayScore} ${underPick.eval.isWon?'✅':'❌'}</div></div></div><div class="text-right shrink-0"><div class="text-[11px] font-black ${arrowColor}">${ticketWon?'WON':'LOST'}</div><div class="text-[10px] font-mono text-gray-500">Ticket</div></div></div>`;
-                    if(back % 10 === 0 && list){ list.innerHTML = html + `<div class="text-center p-2 text-[10px] font-mono text-gray-400">Loaded ${back}/60 days...</div>`; }
+                    ticketHistoryData.push({ day: dayLabel, date: dateLabel, won: ticketWon, combined, isEmpty:false, overHome: overPick.match.home, overAway: overPick.match.away, overScore: `${overPick.match.homeScore}-${overPick.match.awayScore}`, overWon: overPick.eval.isWon, underHome: underPick.match.home, underAway: underPick.match.away, underScore: `${underPick.match.homeScore}-${underPick.match.awayScore}`, underWon: underPick.eval.isWon });
                 }catch(e){}
+                if(back % 10 === 0){ ticketHistoryData = ticketHistoryData.filter(t=>!t.isEmpty); updateTicketHistoryStats(); renderTicketHistoryList(); }
             }
-            if(list) list.innerHTML = html || `<div class="text-center p-4 text-xs text-gray-500">No finished tickets yet.</div>`;
-            document.getElementById('ticketHistWins').textContent=wins;
-            document.getElementById('ticketHistLosses').textContent=losses;
-            const total=wins+losses;
-            document.getElementById('ticketHistRate').textContent= total>0 ? Math.round((wins/total)*100)+'%' : '0%';
+            ticketHistoryData = ticketHistoryData.filter(t=>!t.isEmpty);
+            updateTicketHistoryStats(); renderTicketHistoryList();
             ticketHistoryLoading=false;
         }
-        // PRO: Copy Ticket
         let currentTicketText='';
         function copyTicket(){
             if(!currentTicketText) return;
