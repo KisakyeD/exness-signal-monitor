@@ -54,7 +54,6 @@
       <a href="https://wa.me/qr/OSDCY2ACDMP5M1" target="_blank" class="w-9 h-9 rounded-full bg-[#25D366] flex items-center justify-center wa-pulse shrink-0"><svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c0-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></a>
     </div>
     <div class="flex items-center space-x-2">
-      <button onclick="triggerRefresh()" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-xs font-mono">↻ Refresh</button>
       <button id="themeToggleBtn" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800"><span id="themeIcon">☀️</span></button>
     </div>
   </div>
@@ -63,12 +62,12 @@
 <main class="flex-grow max-w-4xl w-full mx-auto px-4 py-6 space-y-6">
   <div class="flex items-center justify-between bg-white dark:bg-gray-900 border rounded-xl p-1.5 no-scrollbar overflow-x-auto gap-2" id="dateRibbon"></div>
 
-  <div class="bg-gray-900 dark:bg-white rounded-2xl p-4 flex items-center justify-between gap-2">
+  <div class="totally-invisible bg-gray-900 dark:bg-white rounded-2xl p-4 flex items-center justify-between gap-2">
     <div><div class="text-white dark:text-gray-900 font-black text-sm">⚽ TODAY'S PICKS • 4 MARKETS 10-FACTOR</div><div class="text-[11px] text-gray-300 dark:text-gray-600 font-mono" id="daySummary">Loading...</div></div>
     <div class="text-right"><div class="text-white dark:text-gray-900 font-black text-lg" id="dayProfitPreview">—</div><div class="text-[10px] text-gray-300 dark:text-gray-600 font-mono">If all win @ 10k each</div></div>
   </div>
 
-  <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-xl px-3 py-2 text-[11px] font-mono text-emerald-700 dark:text-emerald-300">✅ 10-FACTOR: Venue • Away • Referee • Corners • BTTS • xG • Shots • H2H • Lineups • Weather — Must score 80/100 • 1 Best Market per Game</div>
+  <div class="totally-invisible bg-emerald-500/10 border border-emerald-500/30 rounded-xl px-3 py-2 text-[11px] font-mono text-emerald-700 dark:text-emerald-300">✅ 10-FACTOR: Venue • Away • Referee • Corners • BTTS • xG • Shots • H2H • Lineups • Weather — Must score 80/100 • 1 Best Market per Game</div>
 
   <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1" id="marketFilters">
     <button onclick="setMarketFilter('all')" data-filter="all" class="filter-btn active shrink-0 px-3 py-2 rounded-xl border text-xs font-bold bg-white dark:bg-gray-900">ALL ( <span id="countAll">0</span> )</button>
@@ -83,7 +82,7 @@
       <h3 class="font-bold text-base flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-emerald-400 pulse-live"></span> <span id="sectionTitleDate">TODAY'S</span> PICKS</h3>
       <span class="text-xs bg-amber-500/10 text-amber-600 border border-amber-500/30 px-3 py-1.5 rounded-xl font-mono font-bold" id="totalPicksBadge">0 PICKS</span>
     </div>
-    <p class="text-[11px] text-gray-500 font-mono">Play SINGLE SINGLE • Same stake • 1 Best Market per Game • 80+ only</p>
+    <p class="totally-invisible text-[11px] text-gray-500 font-mono">Play SINGLE SINGLE • Same stake • 1 Best Market per Game • 80+ only</p>
     <div class="grid grid-cols-1 gap-3" id="matchFeedContainer"></div>
   </section>
 
@@ -97,7 +96,7 @@
       <div class="bg-red-500/10 border border-red-500/30 rounded-xl p-2"><div class="text-lg font-black text-red-500" id="histLosses">0</div><div class="text-[10px] font-mono text-gray-500">LOSSES ⬇️</div></div>
       <div class="bg-amber-500/10 border border-amber-500/30 rounded-xl p-2"><div class="text-lg font-black text-amber-500" id="histRate">0%</div><div class="text-[10px] font-mono text-gray-500">WIN RATE</div></div>
     </div>
-    <div class="bg-gray-50 dark:bg-gray-800/70 border rounded-xl px-3 py-2 flex items-center justify-between">
+    <div class="totally-invisible bg-gray-50 dark:bg-gray-800/70 border rounded-xl px-3 py-2 flex items-center justify-between">
       <div class="text-[11px]"><span class="font-black" id="histStreak">🔥 Streak: —</span><div class="text-[10px] font-mono text-gray-500" id="histProfit">Profit (10k each): —</div></div>
       <div class="text-right"><div class="text-[11px] font-black" id="histRoi">ROI —</div><div class="text-[9px] font-mono text-gray-500">Return</div></div>
     </div>
@@ -148,7 +147,7 @@ function triggerRefresh(){try{sessionStorage.removeItem('wins1_cache_'+getYYYYMM
 function parseRecordStats(s){if(!s||typeof s!=='string')return{winRate:.40,lossRate:.35,drawRate:.25,played:0,wins:0,draws:0,losses:0};const p=s.split('-').map(n=>parseInt(n,10)).filter(n=>!isNaN(n));if(p.length===3){const[w,d,l]=p;const pl=w+d+l;return{winRate:pl?w/pl:.40,lossRate:pl?l/pl:.35,drawRate:pl?d/pl:.25,played:pl,wins:w,draws:d,losses:l}}if(p.length===2){const[w,l]=p;const pl=w+l;return{winRate:pl?w/pl:.40,lossRate:pl?l/pl:.35,drawRate:0,played:pl,wins:w,draws:0,losses:l}}return{winRate:.40,lossRate:.35,drawRate:.25,played:0,wins:0,draws:0,losses:0}}
 function clamp(v,a,b){return Math.min(b,Math.max(a,v))}
 
-/* ✅ 10-FACTOR - 4 MARKETS - UNDER 5.5 */
+/* ✅ 10-FACTOR - 4 MARKETS - ORIGINAL Over 1.5 RESTORED */
 function evaluateBestMarket(match){
   const h=parseRecordStats(match.homeRecord),a=parseRecordStats(match.awayRecord);
   const ou=parseFloat(match.overUnderLine)||null;
@@ -185,8 +184,6 @@ function evaluateBestMarket(match){
     let s=baseScore; if(bttsScore>=0.70) s+=4;
     if(s>=80){ let prob=clamp(0.52+(s/100)*0.30,0.68,0.88); let odd=parseFloat((1/prob).toFixed(2)); if(odd>=1.40&&odd<=2.20) candidates.push({key:'btts',label:'BTTS Yes',emoji:'🥅',prob,odd,confidence:(prob*100).toFixed(1)+'%',isWon:isFinished?(match.homeScore>=1&&match.awayScore>=1):false,isFinished,score:Math.min(100,s),reasons,xgEst}) }
   }
-  // ✅ CHANGED: UNDER 4.5 -> UNDER 5.5
-  // Under 5.5 wins if total <=5 - much safer, so we allow slightly higher xG
   let underScore=0;
   if(xgEst<=3.6) underScore+=25; else if(xgEst<=4.0) underScore+=18; else if(xgEst<=4.4) underScore+=10;
   if(tempo<=0.70) underScore+=20; else if(tempo<=0.80) underScore+=14; else underScore+=6;
@@ -195,7 +192,6 @@ function evaluateBestMarket(match){
   if(ou&&ou<=3.5) underScore+=15; else if(ou&&ou<=4.0) underScore+=10; else underScore+=5;
   if(both>=0.70) underScore+=10; else underScore+=5;
   if(underScore>=80){
-    // Under 5.5 is very safe, so odds are low: 1.05 - 1.25
     let prob=clamp(0.70+(underScore/100)*0.28,0.82,0.98); let odd=parseFloat((1/prob).toFixed(2));
     if(odd>=1.02&&odd<=1.30) candidates.push({key:'under55',label:'Under 5.5 Goals',emoji:'🔒',prob,odd,confidence:(prob*100).toFixed(1)+'%',isWon:isFinished?total<=5:false,isFinished,score:underScore,reasons:[`xG:${xgEst.toFixed(2)}`,`Tempo:${tempo.toFixed(2)}`,`Defence:${weak.toFixed(2)}`,`Under Score:${underScore}/100`],xgEst})
   }
