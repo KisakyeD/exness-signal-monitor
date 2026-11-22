@@ -29,11 +29,6 @@
     </div>
     <nav class="space-y-1.5">
       <button onclick="goToHomepage()" class="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl bg-amber-500 text-gray-950 font-black text-xs">⚽ 4 Markets • 10-Factor</button>
-      <!-- ✅ NEW: 4 ADDED MARKETS IN HAMBURGER - SAME 10-FACTOR -->
-      <button onclick="goToMarket('over05ht')" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 font-bold text-xs">⏱️ Over 0.5 HT <span class="bg-amber-500 text-gray-950 text-[10px] px-2 py-0.5 rounded-full font-black" id="drawerCountOver05ht">—</span></button>
-      <button onclick="goToMarket('dc')" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 font-bold text-xs">🛡️ Double Chance <span class="bg-amber-500 text-gray-950 text-[10px] px-2 py-0.5 rounded-full font-black" id="drawerCountDc">—</span></button>
-      <button onclick="goToMarket('over25btts')" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 font-bold text-xs">🔥 Over 2.5 + BTTS <span class="bg-amber-500 text-gray-950 text-[10px] px-2 py-0.5 rounded-full font-black" id="drawerCountOver25btts">—</span></button>
-      <button onclick="goToMarket('bttsOver15')" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 font-bold text-xs">🥅 BTTS + Over 1.5 <span class="bg-amber-500 text-gray-950 text-[10px] px-2 py-0.5 rounded-full font-black" id="drawerCountBttsOver15">—</span></button>
       <a href="https://wa.me/qr/OSDCY2ACDMP5M1" target="_blank" class="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl bg-[#25D366]/10 text-[#25D366] font-bold text-xs border border-[#25D366]/40">💬 B2B & B2C on WhatsApp</a>
     </nav>
     <div class="pt-3 border-t border-gray-200 dark:border-gray-800 space-y-2">
@@ -81,14 +76,9 @@
     <button onclick="setMarketFilter('over25')" data-filter="over25" class="filter-btn shrink-0 px-3 py-2 rounded-xl border text-xs font-bold bg-white dark:bg-gray-900">🔥 Over 2.5 ( <span id="countOver25">0</span> )</button>
     <button onclick="setMarketFilter('btts')" data-filter="btts" class="filter-btn shrink-0 px-3 py-2 rounded-xl border text-xs font-bold bg-white dark:bg-gray-900">🥅 BTTS ( <span id="countBtts">0</span> )</button>
     <button onclick="setMarketFilter('under55')" data-filter="under55" class="filter-btn shrink-0 px-3 py-2 rounded-xl border text-xs font-bold bg-white dark:bg-gray-900">🔒 Under 5.5 ( <span id="countUnder55">0</span> )</button>
-    <!-- ✅ NEW FILTERS - ONLY ADDED -->
-    <button onclick="setMarketFilter('over05ht')" data-filter="over05ht" class="filter-btn shrink-0 px-3 py-2 rounded-xl border text-xs font-bold bg-white dark:bg-gray-900">⏱️ Over 0.5 HT ( <span id="countOver05ht">0</span> )</button>
-    <button onclick="setMarketFilter('dc')" data-filter="dc" class="filter-btn shrink-0 px-3 py-2 rounded-xl border text-xs font-bold bg-white dark:bg-gray-900">🛡️ Double Chance ( <span id="countDc">0</span> )</button>
-    <button onclick="setMarketFilter('over25btts')" data-filter="over25btts" class="filter-btn shrink-0 px-3 py-2 rounded-xl border text-xs font-bold bg-white dark:bg-gray-900">🔥 Over 2.5+BTTS ( <span id="countOver25btts">0</span> )</button>
-    <button onclick="setMarketFilter('bttsOver15')" data-filter="bttsOver15" class="filter-btn shrink-0 px-3 py-2 rounded-xl border text-xs font-bold bg-white dark:bg-gray-900">🥅 BTTS+Over 1.5 ( <span id="countBttsOver15">0</span> )</button>
   </div>
 
-  <section class="space-y-3" id="picksSection">
+  <section class="space-y-3">
     <div class="flex items-center justify-between">
       <h3 class="font-bold text-base flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-emerald-400 pulse-live"></span> <span id="sectionTitleDate">TODAY'S</span> PICKS</h3>
       <span class="text-xs bg-amber-500/10 text-amber-600 border border-amber-500/30 px-3 py-1.5 rounded-xl font-mono font-bold" id="totalPicksBadge">0 PICKS</span>
@@ -146,8 +136,6 @@ let selectedDateObj=new Date();
 let allTodayPicks=[];
 let currentMarketFilter='all';
 function setMarketFilter(f){currentMarketFilter=f;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.toggle('active',b.dataset.filter===f));renderPicks()}
-/* ✅ NEW: Hamburger -> filter + scroll - ONLY ADDED */
-function goToMarket(key){toggleDrawer(false);setMarketFilter(key);setTimeout(()=>{const el=document.getElementById('picksSection');if(el)el.scrollIntoView({behavior:'smooth',block:'start'})},80)}
 function initRibbon(){
   const ribbon=document.getElementById('dateRibbon');const cal=document.getElementById('drawerCalendarInput');if(cal)cal.value=toInputDateValue(selectedDateObj);if(!ribbon)return;
   const center=new Date(selectedDateObj);center.setHours(0,0,0,0);const today=new Date();today.setHours(0,0,0,0);let html='';
@@ -160,7 +148,7 @@ function triggerRefresh(){try{sessionStorage.removeItem('wins1_cache_'+getYYYYMM
 function parseRecordStats(s){if(!s||typeof s!=='string')return{winRate:.40,lossRate:.35,drawRate:.25,played:0,wins:0,draws:0,losses:0};const p=s.split('-').map(n=>parseInt(n,10)).filter(n=>!isNaN(n));if(p.length===3){const[w,d,l]=p;const pl=w+d+l;return{winRate:pl?w/pl:.40,lossRate:pl?l/pl:.35,drawRate:pl?d/pl:.25,played:pl,wins:w,draws:d,losses:l}}if(p.length===2){const[w,l]=p;const pl=w+l;return{winRate:pl?w/pl:.40,lossRate:pl?l/pl:.35,drawRate:0,played:pl,wins:w,draws:0,losses:l}}return{winRate:.40,lossRate:.35,drawRate:.25,played:0,wins:0,draws:0,losses:0}}
 function clamp(v,a,b){return Math.min(b,Math.max(a,v))}
 
-/* ✅ 10-FACTOR - 4 MARKETS + 4 NEW - UNDER 5.5 - ORIGINAL LOGIC UNCHANGED */
+/* ✅ 10-FACTOR - 4 MARKETS - UNDER 5.5 */
 function evaluateBestMarket(match){
   const h=parseRecordStats(match.homeRecord),a=parseRecordStats(match.awayRecord);
   const ou=parseFloat(match.overUnderLine)||null;
@@ -186,7 +174,6 @@ function evaluateBestMarket(match){
   const total=match.homeScore+match.awayScore;
   const isFinished=match.statusState==='post';
   const candidates=[];
-  // --- ORIGINAL 4 - UNCHANGED ---
   if(xgEst>=3.0 && tempo>=0.65 && bttsScore>=0.55){
     let s=baseScore; if(xgEst>=3.5) s+=5; if(tempo>=0.75) s+=3;
     if(s>=82){ let prob=clamp(0.55+(s/100)*0.30,0.70,0.90); let odd=parseFloat((1/prob).toFixed(2)); if(odd>=1.30&&odd<=2.10) candidates.push({key:'over25',label:'Over 2.5 Goals',emoji:'🔥',prob,odd,confidence:(prob*100).toFixed(1)+'%',isWon:isFinished?total>=3:false,isFinished,score:Math.min(100,s),reasons,xgEst}) }
@@ -198,6 +185,8 @@ function evaluateBestMarket(match){
     let s=baseScore; if(bttsScore>=0.70) s+=4;
     if(s>=80){ let prob=clamp(0.52+(s/100)*0.30,0.68,0.88); let odd=parseFloat((1/prob).toFixed(2)); if(odd>=1.40&&odd<=2.20) candidates.push({key:'btts',label:'BTTS Yes',emoji:'🥅',prob,odd,confidence:(prob*100).toFixed(1)+'%',isWon:isFinished?(match.homeScore>=1&&match.awayScore>=1):false,isFinished,score:Math.min(100,s),reasons,xgEst}) }
   }
+  // ✅ CHANGED: UNDER 4.5 -> UNDER 5.5
+  // Under 5.5 wins if total <=5 - much safer, so we allow slightly higher xG
   let underScore=0;
   if(xgEst<=3.6) underScore+=25; else if(xgEst<=4.0) underScore+=18; else if(xgEst<=4.4) underScore+=10;
   if(tempo<=0.70) underScore+=20; else if(tempo<=0.80) underScore+=14; else underScore+=6;
@@ -206,36 +195,9 @@ function evaluateBestMarket(match){
   if(ou&&ou<=3.5) underScore+=15; else if(ou&&ou<=4.0) underScore+=10; else underScore+=5;
   if(both>=0.70) underScore+=10; else underScore+=5;
   if(underScore>=80){
+    // Under 5.5 is very safe, so odds are low: 1.05 - 1.25
     let prob=clamp(0.70+(underScore/100)*0.28,0.82,0.98); let odd=parseFloat((1/prob).toFixed(2));
     if(odd>=1.02&&odd<=1.30) candidates.push({key:'under55',label:'Under 5.5 Goals',emoji:'🔒',prob,odd,confidence:(prob*100).toFixed(1)+'%',isWon:isFinished?total<=5:false,isFinished,score:underScore,reasons:[`xG:${xgEst.toFixed(2)}`,`Tempo:${tempo.toFixed(2)}`,`Defence:${weak.toFixed(2)}`,`Under Score:${underScore}/100`],xgEst})
-  }
-  // --- ✅ NEW 4 - SAME 10-FACTOR, SAME 80/100 RULE ---
-  // 1) Over 0.5 HT - needs scoring tempo + shots + xG. Half-time goal is ~75% of full-time scoring.
-  if(xgEst>=2.6 && tempo>=0.62 && active>=0.40 && baseScore>=80){
-    let prob=clamp(0.65+(baseScore/100)*0.25,0.72,0.88); let odd=parseFloat((1/prob).toFixed(2));
-    if(odd>=1.10&&odd<=1.45) candidates.push({key:'over05ht',label:'Over 0.5 HT',emoji:'⏱️',prob,odd,confidence:(prob*100).toFixed(1)+'%',isWon:isFinished?total>=1:false,isFinished,score:baseScore,reasons:[...reasons,`HT: xG ${xgEst.toFixed(2)}`],xgEst})
-  }
-  // 2) Double Chance - picks best of 1X / X2 / 12 from Venue + Away factors (winRate + drawRate)
-  {
-    const p1X=h.winRate+h.drawRate; const pX2=a.winRate+a.drawRate; const p12=1-Math.max(h.drawRate,a.drawRate);
-    let dcLabel='',dcProb=0,dcWon=false;
-    if(p1X>=pX2 && p1X>=p12){ dcLabel='Double Chance 1X'; dcProb=p1X; dcWon=match.homeScore>=match.awayScore; }
-    else if(pX2>=p1X && pX2>=p12){ dcLabel='Double Chance X2'; dcProb=pX2; dcWon=match.awayScore>=match.homeScore; }
-    else { dcLabel='Double Chance 12'; dcProb=p12; dcWon=match.homeScore!==match.awayScore; }
-    if(dcProb>=0.75 && baseScore>=80){
-      let prob=clamp(dcProb*0.95,0.75,0.93); let odd=parseFloat((1/prob).toFixed(2));
-      if(odd>=1.05&&odd<=1.35) candidates.push({key:'dc',label:dcLabel,emoji:'🛡️',prob,odd,confidence:(prob*100).toFixed(1)+'%',isWon:isFinished?dcWon:false,isFinished,score:baseScore,reasons:[...reasons,`DC: ${dcLabel} ${(dcProb*100).toFixed(0)}%`],xgEst})
-    }
-  }
-  // 3) Over 2.5 + BTTS - needs high xG + high BTTS score
-  if(xgEst>=3.0 && bttsScore>=0.62 && h.lossRate>=0.28 && a.lossRate>=0.28 && tempo>=0.65 && baseScore>=80){
-    let prob=clamp(0.28+(baseScore/100)*0.15,0.28,0.43); let odd=parseFloat((1/prob).toFixed(2));
-    if(odd>=2.30&&odd<=3.60) candidates.push({key:'over25btts',label:'Over 2.5 + BTTS',emoji:'🔥',prob,odd,confidence:(prob*100).toFixed(1)+'%',isWon:isFinished?(total>=3&&match.homeScore>=1&&match.awayScore>=1):false,isFinished,score:baseScore,reasons:[...reasons,`Combo: xG ${xgEst.toFixed(2)} + BTTS ${(bttsScore*100).toFixed(0)}%`],xgEst})
-  }
-  // 4) BTTS + Over 1.5 - needs BTTS + scoring, easier than Over 2.5+BTTS
-  if(bttsScore>=0.58 && h.lossRate>=0.28 && a.lossRate>=0.28 && xgEst>=2.5 && baseScore>=80){
-    let prob=clamp(0.42+(baseScore/100)*0.20,0.45,0.62); let odd=parseFloat((1/prob).toFixed(2));
-    if(odd>=1.60&&odd<=2.20) candidates.push({key:'bttsOver15',label:'BTTS + Over 1.5',emoji:'🥅',prob,odd,confidence:(prob*100).toFixed(1)+'%',isWon:isFinished?(total>=2&&match.homeScore>=1&&match.awayScore>=1):false,isFinished,score:baseScore,reasons:[...reasons,`Combo: BTTS ${(bttsScore*100).toFixed(0)}% + xG ${xgEst.toFixed(2)}`],xgEst})
   }
   if(candidates.length===0) return null;
   candidates.sort((x,y)=>y.score-x.score);
@@ -261,14 +223,6 @@ function renderPicks(){
   document.getElementById('countOver25').textContent=all.filter(p=>p.key==='over25').length;
   document.getElementById('countBtts').textContent=all.filter(p=>p.key==='btts').length;
   document.getElementById('countUnder55').textContent=all.filter(p=>p.key==='under55').length;
-  document.getElementById('countOver05ht').textContent=all.filter(p=>p.key==='over05ht').length;
-  document.getElementById('countDc').textContent=all.filter(p=>p.key==='dc').length;
-  document.getElementById('countOver25btts').textContent=all.filter(p=>p.key==='over25btts').length;
-  document.getElementById('countBttsOver15').textContent=all.filter(p=>p.key==='bttsOver15').length;
-  const dc1=document.getElementById('drawerCountOver05ht'); if(dc1) dc1.textContent=all.filter(p=>p.key==='over05ht').length;
-  const dc2=document.getElementById('drawerCountDc'); if(dc2) dc2.textContent=all.filter(p=>p.key==='dc').length;
-  const dc3=document.getElementById('drawerCountOver25btts'); if(dc3) dc3.textContent=all.filter(p=>p.key==='over25btts').length;
-  const dc4=document.getElementById('drawerCountBttsOver15'); if(dc4) dc4.textContent=all.filter(p=>p.key==='bttsOver15').length;
   let list=currentMarketFilter==='all'?all:all.filter(p=>p.key===currentMarketFilter);
   document.getElementById('totalPicksBadge').textContent=list.length+' PICKS';
   if(list.length===0){container.innerHTML=`<div class="bg-white dark:bg-gray-900 border rounded-2xl p-6 text-center space-y-2"><div class="text-3xl">🛡️</div><div class="font-black">NO PICK FOR THIS FILTER</div><p class="text-xs text-gray-500">No game scored 80/100 for this market today.<br>Try ALL.</p></div>`;return}
@@ -279,8 +233,54 @@ function renderPicks(){
     let badge=`<span class="text-[11px] font-mono text-gray-500 nowrap-badge">⏰ ${p.match.time}</span>`;
     if(p.isFinished) badge=p.isWon?`<span class="bg-emerald-500 text-white px-2.5 py-1 rounded-lg text-xs font-black nowrap-badge">✅ ${p.match.homeScore}-${p.match.awayScore}</span>`:`<span class="bg-red-500 text-white px-2.5 py-1 rounded-lg text-xs font-black nowrap-badge">❌ ${p.match.homeScore}-${p.match.awayScore}</span>`;
     else if(p.match.statusState==='in') badge=`<span class="bg-emerald-500/20 text-emerald-500 border border-emerald-500/30 px-2.5 py-1 rounded-lg text-xs font-bold nowrap-badge">● LIVE ${p.match.homeScore}-${p.match.awayScore}</span>`;
-    const marketColor=p.key==='over25'?'bg-orange-500 text-white':p.key==='btts'?'bg-blue-500 text-white':p.key==='under55'?'bg-gray-700 text-white':p.key==='over05ht'?'bg-cyan-500 text-white':p.key==='dc'?'bg-slate-600 text-white':p.key==='over25btts'?'bg-red-500 text-white':p.key==='bttsOver15'?'bg-teal-500 text-white':'bg-emerald-500 text-white';
+    const marketColor=p.key==='over25'?'bg-orange-500 text-white':p.key==='btts'?'bg-blue-500 text-white':p.key==='under55'?'bg-gray-700 text-white':'bg-emerald-500 text-white';
     return `<div class="bg-white dark:bg-gray-900 border rounded-2xl p-4 space-y-2">
       <div class="flex items-center justify-between gap-3">
       <div class="flex items-center gap-3 min-w-0"><span class="w-9 h-9 rounded-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 flex items-center justify-center text-xs font-black shrink-0">${i+1}</span>
-      <div class="min-w-0"><div class="text-sm font-bold truncate">${p.match.home} vs ${p.match.away}</div><div class="text-[11px] font-mono text-gray-500 truncate">${p.match.league} •
+      <div class="min-w-0"><div class="text-sm font-bold truncate">${p.match.home} vs ${p.match.away}</div><div class="text-[11px] font-mono text-gray-500 truncate">${p.match.league} • ${p.emoji} ${p.label} • Score ${p.score}/100</div><div class="text-[11px] font-bold text-emerald-600">Confidence ${p.confidence} • Est xG ${p.xgEst.toFixed(2)}</div></div></div>
+      <div class="flex flex-col items-end gap-1 shrink-0"><span class="bg-gray-900 dark:bg-white text-white dark:text-gray-900 px-3 py-1.5 rounded-lg text-sm font-black nowrap-badge">@ ${p.odd.toFixed(2)}</span>${badge}<button onclick="copySingle('${p.match.id}','${p.key}')" class="text-[10px] font-bold text-amber-500">📋 Copy</button></div></div>
+      <div class="flex gap-2 items-center"><span class="text-[10px] font-black px-2 py-1 rounded-lg ${marketColor} nowrap-badge">${p.emoji} ${p.label}</span><span class="text-[10px] font-mono text-gray-500 bg-gray-50 dark:bg-gray-800/60 rounded-lg px-2 py-1.5 flex-1 truncate">${p.reasons.join(' • ')}</span></div></div>`;
+  }).join('');
+}
+function copySingle(id,key){
+  const p=allTodayPicks.find(x=>x.match.id===id&&x.key===key);if(!p)return;const txt=`WINS1 • ${p.match.home} vs ${p.match.away} • ${p.label} @ ${p.odd.toFixed(2)} • ${p.confidence} • 10-Factor ${p.score}/100 • 25+ Bet Responsibly`;
+  if(navigator.clipboard)navigator.clipboard.writeText(txt);
+}
+async function fetchMatchData(dateObj){
+  selectedDateObj=dateObj;const container=document.getElementById('matchFeedContainer');const today=new Date();const isT=dateObj.toDateString()===today.toDateString();document.getElementById('sectionTitleDate').textContent=isT?"TODAY'S":dateObj.toLocaleDateString('en-US',{month:'short',day:'numeric'}).toUpperCase();
+  container.innerHTML=`<div class="p-8 text-center text-xs text-gray-500">Running 10-Factor Analysis — 4 Markets...</div>`;
+  const matches=await fetchRealFixtures(dateObj);
+  allTodayPicks=[];
+  matches.forEach(m=>{const pk=evaluateBestMarket(m);if(pk)allTodayPicks.push({...pk,match:m})});
+  renderPicks();
+}
+let historyLoading=false,historyLoadedDays=0,mainHistory=[];
+function updateHistoryStats(){
+  let w=0,l=0,profit=0,stake=0;mainHistory.forEach(t=>{if(t.won){w++;profit+=10000*(t.odd-1)}else{l++;profit-=10000}stake+=10000});
+  document.getElementById('histWins').textContent=w;document.getElementById('histLosses').textContent=l;document.getElementById('histRate').textContent=(w+l)>0?Math.round(w/(w+l)*100)+'%':'0%';
+  let streak=0;for(let i=0;i<mainHistory.length;i++){if(mainHistory[i].won)streak++;else break}
+  document.getElementById('histStreak').textContent=streak>0?`🔥 Streak: ${streak} WON`:(mainHistory.length?`🔥 Streak: 0 — Last Lost`:`🔥 Streak: —`);
+  const pe=document.getElementById('histProfit');pe.textContent=`Profit (10k each): ${profit>=0?'+':''}${Math.round(profit).toLocaleString()} UGX`;pe.className=`text-[10px] font-mono ${profit>=0?'text-emerald-600':'text-red-500'}`;
+  const roi=document.getElementById('histRoi');const r=stake>0?profit/stake*100:0;roi.textContent=`ROI ${r>=0?'+':''}${r.toFixed(1)}%`;roi.className=`text-[11px] font-black ${r>=0?'text-emerald-500':'text-red-500'}`;
+  const list=document.getElementById('historyList');
+  if(mainHistory.length===0){list.innerHTML=`<div class="text-center p-4 text-xs text-gray-500">No finished history yet.</div>`;return}
+  list.innerHTML=mainHistory.map(x=>x.html).join('');
+}
+async function loadHistoryBatch(){
+  if(historyLoading)return;historyLoading=true;const btn=document.getElementById('historyBtn');if(btn)btn.textContent='Loading...';
+  const start=historyLoadedDays+1,end=Math.min(60,historyLoadedDays+7);
+  for(let back=start;back<=end;back++){
+    const d=new Date();d.setDate(d.getDate()-back);
+    try{
+      const matches=await fetchRealFixtures(d);const dateLabel=d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+      matches.forEach(m=>{const pk=evaluateBestMarket(m);if(pk&&m.statusState==='post'){mainHistory.push({won:pk.isWon,odd:pk.odd,html:`<div class="flex items-center justify-between bg-white dark:bg-gray-900 border ${pk.isWon?'border-emerald-500/40':'border-red-500/40'} rounded-xl px-3 py-2.5"><div class="flex items-center gap-2.5"><span class="min-w-[52px] h-8 px-1.5 rounded-full ${pk.isWon?'bg-emerald-500 text-white':'bg-red-500 text-white'} flex items-center justify-center text-[11px] font-black">${m.time}</span><div><div class="text-xs font-bold">${m.home} vs ${m.away}</div><div class="text-[10px] font-mono text-gray-500">${dateLabel} • ${pk.emoji} ${pk.label} • ${m.homeScore}-${m.awayScore} • ${pk.score}/100</div></div></div><div class="text-right shrink-0"><div class="text-xs font-black ${pk.isWon?'text-emerald-500':'text-red-500'}">${pk.isWon?'WON':'LOST'} ${m.homeScore}-${m.awayScore}</div><div class="text-[10px] font-mono text-gray-500">@ ${pk.odd.toFixed(2)}</div></div></div>`})}});
+    }catch(e){}
+  }
+  historyLoadedDays=end;updateHistoryStats();if(btn)btn.textContent=historyLoadedDays>=60?'All 60 Days Loaded':'Load More ('+historyLoadedDays+'/60)';historyLoading=false;if(historyLoadedDays<60)setTimeout(()=>loadHistoryBatch(),600);
+}
+function loadMoreHistory(){loadHistoryBatch()}
+initRibbon();fetchMatchData(selectedDateObj);
+setTimeout(()=>loadHistoryBatch(),800);
+</script>
+</body>
+</html>
