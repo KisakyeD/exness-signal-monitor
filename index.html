@@ -77,22 +77,21 @@
             <div class="grid grid-cols-1 gap-3" id="matchFeedContainer"></div>
         </section>
 
-        <!-- HISTORY -60 DAYS - UP / DOWN LIST - AUTO LOADS NOW -->
         <section class="space-y-3 pt-2 border-t border-gray-200 dark:border-gray-800">
             <div class="flex items-center justify-between flex-wrap gap-2 pt-4">
                 <div>
                     <h3 class="font-bold text-gray-900 dark:text-white text-base">📈 history — Last 60 Days</h3>
                     <p class="text-[11px] text-gray-500 dark:text-gray-400 font-mono">⬆️ = Won &nbsp; ⬇️ = Lost &nbsp; • AI Over 1.5 Picks</p>
                 </div>
-                <button onclick="loadHistory()" id="historyBtn" class="px-4 py-2 rounded-xl bg-amber-500 text-gray-950 text-xs font-black">Load History</button>
+                <button onclick="loadMoreHistory()" id="historyBtn" class="px-4 py-2 rounded-xl bg-amber-500 text-gray-950 text-xs font-black">Load More</button>
             </div>
             <div id="historySummary" class="hidden grid grid-cols-3 gap-2 text-center">
                 <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-2"><div class="text-lg font-black text-emerald-500" id="histWins">0</div><div class="text-[10px] font-mono text-gray-500">WINS ⬆️</div></div>
                 <div class="bg-red-500/10 border border-red-500/30 rounded-xl p-2"><div class="text-lg font-black text-red-500" id="histLosses">0</div><div class="text-[10px] font-mono text-gray-500">LOSSES ⬇️</div></div>
                 <div class="bg-amber-500/10 border border-amber-500/30 rounded-xl p-2"><div class="text-lg font-black text-amber-500" id="histRate">0%</div><div class="text-[10px] font-mono text-gray-500">WIN RATE</div></div>
             </div>
-            <div id="historyList" class="space-y-2"><div class="text-center p-4 text-xs font-mono text-gray-500">Loading 60 days history... please wait</div></div>
-            <p id="historyNote" class="text-[10px] text-gray-500 font-mono text-center">History loads automatically. History uses the same AI pick for each day.</p>
+            <div id="historyList" class="space-y-2"><div class="text-center p-4 text-xs font-mono text-gray-500">Loading history... please wait</div></div>
+            <p id="historyNote" class="text-[10px] text-gray-500 font-mono text-center">History loads fast in small batches. Tap Load More for older days.</p>
         </section>
     </main>
 
@@ -130,6 +129,7 @@
         let selectedDateObj=new Date();
         let currentCategory='single_over15';
         const categories=['single_over15'];
+        // SPEED FIX: Small ribbon - 61 buttons only, still continuous because it recenters
         function initRibbon(){
             const ribbon=document.getElementById('dateRibbon');
             const calInput=document.getElementById('drawerCalendarInput');
@@ -138,7 +138,7 @@
             const center=new Date(selectedDateObj); center.setHours(0,0,0,0);
             const today=new Date(); today.setHours(0,0,0,0);
             let html='';
-            for(let offset=-60; offset<=365; offset++){
+            for(let offset=-30; offset<=30; offset++){
                 const d=new Date(center); d.setDate(center.getDate()+offset);
                 const isSelected=d.getTime()===center.getTime();
                 const isToday=d.getTime()===today.getTime();
@@ -155,7 +155,7 @@
         function goToHomepage(){ toggleDrawer(false); selectedDateObj=new Date(); switchCategory('single_over15'); initRibbon(); }
         function switchCategory(cat){ currentCategory=cat; toggleDrawer(false); categories.forEach(c=>{ const navBtn=document.getElementById(`nav_${c}`); if(navBtn){ if(c===cat){ navBtn.className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-amber-500/20 text-amber-400 font-bold text-xs border border-amber-500/40 transition"; } else { navBtn.className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 font-medium text-xs transition"; } } }); const badgeText={'single_over15':"HIGH-SCORING OVER 1.5"}; document.getElementById('headerCategoryBadge').textContent=badgeText[cat]||"LIVE VIP"; document.getElementById('sectionTitleCategory').textContent=badgeText[cat]||"SELECTION"; fetchMatchData(selectedDateObj,false); }
         function jumpToDate(dateStr){ if(!dateStr) return; const target=new Date(dateStr+'T00:00:00'); selectedDateObj=target; toggleDrawer(false); initRibbon(); fetchMatchData(target,false); }
-        function triggerRefresh(){ const icon=document.getElementById('refreshIcon'); if(icon) icon.classList.add('animate-spin'); fetchMatchData(selectedDateObj,false).then(()=>{ setTimeout(()=>{ if(icon) icon.classList.remove('animate-spin'); },500); }); }
+        function triggerRefresh(){ const icon=document.getElementById('refreshIcon'); if(icon) icon.classList.add('animate-spin'); try{ sessionStorage.removeItem('wins1_cache_'+getYYYYMMDD(selectedDateObj)); }catch(e){} fetchMatchData(selectedDateObj,false).then(()=>{ setTimeout(()=>{ if(icon) icon.classList.remove('animate-spin'); },500); }); }
         function parseRecordStats(recordSummary){ if(!recordSummary||typeof recordSummary!=='string'){ return {wins:0,draws:0,losses:0,played:0,winRate:0.40,lossRate:0.35,summary:"N/A"}; } const parts=recordSummary.split('-').map(n=>parseInt(n,10)).filter(n=>!isNaN(n)); if(parts.length===3){ const [w,d,l]=parts; const played=w+d+l; return {wins:w,draws:d,losses:l,played,winRate:played>0?(w/played):0.40,lossRate:played>0?(l/played):0.35,summary:`${w}W-${d}D-${l}L`}; } else if(parts.length===2){ const [w,l]=parts; const played=w+l; return {wins:w,draws:0,losses:l,played,winRate:played>0?(w/played):0.40,lossRate:played>0?(l/played):0.35,summary:`${w}W-${l}L`}; } return {wins:0,draws:0,losses:0,played:0,winRate:0.40,lossRate:0.35,summary:recordSummary}; }
         function americanToDecimal(ml){ const num=parseFloat(ml); if(isNaN(num)||num===0) return null; if(num<0) return parseFloat((1+(100/Math.abs(num))).toFixed(2)); return parseFloat((1+(num/100)).toFixed(2)); }
         function evaluatePickWithRealData(match,category){
@@ -178,15 +178,27 @@
             const confidencePct=`${(winProb*100).toFixed(1)}%`;
             return {label,odd,confidence:confidencePct,analysis:``,isWon,isFinished:match.statusState==='post',scoreRank,over15Prob};
         }
-        async function fetchRealFixtures(dateObj){ const compactDate=getYYYYMMDD(dateObj); let fixtures=[]; const espnLeagues=['eng.1','esp.1','ita.1','ger.1','fra.1','uefa.champions','uefa.europa','usa.1','ned.1','por.1']; const requests=espnLeagues.map(lg=>fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/${lg}/scoreboard?dates=${compactDate}`).then(r=>r.ok?r.json():null).catch(()=>null)); const results=await Promise.all(requests); results.forEach(data=>{ if(data&&Array.isArray(data.events)){ const leagueName=(data.leagues&&data.leagues[0]&&data.leagues[0].name)||"Official League"; data.events.forEach(ev=>{ const comp=ev.competitions&&ev.competitions[0]; if(comp&&comp.competitors&&comp.competitors.length===2){ const homeObj=comp.competitors.find(c=>c.homeAway==='home')||comp.competitors[0]; const awayObj=comp.competitors.find(c=>c.homeAway==='away')||comp.competitors[1]; const homeName=homeObj.team.displayName; const awayName=awayObj.team.displayName; if(!fixtures.some(f=>f.home===homeName&&f.away===awayName)){ const dt=new Date(ev.date); const timeStr=isNaN(dt)?"19:00":dt.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',hour12:false}); const statusState=(ev.status&&ev.status.type&&ev.status.type.state)||"pre"; const homeRecord=(homeObj.records&&homeObj.records[0]&&homeObj.records[0].summary)||""; const awayRecord=(awayObj.records&&awayObj.records[0]&&awayObj.records[0].summary)||""; const homeForm=homeObj.form||""; const venue=(comp.venue&&comp.venue.fullName)||""; const oddsObj=(comp.odds&&comp.odds[0])||null; const homeMoneyline=oddsObj&&oddsObj.homeTeamOdds?oddsObj.homeTeamOdds.moneyLine:null; const awayMoneyline=oddsObj&&oddsObj.awayTeamOdds?oddsObj.awayTeamOdds.moneyLine:null; const overUnderLine=oddsObj?oddsObj.overUnder:null; const oddsProvider=oddsObj&&oddsObj.provider?oddsObj.provider.name:null; fixtures.push({id:`${homeName}_vs_${awayName}`,home:homeName,away:awayName,league:leagueName,time:timeStr,statusState:statusState,homeScore:parseInt(homeObj.score,10)||0,awayScore:parseInt(awayObj.score,10)||0,homeRecord,awayRecord,homeForm,venue,homeMoneyline,awayMoneyline,overUnderLine,oddsProvider}); } } }); } }); return fixtures; }
+        // SPEED FIX: CACHE - same date = instant, no repeat API call for 10 mins
+        const fixtureCache = new Map();
+        async function fetchRealFixtures(dateObj){
+            const compactDate=getYYYYMMDD(dateObj);
+            const cacheKey='wins1_cache_'+compactDate;
+            if(fixtureCache.has(compactDate)) return fixtureCache.get(compactDate);
+            try{ const cached=sessionStorage.getItem(cacheKey); if(cached){ const parsed=JSON.parse(cached); if(Date.now()-parsed.time < 10*60*1000){ fixtureCache.set(compactDate, parsed.data); return parsed.data; } } }catch(e){}
+            let fixtures=[]; const espnLeagues=['eng.1','esp.1','ita.1','ger.1','fra.1','uefa.champions','uefa.europa','usa.1','ned.1','por.1']; const requests=espnLeagues.map(lg=>fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/${lg}/scoreboard?dates=${compactDate}`).then(r=>r.ok?r.json():null).catch(()=>null)); const results=await Promise.all(requests); results.forEach(data=>{ if(data&&Array.isArray(data.events)){ const leagueName=(data.leagues&&data.leagues[0]&&data.leagues[0].name)||"Official League"; data.events.forEach(ev=>{ const comp=ev.competitions&&ev.competitions[0]; if(comp&&comp.competitors&&comp.competitors.length===2){ const homeObj=comp.competitors.find(c=>c.homeAway==='home')||comp.competitors[0]; const awayObj=comp.competitors.find(c=>c.homeAway==='away')||comp.competitors[1]; const homeName=homeObj.team.displayName; const awayName=awayObj.team.displayName; if(!fixtures.some(f=>f.home===homeName&&f.away===awayName)){ const dt=new Date(ev.date); const timeStr=isNaN(dt)?"19:00":dt.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',hour12:false}); const statusState=(ev.status&&ev.status.type&&ev.status.type.state)||"pre"; const homeRecord=(homeObj.records&&homeObj.records[0]&&homeObj.records[0].summary)||""; const awayRecord=(awayObj.records&&awayObj.records[0]&&awayObj.records[0].summary)||""; const homeForm=homeObj.form||""; const venue=(comp.venue&&comp.venue.fullName)||""; const oddsObj=(comp.odds&&comp.odds[0])||null; const homeMoneyline=oddsObj&&oddsObj.homeTeamOdds?oddsObj.homeTeamOdds.moneyLine:null; const awayMoneyline=oddsObj&&oddsObj.awayTeamOdds?oddsObj.awayTeamOdds.moneyLine:null; const overUnderLine=oddsObj?oddsObj.overUnder:null; const oddsProvider=oddsObj&&oddsObj.provider?oddsObj.provider.name:null; fixtures.push({id:`${homeName}_vs_${awayName}`,home:homeName,away:awayName,league:leagueName,time:timeStr,statusState:statusState,homeScore:parseInt(homeObj.score,10)||0,awayScore:parseInt(awayObj.score,10)||0,homeRecord,awayRecord,homeForm,venue,homeMoneyline,awayMoneyline,overUnderLine,oddsProvider}); } } }); } });
+            fixtureCache.set(compactDate, fixtures);
+            try{ sessionStorage.setItem(cacheKey, JSON.stringify({time:Date.now(), data:fixtures})); }catch(e){}
+            return fixtures;
+        }
         async function fetchMatchData(dateObj,isBackground=false){ selectedDateObj=dateObj; const container=document.getElementById('matchFeedContainer'); if(!container) return; const today=new Date(); const isToday=dateObj.toDateString()===today.toDateString(); document.getElementById('sectionTitleDate').textContent=isToday?"TODAY'S":dateObj.toLocaleDateString('en-US',{month:'short',day:'numeric'}).toUpperCase(); if(!isBackground){ container.innerHTML=`<div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-8 text-center space-y-3"><div class="inline-block w-8 h-8 border-4 border-emerald-400 border-t-transparent rounded-full animate-spin"></div><p class="text-xs text-gray-500 dark:text-gray-400 font-mono">Loading...</p></div>`; } const matches=await fetchRealFixtures(dateObj); if(matches.length===0){ container.innerHTML=`<div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-8 text-center space-y-3"><p class="text-xs text-gray-600 dark:text-gray-300 font-mono">No matches found for this date. Please select another date.</p></div>`; document.getElementById('totalOddsBadge').textContent=`ODDS: 0.00`; return; } const compactDateStr=getYYYYMMDD(dateObj); const evaluatedList=matches.map(m=>({match:m,eval:evaluatePickWithRealData(m,currentCategory)})); const lockedMatchId=getLockedPick(compactDateStr,currentCategory); let bestPick=null; if(lockedMatchId){ bestPick=evaluatedList.find(item=>item.match.id===lockedMatchId); } if(!bestPick){ evaluatedList.sort((a,b)=>b.eval.scoreRank-a.eval.scoreRank); bestPick=evaluatedList[0]; saveLockedPick(compactDateStr,currentCategory,bestPick.match.id); } const m=bestPick.match; const evaluation=bestPick.eval; document.getElementById('totalOddsBadge').textContent=`ODDS: ${evaluation.odd.toFixed(2)}`; let badgeHtml=`<span class="bg-amber-500 text-gray-950 px-3 py-1 rounded-xl text-sm font-mono font-black shadow-lg">@ ${evaluation.odd.toFixed(2)}</span>`; if(evaluation.isFinished){ if(evaluation.isWon){ badgeHtml=`<span class="bg-emerald-500 text-gray-950 px-3 py-1 rounded-xl text-xs font-mono font-black shadow-lg flex items-center gap-1">✅ WON (${m.homeScore}-${m.awayScore})</span>`; } else { badgeHtml=`<span class="bg-red-500 text-white px-3 py-1 rounded-xl text-xs font-mono font-black shadow-lg flex items-center gap-1">❌ LOST (${m.homeScore}-${m.awayScore})</span>`; } } else if(m.statusState==='in'){ badgeHtml=`<span class="bg-emerald-500/20 text-emerald-500 dark:text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-xl text-xs font-mono font-bold flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-400 pulse-live"></span> LIVE (${m.homeScore}-${m.awayScore})</span>`; } container.innerHTML=`<div class="bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-900/90 border-2 border-emerald-500/50 rounded-2xl p-5 space-y-4 shadow-xl"><div class="flex items-center justify-between text-xs text-amber-500 font-mono font-bold"><span>🏆 ${m.league}</span><span>⏰ ${m.time}</span></div><div class="flex items-center justify-between font-extrabold text-lg text-gray-900 dark:text-white"><span>${m.home} vs ${m.away}</span>${badgeHtml}</div><div class="bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-xl p-4 space-y-2.5 text-xs"><div class="hidden"><span>📊 Live Data Highest-Probability Pick</span></div><div class="text-gray-900 dark:text-white font-bold text-sm bg-white dark:bg-gray-900 p-2.5 rounded-lg border border-gray-200 dark:border-gray-800/80">${evaluation.label}</div><div class="hidden">${evaluation.analysis}</div></div></div>`; }
-        let historyLoading=false;
-        async function loadHistory(){
+        // SPEED FIX: HISTORY IN SMALL BATCHES - 7 days at a time, not 60 at once
+        let historyLoading=false; let historyLoadedDays=0; let historyWins=0; let historyLosses=0; let historyHtml='';
+        async function loadHistoryBatch(){
             if(historyLoading) return; historyLoading=true;
             const btn=document.getElementById('historyBtn'); const list=document.getElementById('historyList'); const summary=document.getElementById('historySummary');
-            if(btn) btn.textContent='Loading...'; list.innerHTML=`<div class="text-center p-4 text-xs font-mono text-gray-500">Loading 60 days history... please wait</div>`;
-            let wins=0, losses=0; let html='';
-            for(let back=1; back<=60; back++){
+            if(btn) btn.textContent='Loading...';
+            const start=historyLoadedDays+1; const end=Math.min(60, historyLoadedDays+7);
+            for(let back=start; back<=end; back++){
                 const d=new Date(); d.setDate(d.getDate()-back);
                 try{
                     const matches=await fetchRealFixtures(d);
@@ -197,25 +209,29 @@
                     if(!pick){ evaluated.sort((a,b)=>b.eval.scoreRank-a.eval.scoreRank); pick=evaluated[0]; }
                     if(!pick || pick.match.statusState!=='post') continue;
                     const isWon=pick.eval.isWon;
-                    if(isWon) wins++; else losses++;
+                    if(isWon) historyWins++; else historyLosses++;
                     const dateLabel=d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
                     const total=pick.match.homeScore+pick.match.awayScore;
-                    html+=`<div class="flex items-center justify-between bg-white dark:bg-gray-900 border ${isWon?'border-emerald-500/40':'border-red-500/40'} rounded-xl px-3 py-2.5"><div class="flex items-center gap-2.5"><span class="w-8 h-8 rounded-full ${isWon?'bg-emerald-500 text-white':'bg-red-500 text-white'} flex items-center justify-center text-sm font-black">${isWon?'⬆️':'⬇️'}</span><div><div class="text-xs font-bold text-gray-900 dark:text-white">${pick.match.home} vs ${pick.match.away}</div><div class="text-[10px] font-mono text-gray-500">${dateLabel} • ${pick.match.league} • ${total} Goals</div></div></div><div class="text-right shrink-0"><div class="text-xs font-black ${isWon?'text-emerald-500':'text-red-500'}">${isWon?'WON':'LOST'} ${pick.match.homeScore}-${pick.match.awayScore}</div><div class="text-[10px] font-mono text-gray-500">@ ${pick.eval.odd.toFixed(2)}</div></div></div>`;
-                    if(back%5===0){ list.innerHTML=html; }
+                    historyHtml+=`<div class="flex items-center justify-between bg-white dark:bg-gray-900 border ${isWon?'border-emerald-500/40':'border-red-500/40'} rounded-xl px-3 py-2.5"><div class="flex items-center gap-2.5"><span class="w-8 h-8 rounded-full ${isWon?'bg-emerald-500 text-white':'bg-red-500 text-white'} flex items-center justify-center text-sm font-black">${isWon?'⬆️':'⬇️'}</span><div><div class="text-xs font-bold text-gray-900 dark:text-white">${pick.match.home} vs ${pick.match.away}</div><div class="text-[10px] font-mono text-gray-500">${dateLabel} • ${pick.match.league} • ${total} Goals</div></div></div><div class="text-right shrink-0"><div class="text-xs font-black ${isWon?'text-emerald-500':'text-red-500'}">${isWon?'WON':'LOST'} ${pick.match.homeScore}-${pick.match.awayScore}</div><div class="text-[10px] font-mono text-gray-500">@ ${pick.eval.odd.toFixed(2)}</div></div></div>`;
                 }catch(e){}
             }
-            list.innerHTML=html || `<div class="text-center p-4 text-xs text-gray-500">No finished history found yet.</div>`;
+            historyLoadedDays=end;
+            list.innerHTML=historyHtml || `<div class="text-center p-4 text-xs text-gray-500">No finished history found yet.</div>`;
             summary.classList.remove('hidden');
-            document.getElementById('histWins').textContent=wins;
-            document.getElementById('histLosses').textContent=losses;
-            const totalGames=wins+losses; document.getElementById('histRate').textContent= totalGames>0 ? Math.round((wins/totalGames)*100)+'%' : '0%';
-            if(btn) btn.textContent='Reload History';
+            document.getElementById('histWins').textContent=historyWins;
+            document.getElementById('histLosses').textContent=historyLosses;
+            const totalGames=historyWins+historyLosses; document.getElementById('histRate').textContent= totalGames>0 ? Math.round((historyWins/totalGames)*100)+'%' : '0%';
+            if(btn) btn.textContent = historyLoadedDays>=60 ? 'All 60 Days Loaded' : 'Load More ('+historyLoadedDays+'/60)';
             historyLoading=false;
+            // Auto-continue in background, but slowly so site stays fast
+            if(historyLoadedDays<60){ setTimeout(()=>{ loadHistoryBatch(); }, 600); }
         }
+        function loadMoreHistory(){ loadHistoryBatch(); }
+        function loadHistory(){ if(historyLoadedDays===0) loadHistoryBatch(); }
 
         initRibbon(); fetchMatchData(selectedDateObj,false);
-        // AUTO LOAD HISTORY ON HOMEPAGE - ADDED AS YOU ASKED
-        setTimeout(()=>{ loadHistory(); }, 800);
+        // AUTO LOAD HISTORY - NOW IN SMALL FAST BATCHES
+        setTimeout(()=>{ loadHistoryBatch(); }, 800);
     </script>
 </body>
 </html>
