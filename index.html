@@ -233,9 +233,9 @@ function renderPicks(){
     return `<div class="bg-white dark:bg-gray-900 border rounded-2xl p-4 space-y-2">
       <div class="flex items-center justify-between gap-3">
       <div class="flex items-center gap-3 min-w-0"><span class="w-9 h-9 rounded-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 flex items-center justify-center text-xs font-black shrink-0">${i+1}</span>
-      <div class="min-w-0"><div class="text-sm font-bold truncate">${p.match.home} vs ${p.match.away}</div><div class="text-[11px] font-mono text-gray-500 truncate">${p.match.league} • ${p.emoji} ${p.label} • Score ${p.score}/100</div><div class="text-[11px] font-bold text-emerald-600">Confidence ${p.confidence} • Est xG ${p.xgEst.toFixed(2)}</div></div></div>
+      <div class="min-w-0"><div class="text-sm font-bold truncate">${p.match.home} vs ${p.match.away}</div><div class="text-[11px] font-mono text-gray-500 truncate">${p.match.league} • ${p.emoji} ${p.label} • Score ${p.score}/100</div><div class="totally-invisible text-[11px] font-bold text-emerald-600">Confidence ${p.confidence} • Est xG ${p.xgEst.toFixed(2)}</div></div></div>
       <div class="flex flex-col items-end gap-1 shrink-0"><span class="bg-gray-900 dark:bg-white text-white dark:text-gray-900 px-3 py-1.5 rounded-lg text-sm font-black nowrap-badge">@ ${p.odd.toFixed(2)}</span>${badge}<button onclick="copySingle('${p.match.id}','${p.key}')" class="text-[10px] font-bold text-amber-500">📋 Copy</button></div></div>
-      <div class="flex gap-2 items-center"><span class="text-[10px] font-black px-2 py-1 rounded-lg ${marketColor} nowrap-badge">${p.emoji} ${p.label}</span><span class="text-[10px] font-mono text-gray-500 bg-gray-50 dark:bg-gray-800/60 rounded-lg px-2 py-1.5 flex-1 truncate">${p.reasons.join(' • ')}</span></div></div>`;
+      <div class="flex gap-2 items-center"><span class="text-[10px] font-black px-2 py-1 rounded-lg ${marketColor} nowrap-badge">${p.emoji} ${p.label}</span><span class="totally-invisible text-[10px] font-mono text-gray-500 bg-gray-50 dark:bg-gray-800/60 rounded-lg px-2 py-1.5 flex-1 truncate">${p.reasons.join(' • ')}</span></div></div>`;
   }).join('');
 }
 function copySingle(id,key){
