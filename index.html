@@ -187,7 +187,6 @@
     </main>
 
     <footer class="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 py-6 px-4 text-center mt-auto">
-        <!-- ✅ SPONSORED BY ON TOP OF EXNESS PHOTO -->
         <p class="text-[11px] font-bold text-gray-900 dark:text-white mb-2">Sponsored by</p>
         <a href="https://one.exnessonelink.com/a/m3alh1ljmu?source=app" target="_blank" rel="noopener" class="block max-w-4xl mx-auto mb-4 rounded-2xl overflow-hidden border-2 border-black shadow-lg">
             <div class="bg-[#FFDD00] py-5 px-4 flex items-center justify-center">
@@ -195,8 +194,6 @@
             </div>
             <span class="totally-invisible">Tap to visit Exness • Sponsored</span>
         </a>
-
-        <!-- ✅ CLICKABLE TERMS - TAP TO OPEN IS TOTALLY INVISIBLE -->
         <div class="max-w-4xl mx-auto text-left bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-2xl overflow-hidden">
             <button onclick="toggleTerms()" id="termsBtn" class="w-full flex items-center justify-between p-4 text-left hover:bg-gray-100 dark:hover:bg-gray-900 transition cursor-pointer">
                 <span class="text-xs font-black text-gray-900 dark:text-white">📜 TERMS & REGULATIONS <span class="totally-invisible">— TAP TO OPEN</span></span>
@@ -294,9 +291,11 @@
         function triggerRefresh(){ const icon=document.getElementById('refreshIcon'); if(icon) icon.classList.add('animate-spin'); try{ sessionStorage.removeItem('wins1_cache_'+getYYYYMMDD(selectedDateObj)); }catch(e){} fetchMatchData(selectedDateObj,false).then(()=>{ setTimeout(()=>{ if(icon) icon.classList.remove('animate-spin'); },500); }); const t=document.getElementById('ticketSection'); if(t && !t.classList.contains('hidden')) loadComboTicket(selectedDateObj); }
         function parseRecordStats(recordSummary){ if(!recordSummary||typeof recordSummary!=='string'){ return {wins:0,draws:0,losses:0,played:0,winRate:0.40,lossRate:0.35,summary:"N/A"}; } const parts=recordSummary.split('-').map(n=>parseInt(n,10)).filter(n=>!isNaN(n)); if(parts.length===3){ const [w,d,l]=parts; const played=w+d+l; return {wins:w,draws:d,losses:l,played,winRate:played>0?(w/played):0.40,lossRate:played>0?(l/played):0.35,summary:`${w}W-${d}D-${l}L`}; } else if(parts.length===2){ const [w,l]=parts; const played=w+l; return {wins:w,draws:0,losses:l,played,winRate:played>0?(w/played):0.40,lossRate:played>0?(l/played):0.35,summary:`${w}W-${l}L`}; } return {wins:0,draws:0,losses:0,played:0,winRate:0.40,lossRate:0.35,summary:recordSummary}; }
         function americanToDecimal(ml){ const num=parseFloat(ml); if(isNaN(num)||num===0) return null; if(num<0) return parseFloat((1+(100/Math.abs(num))).toFixed(2)); return parseFloat((1+(num/100)).toFixed(2)); }
+
+        /* ✅ HIGH WIN RATE + GOOD ODDS ENGINE */
         function evaluatePickWithRealData(match,category){
             const hRec=parseRecordStats(match.homeRecord); const aRec=parseRecordStats(match.awayRecord);
-            const realHomeOdd=americanToDecimal(match.homeMoneyline); const realAwayOdd=americanToDecimal(match.awayMoneyline); const realOverUnder=parseFloat(match.overUnderLine)||null;
+            const realOverUnder=parseFloat(match.overUnderLine)||null;
             const attackingTempo=(hRec.winRate+hRec.lossRate+aRec.winRate+aRec.lossRate)/2;
             const defensiveWeakness=(hRec.lossRate+aRec.lossRate)/2;
             const bothScoreTendency=1-Math.abs(hRec.winRate-aRec.winRate);
@@ -305,7 +304,20 @@
             over15Prob=Math.min(0.97,Math.max(0.52,over15Prob));
             let label="Total Goals: Over 1.5 Goals"; let odd=parseFloat(Math.max(1.15,(1/over15Prob)).toFixed(2)); let winProb=over15Prob; let scoreRank=0; let isWon=false;
             if(category==='single_over15'){
-                scoreRank=(over15Prob*100) + (realOverUnder?(realOverUnder-2.0)*18:0) + (defensiveWeakness*25) + (bothScoreTendency*8);
+                // SWEET SPOT BONUS / PENALTY - 1.25 to 1.40 is best value
+                let oddsPenalty=0;
+                if(odd>=1.25 && odd<=1.40) oddsPenalty=+25;
+                else if(odd<1.22) oddsPenalty=-30;
+                else if(odd>1.45) oddsPenalty=-30;
+                else oddsPenalty=-5;
+                // REJECT DEFENSIVE TEAMS
+                let defPenalty=0;
+                if(defensiveWeakness<0.30) defPenalty=-40;
+                // BOOKMAKER LINE FILTER
+                let ouBonus=0;
+                if(realOverUnder && realOverUnder<2.5) ouBonus=-25;
+                if(realOverUnder && realOverUnder>=2.5) ouBonus=+15;
+                scoreRank=(over15Prob*100) + oddsPenalty + defPenalty + ouBonus + (realOverUnder?(realOverUnder-2.0)*10:0) + (bothScoreTendency*8);
                 if(over15Prob<0.70) scoreRank-=20;
                 if(over15Prob<0.62) scoreRank-=30;
                 if(match.statusState==='post') isWon=(match.homeScore+match.awayScore)>=2;
@@ -318,7 +330,12 @@
                 label="Total Goals: Under 4.5 Goals";
                 odd=parseFloat(Math.max(1.08,(1/under45Prob)).toFixed(2));
                 winProb=under45Prob;
-                scoreRank=(under45Prob*100) - (attackingTempo*20) - (defensiveWeakness*15) - (realOverUnder ? (realOverUnder-2.5)*10 : 0);
+                // SWEET SPOT FOR UNDER 4.5 = 1.12 to 1.20
+                let oddsPenalty=0;
+                if(odd>=1.12 && odd<=1.20) oddsPenalty=+25;
+                else if(odd>1.30) oddsPenalty=-25;
+                else if(odd<1.08) oddsPenalty=-15;
+                scoreRank=(under45Prob*100) + oddsPenalty - (attackingTempo*20) - (defensiveWeakness*15) - (realOverUnder ? (realOverUnder-2.5)*10 : 0);
                 if(match.statusState==='post') isWon=(match.homeScore+match.awayScore)<=4;
                 return {label,odd,confidence:`${(winProb*100).toFixed(1)}%`,analysis:``,isWon,isFinished:match.statusState==='post',scoreRank,over15Prob:under45Prob};
             }
@@ -326,6 +343,16 @@
             const confidencePct=`${(winProb*100).toFixed(1)}%`;
             return {label,odd,confidence:confidencePct,analysis:``,isWon,isFinished:match.statusState==='post',scoreRank,over15Prob};
         }
+        // Helper: pick best in odds window, fallback to best overall
+        function pickBestInWindow(list, excludeId, minOdd, maxOdd){
+            const avail=list.filter(x=>x.match.id!==excludeId);
+            if(avail.length===0) return list[0];
+            const inWindow=avail.filter(x=>x.eval.odd>=minOdd && x.eval.odd<=maxOdd);
+            const pool = inWindow.length>0 ? inWindow : avail;
+            pool.sort((a,b)=>b.eval.scoreRank-a.eval.scoreRank);
+            return pool[0];
+        }
+
         const fixtureCache = new Map();
         async function fetchRealFixtures(dateObj){
             const compactDate=getYYYYMMDD(dateObj);
@@ -392,11 +419,11 @@
                     const dayLabel=d.toLocaleDateString('en-US',{weekday:'short'});
                     const overEv=matches.map(m=>({match:m, eval:evaluatePickWithRealData(m,'single_over15')}));
                     let overPick=overEv.find(x=>x.match.id===getLockedPick(dateKey,'single_over15'));
-                    if(!overPick){ overEv.sort((a,b)=>b.eval.scoreRank-a.eval.scoreRank); overPick=overEv[0]; }
+                    if(!overPick){ overPick=pickBestInWindow(overEv, null, 1.25, 1.40); }
                     const underEv=matches.map(m=>({match:m, eval:evaluatePickWithRealData(m,'single_under45')}));
                     let underPick=underEv.find(x=>x.match.id===getLockedPick(dateKey,'single_under45'));
                     if(underPick && overPick && underPick.match.id===overPick.match.id) underPick=null;
-                    if(!underPick){ const avail=underEv.filter(x=>!overPick || x.match.id!==overPick.match.id); avail.sort((a,b)=>b.eval.scoreRank-a.eval.scoreRank); underPick=avail[0]||underEv[0]; }
+                    if(!underPick){ underPick=pickBestInWindow(underEv, overPick?overPick.match.id:null, 1.12, 1.20); }
                     if(!overPick || !underPick) continue;
                     if(overPick.match.statusState!=='post' || underPick.match.statusState!=='post') continue;
                     const ticketWon = overPick.eval.isWon && underPick.eval.isWon;
@@ -428,11 +455,18 @@
             const dateStr=dateObj.toLocaleDateString('en-US',{weekday:'short', month:'short', day:'numeric'});
             const overEv=matches.map(m=>({match:m, eval:evaluatePickWithRealData(m,'single_over15')}));
             let overPick=overEv.find(x=>x.match.id===getLockedPick(dateKey,'single_over15'));
-            if(!overPick){ overEv.sort((a,b)=>b.eval.scoreRank-a.eval.scoreRank); overPick=overEv[0]; saveLockedPick(dateKey,'single_over15', overPick.match.id); }
+            if(!overPick){ overPick=pickBestInWindow(overEv, null, 1.25, 1.40); saveLockedPick(dateKey,'single_over15', overPick.match.id); }
             const underEv=matches.map(m=>({match:m, eval:evaluatePickWithRealData(m,'single_under45')}));
             let underPick=underEv.find(x=>x.match.id===getLockedPick(dateKey,'single_under45'));
             if(underPick && underPick.match.id===overPick.match.id) underPick=null;
-            if(!underPick){ const avail=underEv.filter(x=>x.match.id!==overPick.match.id); avail.sort((a,b)=>b.eval.scoreRank-a.eval.scoreRank); underPick=avail[0]||underEv[0]; saveLockedPick(dateKey,'single_under45', underPick.match.id); }
+            if(!underPick){
+                // Try to find Under pick that makes combined 1.45 - 1.70
+                const sortedUnder=[...underEv].filter(x=>x.match.id!==overPick.match.id).sort((a,b)=>b.eval.scoreRank-a.eval.scoreRank);
+                let found=null;
+                for(let cand of sortedUnder){ const comb=cand.eval.odd*overPick.eval.odd; if(comb>=1.45 && comb<=1.70){ found=cand; break; } }
+                underPick=found || pickBestInWindow(underEv, overPick.match.id, 1.12, 1.20);
+                saveLockedPick(dateKey,'single_under45', underPick.match.id);
+            }
             const combined=(overPick.eval.odd * underPick.eval.odd).toFixed(2);
             const bothFinished = overPick.eval.isFinished && underPick.eval.isFinished;
             const bothWon = bothFinished && overPick.eval.isWon && underPick.eval.isWon;
@@ -480,8 +514,10 @@
         let excludeId = otherLockedId;
         if(!excludeId && currentCategory==='single_under45'){
             const overEvaluated = matches.map(m=>({match:m, eval:evaluatePickWithRealData(m,'single_over15')}));
-            overEvaluated.sort((a,b)=>b.eval.scoreRank-a.eval.scoreRank);
-            if(overEvaluated[0]) excludeId = overEvaluated[0].match.id;
+            const inWin = overEvaluated.filter(x=>x.eval.odd>=1.25 && x.eval.odd<=1.40);
+            const pool = inWin.length?inWin:overEvaluated;
+            pool.sort((a,b)=>b.eval.scoreRank-a.eval.scoreRank);
+            if(pool[0]) excludeId = pool[0].match.id;
             if(!getLockedPick(compactDateStr,'single_over15')) saveLockedPick(compactDateStr,'single_over15', excludeId);
         }
         const evaluatedList=matches.map(m=>({match:m,eval:evaluatePickWithRealData(m,currentCategory)}));
@@ -490,9 +526,9 @@
             if(bestPick && bestPick.match.id===excludeId){ bestPick=null; }
         }
         if(!bestPick){
-            const available = evaluatedList.filter(item=>item.match.id!==excludeId);
-            available.sort((a,b)=>b.eval.scoreRank-a.eval.scoreRank);
-            bestPick=available[0] || evaluatedList[0];
+            const minOdd = currentCategory==='single_over15' ? 1.25 : 1.12;
+            const maxOdd = currentCategory==='single_over15' ? 1.40 : 1.20;
+            bestPick=pickBestInWindow(evaluatedList, excludeId, minOdd, maxOdd);
             saveLockedPick(compactDateStr,currentCategory,bestPick.match.id);
         }
         const m=bestPick.match; const evaluation=bestPick.eval; document.getElementById('totalOddsBadge').textContent=`ODDS: ${evaluation.odd.toFixed(2)}`; let badgeHtml=`<span class="bg-amber-500 text-gray-950 px-3 py-1 rounded-xl text-sm font-mono font-black shadow-lg">@ ${evaluation.odd.toFixed(2)}</span>`; if(evaluation.isFinished){ if(evaluation.isWon){ badgeHtml=`<span class="bg-emerald-500 text-gray-950 px-3 py-1 rounded-xl text-xs font-mono font-black shadow-lg flex items-center gap-1">✅ WON (${m.homeScore}-${m.awayScore})</span>`; } else { badgeHtml=`<span class="bg-red-500 text-white px-3 py-1 rounded-xl text-xs font-mono font-black shadow-lg flex items-center gap-1">❌ LOST (${m.homeScore}-${m.awayScore})</span>`; } } else if(m.statusState==='in'){ badgeHtml=`<span class="bg-emerald-500/20 text-emerald-500 dark:text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-xl text-xs font-mono font-bold flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-400 pulse-live"></span> LIVE (${m.homeScore}-${m.awayScore})</span>`; } container.innerHTML=`<div class="bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-900/90 border-2 border-emerald-500/50 rounded-2xl p-5 space-y-4 shadow-xl"><div class="flex items-center justify-between text-xs text-amber-500 font-mono font-bold"><span>🏆 ${m.league}</span><span>⏰ ${m.time}</span></div><div class="flex items-center justify-between font-extrabold text-lg text-gray-900 dark:text-white"><span>${m.home} vs ${m.away}</span>${badgeHtml}</div><div class="bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-xl p-4 space-y-2.5 text-xs"><div class="hidden"><span>📊 Live Data Highest-Probability Pick</span></div><div class="text-gray-900 dark:text-white font-bold text-sm bg-white dark:bg-gray-900 p-2.5 rounded-lg border border-gray-200 dark:border-gray-800/80">${evaluation.label}</div><div class="hidden">${evaluation.analysis}</div></div></div>`; }
@@ -578,16 +614,12 @@
                     const overEvaluated=matches.map(m=>({match:m,eval:evaluatePickWithRealData(m,'single_over15')}));
                     const overLocked=getLockedPick(dateKey,'single_over15');
                     let overPick=overEvaluated.find(x=>x.match.id===overLocked);
-                    if(!overPick){ overEvaluated.sort((a,b)=>b.eval.scoreRank-a.eval.scoreRank); overPick=overEvaluated[0]; }
+                    if(!overPick){ overPick=pickBestInWindow(overEvaluated, null, 1.25, 1.40); }
                     const underEvaluated=matches.map(m=>({match:m,eval:evaluatePickWithRealData(m,'single_under45')}));
                     const underLocked=getLockedPick(dateKey,'single_under45');
                     let underPick=underEvaluated.find(x=>x.match.id===underLocked);
                     if(underPick && overPick && underPick.match.id===overPick.match.id) underPick=null;
-                    if(!underPick){
-                        const available=underEvaluated.filter(x=>!overPick || x.match.id!==overPick.match.id);
-                        available.sort((a,b)=>b.eval.scoreRank-a.eval.scoreRank);
-                        underPick=available[0] || underEvaluated[0];
-                    }
+                    if(!underPick){ underPick=pickBestInWindow(underEvaluated, overPick?overPick.match.id:null, 1.12, 1.20); }
                     if(overPick && overPick.match.statusState==='post'){ mainHistoryDataOver.push({ won: overPick.eval.isWon, odd: overPick.eval.odd, html: historyCard(overPick, d, dateLabel) }); }
                     if(underPick && underPick.match.statusState==='post'){ mainHistoryDataUnder.push({ won: underPick.eval.isWon, odd: underPick.eval.odd, html: historyCard(underPick, d, dateLabel) }); }
                 }catch(e){}
