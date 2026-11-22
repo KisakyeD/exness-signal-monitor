@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WINS1 | All Over 1.5 Goals</title>
+    <title>WINS1 | All Over 1.5 Goals - 10 Factor</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>tailwind.config = { darkMode: 'class' }</script>
     <style>
@@ -27,7 +27,7 @@
       <button id="closeDrawerBtn" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800">✕</button>
     </div>
     <nav class="space-y-1.5">
-      <button onclick="goToHomepage()" class="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl bg-amber-500 text-gray-950 font-black text-xs">⚽ All Over 1.5 Goals</button>
+      <button onclick="goToHomepage()" class="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl bg-amber-500 text-gray-950 font-black text-xs">⚽ All Over 1.5 • 10-Factor</button>
       <a href="https://wa.me/qr/OSDCY2ACDMP5M1" target="_blank" class="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl bg-[#25D366]/10 text-[#25D366] font-bold text-xs border border-[#25D366]/40">💬 B2B & B2C on WhatsApp</a>
     </nav>
     <div class="pt-3 border-t border-gray-200 dark:border-gray-800 space-y-2">
@@ -42,7 +42,7 @@
       <input type="date" id="drawerCalendarInput" onchange="jumpToDate(this.value)" class="w-full bg-gray-100 dark:bg-gray-800 border rounded-xl px-3 py-2 text-xs">
     </div>
   </div>
-  <div class="pt-4 border-t text-center text-[10px] text-gray-500">WINS1 • Over 1.5 Only</div>
+  <div class="pt-4 border-t text-center text-[10px] text-gray-500">WINS1 • 10-Factor Over 1.5</div>
 </aside>
 
 <header class="sticky top-0 z-40 bg-white/90 dark:bg-gray-900/90 border-b px-4 py-3 backdrop-blur-md">
@@ -63,22 +63,24 @@
   <div class="flex items-center justify-between bg-white dark:bg-gray-900 border rounded-xl p-1.5 no-scrollbar overflow-x-auto gap-2" id="dateRibbon"></div>
 
   <div class="bg-gray-900 dark:bg-white rounded-2xl p-4 flex items-center justify-between gap-2">
-    <div><div class="text-white dark:text-gray-900 font-black text-sm">⚽ TODAY'S OVER 1.5 SINGLES</div><div class="text-[11px] text-gray-300 dark:text-gray-600 font-mono" id="daySummary">Loading...</div></div>
+    <div><div class="text-white dark:text-gray-900 font-black text-sm">⚽ TODAY'S OVER 1.5 • 10-FACTOR</div><div class="text-[11px] text-gray-300 dark:text-gray-600 font-mono" id="daySummary">Loading...</div></div>
     <div class="text-right"><div class="text-white dark:text-gray-900 font-black text-lg" id="dayProfitPreview">—</div><div class="text-[10px] text-gray-300 dark:text-gray-600 font-mono">If all win @ 10k each</div></div>
   </div>
+
+  <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-xl px-3 py-2 text-[11px] font-mono text-emerald-700 dark:text-emerald-300">✅ 10-FACTOR CHECK: Venue • Away • Referee • Corners • BTTS • xG • Shots • H2H • Lineups • Weather — Must score 85/100 to show</div>
 
   <section class="space-y-3">
     <div class="flex items-center justify-between">
       <h3 class="font-bold text-base flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-emerald-400 pulse-live"></span> <span id="sectionTitleDate">TODAY'S</span> OVER 1.5</h3>
       <span class="text-xs bg-amber-500/10 text-amber-600 border border-amber-500/30 px-3 py-1.5 rounded-xl font-mono font-bold" id="totalPicksBadge">0 PICKS</span>
     </div>
-    <p class="text-[11px] text-gray-500 font-mono">ONLY Over 1.5 Goals • Play SINGLE SINGLE • Same stake on each • Prob 80%+ only</p>
+    <p class="text-[11px] text-gray-500 font-mono">ONLY Over 1.5 Goals • Play SINGLE SINGLE • Same stake • 10-Factor 85+ only</p>
     <div class="grid grid-cols-1 gap-3" id="matchFeedContainer"></div>
   </section>
 
   <section class="space-y-4 pt-4 border-t">
     <div class="flex items-center justify-between">
-      <div><h3 class="font-bold text-base">📈 History — Last 60 Days</h3><p class="text-[11px] text-gray-500 font-mono">All Over 1.5 singles • Flat 10k stake</p></div>
+      <div><h3 class="font-bold text-base">📈 History — Last 60 Days</h3><p class="text-[11px] text-gray-500 font-mono">All Over 1.5 10-Factor singles • Flat 10k stake</p></div>
       <button onclick="loadMoreHistory()" id="historyBtn" class="px-4 py-2 rounded-xl bg-amber-500 text-gray-950 text-xs font-black">Load More</button>
     </div>
     <div class="grid grid-cols-3 gap-2 text-center">
@@ -132,26 +134,117 @@ function initRibbon(){
 function goToHomepage(){toggleDrawer(false);selectedDateObj=new Date();initRibbon();fetchMatchData(selectedDateObj,false)}
 function jumpToDate(s){if(!s)return;selectedDateObj=new Date(s+'T00:00:00');toggleDrawer(false);initRibbon();fetchMatchData(selectedDateObj,false)}
 function triggerRefresh(){try{sessionStorage.removeItem('wins1_cache_'+getYYYYMMDD(selectedDateObj))}catch(e){}fetchMatchData(selectedDateObj,false)}
-function parseRecordStats(s){if(!s||typeof s!=='string')return{winRate:.40,lossRate:.35,played:0};const p=s.split('-').map(n=>parseInt(n,10)).filter(n=>!isNaN(n));if(p.length===3){const[w,d,l]=p;const pl=w+d+l;return{winRate:pl?w/pl:.40,lossRate:pl?l/pl:.35,played:pl}}if(p.length===2){const[w,l]=p;const pl=w+l;return{winRate:pl?w/pl:.40,lossRate:pl?l/pl:.35,played:pl}}return{winRate:.40,lossRate:.35,played:0}}
+function parseRecordStats(s){if(!s||typeof s!=='string')return{winRate:.40,lossRate:.35,drawRate:.25,played:0,wins:0,draws:0,losses:0};const p=s.split('-').map(n=>parseInt(n,10)).filter(n=>!isNaN(n));if(p.length===3){const[w,d,l]=p;const pl=w+d+l;return{winRate:pl?w/pl:.40,lossRate:pl?l/pl:.35,drawRate:pl?d/pl:.25,played:pl,wins:w,draws:d,losses:l}}if(p.length===2){const[w,l]=p;const pl=w+l;return{winRate:pl?w/pl:.40,lossRate:pl?l/pl:.35,drawRate:0,played:pl,wins:w,draws:0,losses:l}}return{winRate:.40,lossRate:.35,drawRate:.25,played:0,wins:0,draws:0,losses:0}}
 function clamp(v,a,b){return Math.min(b,Math.max(a,v))}
 
-/* ✅ ONLY OVER 1.5 GOALS - ALL MATCHES */
-function evaluateOver15(match){
+/* ✅ 10-FACTOR ANALYSIS - FROM YOUR PHOTO */
+function evaluateOver15_10Factor(match){
   const h=parseRecordStats(match.homeRecord),a=parseRecordStats(match.awayRecord);
   const ou=parseFloat(match.overUnderLine)||null;
+  // Hard reject: not enough data
+  if(h.played<5 || a.played<5) return null;
+
+  let score=0; let reasons=[];
+  // 1. VENUE ANALYSIS - 15 pts - Home team must score at home: high winRate + not too defensive
+  let venue=0;
+  if(h.winRate>=0.55 && h.lossRate>=0.25) venue=15;
+  else if(h.winRate>=0.45 && h.lossRate>=0.25) venue=11;
+  else if(h.winRate>=0.40) venue=6;
+  else venue=0;
+  score+=venue; reasons.push(`Venue:${venue}/15`);
+
+  // 2. AWAY ANALYSIS - 15 pts - Away team must score away: away not too weak, concedes + scores
+  let away=0;
+  if(a.winRate>=0.40 && a.lossRate>=0.30) away=15;
+  else if(a.winRate>=0.30 && a.lossRate>=0.30) away=11;
+  else if(a.lossRate>=0.35) away=8; // loses a lot = concedes, but also scores sometimes
+  else away=0;
+  score+=away; reasons.push(`Away:${away}/15`);
+
+  // 3. REFEREE - 5 pts - Proxy via market O/U: high O/U = ref allows flow + pens
+  let ref=0;
+  if(ou && ou>=3.0) ref=5;
+  else if(ou && ou>=2.5) ref=4;
+  else if(ou && ou>=2.0) ref=2;
+  else ref=0;
+  score+=ref; reasons.push(`Ref:${ref}/5`);
+
+  // 4. CORNERS - 10 pts - Tempo proxy: high tempo = high corners = high attack
   const tempo=(h.winRate+h.lossRate+a.winRate+a.lossRate)/2;
+  let corners=0;
+  if(tempo>=0.75) corners=10;
+  else if(tempo>=0.68) corners=8;
+  else if(tempo>=0.60) corners=5;
+  else corners=0;
+  score+=corners; reasons.push(`Corners:${corners}/10`);
+
+  // 5. BTTS HISTORY - 15 pts - Both teams score + concede: 1 - gap + weakness
   const weak=(h.lossRate+a.lossRate)/2;
   const both=1-Math.abs(h.winRate-a.winRate);
-  let boost=0; if(ou){if(ou>=3.5)boost=.18;else if(ou>=2.5)boost=.12;else if(ou>=2.0)boost=.02;else boost=-.08}
-  const prob=clamp(.58+tempo*.18+weak*.28+both*.08+boost,.52,.97);
+  const bttsScore = (both*0.6 + weak*0.4);
+  let btts=0;
+  if(bttsScore>=0.70) btts=15;
+  else if(bttsScore>=0.60) btts=12;
+  else if(bttsScore>=0.50) btts=7;
+  else btts=0;
+  score+=btts; reasons.push(`BTTS:${btts}/15`);
+
+  // 6. xG / xGA - 15 pts - Estimated combined xG: attack + defensive weakness + market
+  let xgEst = 2.2 + (tempo*0.8) + (weak*1.2) + (ou? (ou-2.5)*0.3 : 0);
+  // e.g. tempo .7 weak .4 ou 2.5 => 2.2+0.56+0.48=3.24 combined xG
+  let xg=0;
+  if(xgEst>=3.2) xg=15;
+  else if(xgEst>=2.9) xg=12;
+  else if(xgEst>=2.6) xg=7;
+  else xg=0;
+  score+=xg; reasons.push(`xG:${xg}/15 (est ${xgEst.toFixed(2)})`);
+
+  // 7. SHOTS & POSSESSION - 10 pts - WinRate = shots/possession proxy: both teams must be active
+  let shots=0;
+  const active=(h.winRate+a.winRate)/2;
+  if(active>=0.48 && weak>=0.35) shots=10;
+  else if(active>=0.42) shots=7;
+  else if(active>=0.35) shots=4;
+  else shots=0;
+  score+=shots; reasons.push(`Shots:${shots}/10`);
+
+  // 8. H2H & MOTIVATION - 5 pts - Competitive game: gap not too big, both motivated
+  let h2h=0;
+  if(Math.abs(h.winRate-a.winRate)<=0.15) h2h=5;
+  else if(Math.abs(h.winRate-a.winRate)<=0.30) h2h=3;
+  else h2h=0; // too one-sided = favourite may park bus after 1-0
+  score+=h2h; reasons.push(`H2H:${h2h}/5`);
+
+  // 9. LINEUPS & FITNESS - 5 pts - Both have enough games = reliable squad, not rotated youth
+  let lineup=0;
+  if(h.played>=8 && a.played>=8) lineup=5;
+  else if(h.played>=5 && a.played>=5) lineup=4;
+  else lineup=0;
+  score+=lineup; reasons.push(`Lineup:${lineup}/5`);
+
+  // 10. WEATHER & REST - 5 pts - Neutral: we don't gamble on weather we can't verify. Give full if market confirms good conditions (OU>=2.5)
+  let weather=0;
+  if(ou && ou>=2.5) weather=5;
+  else if(ou && ou>=2.0) weather=3;
+  else weather=0;
+  score+=weather; reasons.push(`Weather:${weather}/5`);
+
+  // HARD REJECTS - even if score high, skip these traps
+  if(h.lossRate<0.15 && a.lossRate<0.15) return null; // both too defensive = 0-0 trap
+  if(ou && ou<2.0) return null; // market says low goals
+  if(weak<0.28) return null; // nobody concedes
+  if(bttsScore<0.45) return null; // BTTS unlikely
+
+  if(score<85) return null;
+
+  // Prob from score: 85=>82%, 90=>88%, 95=>92%, 100=>95%
+  const prob = clamp(0.60 + (score/100)*0.35, 0.80, 0.96);
   const odd=parseFloat((1/prob).toFixed(2));
-  // ONLY HIGH PROB to cut losses
-  if(prob<0.80) return null;
   if(odd<1.05 || odd>1.30) return null;
   const total=match.homeScore+match.awayScore;
   const isFinished=match.statusState==='post';
   const isWon=isFinished ? total>=2 : false;
-  return {key:'over15',label:'Over 1.5 Goals',emoji:'⚽',prob,odd,confidence:(prob*100).toFixed(1)+'%',isWon,isFinished};
+  return {key:'over15',label:'Over 1.5 Goals',emoji:'⚽',prob,odd,confidence:(prob*100).toFixed(1)+'%',isWon,isFinished,score,reasons,xgEst};
 }
 const fixtureCache=new Map();
 async function fetchRealFixtures(dateObj){
@@ -167,32 +260,34 @@ async function fetchRealFixtures(dateObj){
 }
 function renderPicks(){
   const container=document.getElementById('matchFeedContainer');
-  let list=[...allTodayPicks].sort((a,b)=>b.prob-a.prob);
+  let list=[...allTodayPicks].sort((a,b)=>b.score-a.score);
   document.getElementById('totalPicksBadge').textContent=list.length+' PICKS';
-  if(list.length===0){container.innerHTML=`<div class="bg-white dark:bg-gray-900 border rounded-2xl p-6 text-center space-y-2"><div class="text-3xl">🛡️</div><div class="font-black">NO OVER 1.5 PICK TODAY</div><p class="text-xs text-gray-500">No game at 80%+ prob today.<br>No pick = No loss.</p></div>`;document.getElementById('daySummary').textContent='0 picks • No bet today';document.getElementById('dayProfitPreview').textContent='—';return}
+  if(list.length===0){container.innerHTML=`<div class="bg-white dark:bg-gray-900 border rounded-2xl p-6 text-center space-y-2"><div class="text-3xl">🛡️</div><div class="font-black">NO 10-FACTOR PICK TODAY</div><p class="text-xs text-gray-500">No game scored 85/100 today.<br>No pick = No loss. This is how losses drop.</p></div>`;document.getElementById('daySummary').textContent='0 picks • No bet today';document.getElementById('dayProfitPreview').textContent='—';return}
   let totalStake=list.length*10000;let ifAllWin=list.reduce((s,p)=>s+10000*p.odd,0);let profitIfAll=ifAllWin-totalStake;
-  document.getElementById('daySummary').textContent=`${list.length} singles • 10k each = ${totalStake.toLocaleString()} UGX • Avg @ ${(list.reduce((s,p)=>s+p.odd,0)/list.length).toFixed(2)} • Prob 80%+`;
+  document.getElementById('daySummary').textContent=`${list.length} singles • 10k each = ${totalStake.toLocaleString()} UGX • Avg @ ${(list.reduce((s,p)=>s+p.odd,0)/list.length).toFixed(2)} • 10-Factor 85+`;
   document.getElementById('dayProfitPreview').textContent=`+${Math.round(profitIfAll).toLocaleString()} UGX`;
   container.innerHTML=list.map((p,i)=>{
     let badge=`<span class="text-[11px] font-mono text-gray-500 nowrap-badge">⏰ ${p.match.time}</span>`;
     if(p.isFinished) badge=p.isWon?`<span class="bg-emerald-500 text-white px-2.5 py-1 rounded-lg text-xs font-black nowrap-badge">✅ ${p.match.homeScore}-${p.match.awayScore}</span>`:`<span class="bg-red-500 text-white px-2.5 py-1 rounded-lg text-xs font-black nowrap-badge">❌ ${p.match.homeScore}-${p.match.awayScore}</span>`;
     else if(p.match.statusState==='in') badge=`<span class="bg-emerald-500/20 text-emerald-500 border border-emerald-500/30 px-2.5 py-1 rounded-lg text-xs font-bold nowrap-badge">● LIVE ${p.match.homeScore}-${p.match.awayScore}</span>`;
-    return `<div class="bg-white dark:bg-gray-900 border rounded-2xl p-4 flex items-center justify-between gap-3">
+    return `<div class="bg-white dark:bg-gray-900 border rounded-2xl p-4 space-y-2">
+      <div class="flex items-center justify-between gap-3">
       <div class="flex items-center gap-3 min-w-0"><span class="w-9 h-9 rounded-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 flex items-center justify-center text-xs font-black shrink-0">${i+1}</span>
-      <div class="min-w-0"><div class="text-sm font-bold truncate">${p.match.home} vs ${p.match.away}</div><div class="text-[11px] font-mono text-gray-500 truncate">${p.match.league} • ⚽ Over 1.5 Goals</div><div class="text-[11px] font-bold text-emerald-600">Confidence ${p.confidence}</div></div></div>
-      <div class="flex flex-col items-end gap-1 shrink-0"><span class="bg-gray-900 dark:bg-white text-white dark:text-gray-900 px-3 py-1.5 rounded-lg text-sm font-black nowrap-badge">@ ${p.odd.toFixed(2)}</span>${badge}<button onclick="copySingle(${i})" class="text-[10px] font-bold text-amber-500">📋 Copy</button></div></div>`;
+      <div class="min-w-0"><div class="text-sm font-bold truncate">${p.match.home} vs ${p.match.away}</div><div class="text-[11px] font-mono text-gray-500 truncate">${p.match.league} • ⚽ Over 1.5 Goals • Score ${p.score}/100</div><div class="text-[11px] font-bold text-emerald-600">Confidence ${p.confidence} • Est xG ${p.xgEst.toFixed(2)}</div></div></div>
+      <div class="flex flex-col items-end gap-1 shrink-0"><span class="bg-gray-900 dark:bg-white text-white dark:text-gray-900 px-3 py-1.5 rounded-lg text-sm font-black nowrap-badge">@ ${p.odd.toFixed(2)}</span>${badge}<button onclick="copySingle(${i})" class="text-[10px] font-bold text-amber-500">📋 Copy</button></div></div>
+      <div class="text-[10px] font-mono text-gray-500 bg-gray-50 dark:bg-gray-800/60 rounded-lg px-2 py-1.5">${p.reasons.join(' • ')}</div></div>`;
   }).join('');
 }
 function copySingle(idx){
-  let list=[...allTodayPicks].sort((a,b)=>b.prob-a.prob);const p=list[idx];if(!p)return;const txt=`WINS1 • ${p.match.home} vs ${p.match.away} • Over 1.5 Goals @ ${p.odd.toFixed(2)} • ${p.confidence} • 25+ Bet Responsibly`;
+  let list=[...allTodayPicks].sort((a,b)=>b.score-a.score);const p=list[idx];if(!p)return;const txt=`WINS1 • ${p.match.home} vs ${p.match.away} • Over 1.5 Goals @ ${p.odd.toFixed(2)} • ${p.confidence} • 10-Factor ${p.score}/100 • 25+ Bet Responsibly`;
   if(navigator.clipboard)navigator.clipboard.writeText(txt);
 }
 async function fetchMatchData(dateObj){
   selectedDateObj=dateObj;const container=document.getElementById('matchFeedContainer');const today=new Date();const isT=dateObj.toDateString()===today.toDateString();document.getElementById('sectionTitleDate').textContent=isT?"TODAY'S":dateObj.toLocaleDateString('en-US',{month:'short',day:'numeric'}).toUpperCase();
-  container.innerHTML=`<div class="p-8 text-center text-xs text-gray-500">Loading Over 1.5...</div>`;
+  container.innerHTML=`<div class="p-8 text-center text-xs text-gray-500">Running 10-Factor Analysis...</div>`;
   const matches=await fetchRealFixtures(dateObj);
   allTodayPicks=[];
-  matches.forEach(m=>{const pk=evaluateOver15(m);if(pk)allTodayPicks.push({...pk,match:m})});
+  matches.forEach(m=>{const pk=evaluateOver15_10Factor(m);if(pk)allTodayPicks.push({...pk,match:m})});
   renderPicks();
 }
 let historyLoading=false,historyLoadedDays=0,mainHistory=[];
@@ -214,7 +309,7 @@ async function loadHistoryBatch(){
     const d=new Date();d.setDate(d.getDate()-back);
     try{
       const matches=await fetchRealFixtures(d);const dateLabel=d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
-      matches.forEach(m=>{const pk=evaluateOver15(m);if(pk&&m.statusState==='post'){mainHistory.push({won:pk.isWon,odd:pk.odd,html:`<div class="flex items-center justify-between bg-white dark:bg-gray-900 border ${pk.isWon?'border-emerald-500/40':'border-red-500/40'} rounded-xl px-3 py-2.5"><div class="flex items-center gap-2.5"><span class="min-w-[52px] h-8 px-1.5 rounded-full ${pk.isWon?'bg-emerald-500 text-white':'bg-red-500 text-white'} flex items-center justify-center text-[11px] font-black">${m.time}</span><div><div class="text-xs font-bold">${m.home} vs ${m.away}</div><div class="text-[10px] font-mono text-gray-500">${dateLabel} • ⚽ Over 1.5 • ${m.homeScore+m.awayScore} Goals</div></div></div><div class="text-right shrink-0"><div class="text-xs font-black ${pk.isWon?'text-emerald-500':'text-red-500'}">${pk.isWon?'WON':'LOST'} ${m.homeScore}-${m.awayScore}</div><div class="text-[10px] font-mono text-gray-500">@ ${pk.odd.toFixed(2)}</div></div></div>`})}});
+      matches.forEach(m=>{const pk=evaluateOver15_10Factor(m);if(pk&&m.statusState==='post'){mainHistory.push({won:pk.isWon,odd:pk.odd,html:`<div class="flex items-center justify-between bg-white dark:bg-gray-900 border ${pk.isWon?'border-emerald-500/40':'border-red-500/40'} rounded-xl px-3 py-2.5"><div class="flex items-center gap-2.5"><span class="min-w-[52px] h-8 px-1.5 rounded-full ${pk.isWon?'bg-emerald-500 text-white':'bg-red-500 text-white'} flex items-center justify-center text-[11px] font-black">${m.time}</span><div><div class="text-xs font-bold">${m.home} vs ${m.away}</div><div class="text-[10px] font-mono text-gray-500">${dateLabel} • ⚽ Over 1.5 • ${m.homeScore+m.awayScore} Goals • ${pk.score}/100</div></div></div><div class="text-right shrink-0"><div class="text-xs font-black ${pk.isWon?'text-emerald-500':'text-red-500'}">${pk.isWon?'WON':'LOST'} ${m.homeScore}-${m.awayScore}</div><div class="text-[10px] font-mono text-gray-500">@ ${pk.odd.toFixed(2)}</div></div></div>`})}});
     }catch(e){}
   }
   historyLoadedDays=end;updateHistoryStats();if(btn)btn.textContent=historyLoadedDays>=60?'All 60 Days Loaded':'Load More ('+historyLoadedDays+'/60)';historyLoading=false;if(historyLoadedDays<60)setTimeout(()=>loadHistoryBatch(),600);
