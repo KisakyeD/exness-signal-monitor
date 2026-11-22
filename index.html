@@ -292,7 +292,7 @@
         function parseRecordStats(recordSummary){ if(!recordSummary||typeof recordSummary!=='string'){ return {wins:0,draws:0,losses:0,played:0,winRate:0.40,lossRate:0.35,summary:"N/A"}; } const parts=recordSummary.split('-').map(n=>parseInt(n,10)).filter(n=>!isNaN(n)); if(parts.length===3){ const [w,d,l]=parts; const played=w+d+l; return {wins:w,draws:d,losses:l,played,winRate:played>0?(w/played):0.40,lossRate:played>0?(l/played):0.35,summary:`${w}W-${d}D-${l}L`}; } else if(parts.length===2){ const [w,l]=parts; const played=w+l; return {wins:w,draws:0,losses:l,played,winRate:played>0?(w/played):0.40,lossRate:played>0?(l/played):0.35,summary:`${w}W-${l}L`}; } return {wins:0,draws:0,losses:0,played:0,winRate:0.40,lossRate:0.35,summary:recordSummary}; }
         function americanToDecimal(ml){ const num=parseFloat(ml); if(isNaN(num)||num===0) return null; if(num<0) return parseFloat((1+(100/Math.abs(num))).toFixed(2)); return parseFloat((1+(num/100)).toFixed(2)); }
 
-        /* ✅ ULTRA SAFE ENGINE - NO PICK IS BETTER THAN LOSING PICK */
+        /* ✅ DAILY WIN MODE - TIERED FALLBACK = PICK EVERY DAY */
         function evaluatePickWithRealData(match,category){
             const hRec=parseRecordStats(match.homeRecord); const aRec=parseRecordStats(match.awayRecord);
             const realOverUnder=parseFloat(match.overUnderLine)||null;
@@ -304,19 +304,20 @@
             over15Prob=Math.min(0.97,Math.max(0.52,over15Prob));
             let label="Total Goals: Over 1.5 Goals"; let odd=parseFloat(Math.max(1.08,(1/over15Prob)).toFixed(2)); let winProb=over15Prob; let scoreRank=0; let isWon=false;
             if(category==='single_over15'){
-                // HARD REJECTS -100
-                let hardReject=0;
-                if(over15Prob<0.80) hardReject-=100; // must be 80%+
-                if(defensiveWeakness<0.38) hardReject-=100; // both teams must concede
-                if(realOverUnder && realOverUnder<2.5) hardReject-=100; // bookmaker must expect goals
-                // ULTRA SAFE SWEET SPOT 1.16 - 1.25
-                let oddsBonus=0;
-                if(odd>=1.16 && odd<=1.25) oddsBonus=+30;
-                else if(odd<1.16) oddsBonus=-20; // too low, no value
-                else if(odd>1.25) oddsBonus=-40; // too risky for ultra safe
-                scoreRank=(over15Prob*100) + oddsBonus + hardReject + (realOverUnder?(realOverUnder-2.0)*8:0) + (bothScoreTendency*8);
+                // TIER 1 = ULTRA SAFE 1.16-1.25, prob 80%+
+                // TIER 2 = DAILY SAFE 1.26-1.35, prob 74%+
+                // TIER 3 = BACKUP 1.36-1.45
+                let tier=3; let tierBonus=0;
+                if(odd>=1.16 && odd<=1.25 && over15Prob>=0.80 && defensiveWeakness>=0.38){ tier=1; tierBonus=+40; }
+                else if(odd>=1.16 && odd<=1.35 && over15Prob>=0.74 && defensiveWeakness>=0.30){ tier=2; tierBonus=+15; }
+                else if(odd>=1.16 && odd<=1.45 && over15Prob>=0.68){ tier=3; tierBonus=0; }
+                else { tierBonus=-60; }
+                let ouBonus=0;
+                if(realOverUnder && realOverUnder>=2.5) ouBonus=+12;
+                if(realOverUnder && realOverUnder<2.5) ouBonus=-20;
+                scoreRank=(over15Prob*100) + tierBonus + ouBonus + (bothScoreTendency*8) - (tier*10);
                 if(match.statusState==='post') isWon=(match.homeScore+match.awayScore)>=2;
-                return {label,odd,confidence:`${(winProb*100).toFixed(1)}%`,analysis:``,isWon,isFinished:match.statusState==='post',scoreRank,over15Prob, isUltraSafe: hardReject===0 && odd>=1.16 && odd<=1.25};
+                return {label,odd,confidence:`${(winProb*100).toFixed(1)}%`,analysis:``,isWon,isFinished:match.statusState==='post',scoreRank,over15Prob, tier};
             }
             if(category==='single_under45'){
                 let under45Prob = 0.88 + ((1 - defensiveWeakness)*0.06) + ((1 - attackingTempo)*0.04);
@@ -326,33 +327,30 @@
                 label="Total Goals: Under 4.5 Goals";
                 odd=parseFloat(Math.max(1.05,(1/under45Prob)).toFixed(2));
                 winProb=under45Prob;
-                // HARD REJECT - must be 92%+
-                let hardReject=0;
-                if(under45Prob<0.92) hardReject-=100;
-                // ULTRA SAFE SWEET SPOT 1.08 - 1.13
-                let oddsBonus=0;
-                if(odd>=1.08 && odd<=1.13) oddsBonus=+30;
-                else if(odd>1.13) oddsBonus=-40;
-                else oddsBonus=-10;
-                scoreRank=(under45Prob*100) + oddsBonus + hardReject - (attackingTempo*20) - (defensiveWeakness*15) - (realOverUnder ? (realOverUnder-2.5)*10 : 0);
+                let tier=3; let tierBonus=0;
+                if(odd>=1.08 && odd<=1.13 && under45Prob>=0.92){ tier=1; tierBonus=+40; }
+                else if(odd>=1.08 && odd<=1.20 && under45Prob>=0.85){ tier=2; tierBonus=+15; }
+                else if(odd>=1.08 && odd<=1.30){ tier=3; tierBonus=0; }
+                else tierBonus=-40;
+                scoreRank=(under45Prob*100) + tierBonus - (attackingTempo*20) - (defensiveWeakness*15) - (realOverUnder ? (realOverUnder-2.5)*10 : 0) - (tier*10);
                 if(match.statusState==='post') isWon=(match.homeScore+match.awayScore)<=4;
-                return {label,odd,confidence:`${(winProb*100).toFixed(1)}%`,analysis:``,isWon,isFinished:match.statusState==='post',scoreRank,over15Prob:under45Prob, isUltraSafe: hardReject===0 && odd>=1.08 && odd<=1.13};
+                return {label,odd,confidence:`${(winProb*100).toFixed(1)}%`,analysis:``,isWon,isFinished:match.statusState==='post',scoreRank,over15Prob:under45Prob, tier};
             }
             if(hRec.played===0&&aRec.played===0) scoreRank-=15;
             const confidencePct=`${(winProb*100).toFixed(1)}%`;
-            return {label,odd,confidence:confidencePct,analysis:``,isWon,isFinished:match.statusState==='post',scoreRank,over15Prob};
+            return {label,odd,confidence:confidencePct,analysis:``,isWon,isFinished:match.statusState==='post',scoreRank,over15Prob, tier:3};
         }
-        // Pick best ONLY in ultra safe window, else return null = NO PICK
-        function pickUltraSafe(list, excludeId, minOdd, maxOdd){
-            const avail=list.filter(x=>x.match.id!==excludeId && x.eval.isUltraSafe && x.eval.odd>=minOdd && x.eval.odd<=maxOdd);
-            if(avail.length===0) return null;
-            avail.sort((a,b)=>b.eval.scoreRank-a.eval.scoreRank);
-            return avail[0];
-        }
-        function pickBestFallback(list, excludeId){
+        // DAILY WIN: Tier1 -> Tier2 -> Tier3, never empty
+        function pickDailyWin(list, excludeId){
             const avail=list.filter(x=>x.match.id!==excludeId);
+            if(avail.length===0) return null;
+            // Try Tier 1 first
+            const t1=avail.filter(x=>x.eval.tier===1);
+            if(t1.length>0){ t1.sort((a,b)=>b.eval.scoreRank-a.eval.scoreRank); return {pick:t1[0], tier:1}; }
+            const t2=avail.filter(x=>x.eval.tier===2);
+            if(t2.length>0){ t2.sort((a,b)=>b.eval.scoreRank-a.eval.scoreRank); return {pick:t2[0], tier:2}; }
             avail.sort((a,b)=>b.eval.scoreRank-a.eval.scoreRank);
-            return avail[0]||null;
+            return {pick:avail[0], tier:3};
         }
 
         const fixtureCache = new Map();
@@ -361,7 +359,10 @@
             const cacheKey='wins1_cache_'+compactDate;
             if(fixtureCache.has(compactDate)) return fixtureCache.get(compactDate);
             try{ const cached=sessionStorage.getItem(cacheKey); if(cached){ const parsed=JSON.parse(cached); if(Date.now()-parsed.time < 10*60*1000){ fixtureCache.set(compactDate, parsed.data); return parsed.data; } } }catch(e){}
-            let fixtures=[]; const espnLeagues=['eng.1','esp.1','ita.1','ger.1','fra.1','uefa.champions','uefa.europa','usa.1','ned.1','por.1']; const requests=espnLeagues.map(lg=>fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/${lg}/scoreboard?dates=${compactDate}`).then(r=>r.ok?r.json():null).catch(()=>null)); const results=await Promise.all(requests); results.forEach(data=>{ if(data&&Array.isArray(data.events)){ const leagueName=(data.leagues&&data.leagues[0]&&data.leagues[0].name)||"Official League"; data.events.forEach(ev=>{ const comp=ev.competitions&&ev.competitions[0]; if(comp&&comp.competitors&&comp.competitors.length===2){ const homeObj=comp.competitors.find(c=>c.homeAway==='home')||comp.competitors[0]; const awayObj=comp.competitors.find(c=>c.homeAway==='away')||comp.competitors[1]; const homeName=homeObj.team.displayName; const awayName=awayObj.team.displayName; if(!fixtures.some(f=>f.home===homeName&&f.away===awayName)){ const dt=new Date(ev.date); const timeStr=isNaN(dt)?"19:00":dt.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',hour12:false}); const statusState=(ev.status&&ev.status.type&&ev.status.type.state)||"pre"; const homeRecord=(homeObj.records&&homeObj.records[0]&&homeObj.records[0].summary)||""; const awayRecord=(awayObj.records&&awayObj.records[0]&&awayObj.records[0].summary)||""; const homeForm=homeObj.form||""; const venue=(comp.venue&&comp.venue.fullName)||""; const oddsObj=(comp.odds&&comp.odds[0])||null; const homeMoneyline=oddsObj&&oddsObj.homeTeamOdds?oddsObj.homeTeamOdds.moneyLine:null; const awayMoneyline=oddsObj&&oddsObj.awayTeamOdds?oddsObj.awayTeamOdds.moneyLine:null; const overUnderLine=oddsObj?oddsObj.overUnder:null; const oddsProvider=oddsObj&&oddsObj.provider?oddsObj.provider.name:null; fixtures.push({id:`${homeName}_vs_${awayName}`,home:homeName,away:awayName,league:leagueName,time:timeStr,statusState:statusState,homeScore:parseInt(homeObj.score,10)||0,awayScore:parseInt(awayObj.score,10)||0,homeRecord,awayRecord,homeForm,venue,homeMoneyline,awayMoneyline,overUnderLine,oddsProvider}); } } }); } });
+            let fixtures=[];
+            // ✅ EXPANDED LEAGUES = MORE DAILY GAMES = WIN DAILY
+            const espnLeagues=['eng.1','eng.2','esp.1','esp.2','ita.1','ita.2','ger.1','ger.2','fra.1','fra.2','uefa.champions','uefa.europa','uefa.conference','usa.1','ned.1','por.1','bel.1','tur.1','sui.1','aut.1','sco.1','bra.1','arg.1','mex.1','chi.1','col.1','jpn.1','kor.1','aus.1','rsa.1','egy.1'];
+            const requests=espnLeagues.map(lg=>fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/${lg}/scoreboard?dates=${compactDate}`).then(r=>r.ok?r.json():null).catch(()=>null)); const results=await Promise.all(requests); results.forEach(data=>{ if(data&&Array.isArray(data.events)){ const leagueName=(data.leagues&&data.leagues[0]&&data.leagues[0].name)||"Official League"; data.events.forEach(ev=>{ const comp=ev.competitions&&ev.competitions[0]; if(comp&&comp.competitors&&comp.competitors.length===2){ const homeObj=comp.competitors.find(c=>c.homeAway==='home')||comp.competitors[0]; const awayObj=comp.competitors.find(c=>c.homeAway==='away')||comp.competitors[1]; const homeName=homeObj.team.displayName; const awayName=awayObj.team.displayName; if(!fixtures.some(f=>f.home===homeName&&f.away===awayName)){ const dt=new Date(ev.date); const timeStr=isNaN(dt)?"19:00":dt.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',hour12:false}); const statusState=(ev.status&&ev.status.type&&ev.status.type.state)||"pre"; const homeRecord=(homeObj.records&&homeObj.records[0]&&homeObj.records[0].summary)||""; const awayRecord=(awayObj.records&&awayObj.records[0]&&awayObj.records[0].summary)||""; const homeForm=homeObj.form||""; const venue=(comp.venue&&comp.venue.fullName)||""; const oddsObj=(comp.odds&&comp.odds[0])||null; const homeMoneyline=oddsObj&&oddsObj.homeTeamOdds?oddsObj.homeTeamOdds.moneyLine:null; const awayMoneyline=oddsObj&&oddsObj.awayTeamOdds?oddsObj.awayTeamOdds.moneyLine:null; const overUnderLine=oddsObj?oddsObj.overUnder:null; const oddsProvider=oddsObj&&oddsObj.provider?oddsObj.provider.name:null; fixtures.push({id:`${homeName}_vs_${awayName}`,home:homeName,away:awayName,league:leagueName,time:timeStr,statusState:statusState,homeScore:parseInt(homeObj.score,10)||0,awayScore:parseInt(awayObj.score,10)||0,homeRecord,awayRecord,homeForm,venue,homeMoneyline,awayMoneyline,overUnderLine,oddsProvider}); } } }); } });
             fixtureCache.set(compactDate, fixtures);
             try{ sessionStorage.setItem(cacheKey, JSON.stringify({time:Date.now(), data:fixtures})); }catch(e){}
             return fixtures;
@@ -381,8 +382,9 @@
                 const arrow = t.won ? '⬆️' : '⬇️';
                 const badge = t.won ? `<span class="bg-emerald-500 text-white px-2 py-0.5 rounded-full text-[10px] font-black nowrap-badge">⬆️ WON</span>` : `<span class="bg-red-500 text-white px-2 py-0.5 rounded-full text-[10px] font-black nowrap-badge">⬇️ LOST</span>`;
                 const border = t.won ? 'border-emerald-500/30' : 'border-red-500/30';
+                const tierLabel = t.tier===1 ? '🛡️ ULTRA' : t.tier===2 ? '✅ DAILY' : '⚠️ BACKUP';
                 html+=`<div class="border ${border} bg-gray-50 dark:bg-gray-800/40 rounded-xl p-2.5 space-y-1.5">
-                    <div class="flex items-center justify-between gap-2"><div class="text-[11px] font-black text-gray-900 dark:text-white truncate">${arrow} ${t.day} ${t.date} • @ ${t.combined}</div>${badge}</div>
+                    <div class="flex items-center justify-between gap-2"><div class="text-[11px] font-black text-gray-900 dark:text-white truncate">${arrow} ${t.day} ${t.date} • @ ${t.combined} • ${tierLabel}</div>${badge}</div>
                     <div class="flex items-center justify-between gap-2 text-[11px]"><span class="text-gray-700 dark:text-gray-200 truncate">⚽ ${shortName(t.overHome)} vs ${shortName(t.overAway)} <b>${t.overScore}</b> ${t.overWon?'✅':'❌'}</span><span class="text-[10px] font-bold text-amber-600 dark:text-amber-400 bg-amber-500/10 border border-amber-500/30 px-1.5 py-0.5 rounded-full nowrap-badge">Over 1.5</span></div>
                     <div class="flex items-center justify-between gap-2 text-[11px]"><span class="text-gray-700 dark:text-gray-200 truncate">🔒 ${shortName(t.underHome)} vs ${shortName(t.underAway)} <b>${t.underScore}</b> ${t.underWon?'✅':'❌'}</span><span class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-1.5 py-0.5 rounded-full nowrap-badge">Under 4.5</span></div>
                 </div>`;
@@ -420,22 +422,19 @@
                     const dateLabel=d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
                     const dayLabel=d.toLocaleDateString('en-US',{weekday:'short'});
                     const overEv=matches.map(m=>({match:m, eval:evaluatePickWithRealData(m,'single_over15')}));
-                    let overPick=overEv.find(x=>x.match.id===getLockedPick(dateKey,'single_over15'));
-                    if(!overPick){ overPick=pickUltraSafe(overEv, null, 1.16, 1.25); if(!overPick) continue; }
+                    let overPickObj=pickDailyWin(overEv, null); if(!overPickObj) continue; let overPick=overPickObj.pick;
                     const underEv=matches.map(m=>({match:m, eval:evaluatePickWithRealData(m,'single_under45')}));
-                    let underPick=underEv.find(x=>x.match.id===getLockedPick(dateKey,'single_under45'));
-                    if(underPick && overPick && underPick.match.id===overPick.match.id) underPick=null;
-                    if(!underPick){
-                        const sorted=[...underEv].filter(x=>x.match.id!==overPick.match.id).sort((a,b)=>b.eval.scoreRank-a.eval.scoreRank);
-                        let found=null; for(let cand of sorted){ const comb=cand.eval.odd*overPick.eval.odd; if(comb>=1.28 && comb<=1.40 && cand.eval.isUltraSafe){ found=cand; break; } }
-                        if(!found) continue; // NO SAFE TICKET - skip this day in history
-                        underPick=found;
-                    }
+                    // Ticket Daily Win: try 1.28-1.40, then 1.41-1.60, then best
+                    const sortedUnder=[...underEv].filter(x=>x.match.id!==overPick.match.id).sort((a,b)=>b.eval.scoreRank-a.eval.scoreRank);
+                    let underPick=null; let ticketTier=3;
+                    for(let cand of sortedUnder){ const comb=cand.eval.odd*overPick.eval.odd; if(comb>=1.28 && comb<=1.40){ underPick=cand; ticketTier=1; break; } }
+                    if(!underPick){ for(let cand of sortedUnder){ const comb=cand.eval.odd*overPick.eval.odd; if(comb>=1.41 && comb<=1.60){ underPick=cand; ticketTier=2; break; } } }
+                    if(!underPick){ underPick=sortedUnder[0]; ticketTier=3; }
                     if(!overPick || !underPick) continue;
                     if(overPick.match.statusState!=='post' || underPick.match.statusState!=='post') continue;
                     const ticketWon = overPick.eval.isWon && underPick.eval.isWon;
                     const combined=(overPick.eval.odd * underPick.eval.odd).toFixed(2);
-                    ticketHistoryData.push({ day: dayLabel, date: dateLabel, won: ticketWon, combined, isEmpty:false, overHome: overPick.match.home, overAway: overPick.match.away, overScore: `${overPick.match.homeScore}-${overPick.match.awayScore}`, overWon: overPick.eval.isWon, underHome: underPick.match.home, underAway: underPick.match.away, underScore: `${underPick.match.homeScore}-${underPick.match.awayScore}`, underWon: underPick.eval.isWon });
+                    ticketHistoryData.push({ day: dayLabel, date: dateLabel, won: ticketWon, combined, tier: ticketTier, isEmpty:false, overHome: overPick.match.home, overAway: overPick.match.away, overScore: `${overPick.match.homeScore}-${overPick.match.awayScore}`, overWon: overPick.eval.isWon, underHome: underPick.match.home, underAway: underPick.match.away, underScore: `${underPick.match.homeScore}-${underPick.match.awayScore}`, underWon: underPick.eval.isWon });
                 }catch(e){}
                 if(back % 10 === 0){ updateTicketHistoryStats(); renderTicketHistoryList(); }
             }
@@ -461,40 +460,25 @@
             const ticketId='#WINS1-'+dateKey.slice(4);
             const dateStr=dateObj.toLocaleDateString('en-US',{weekday:'short', month:'short', day:'numeric'});
             const overEv=matches.map(m=>({match:m, eval:evaluatePickWithRealData(m,'single_over15')}));
-            let overPick=overEv.find(x=>x.match.id===getLockedPick(dateKey,'single_over15'));
-            // If locked pick is NOT ultra safe anymore, ignore it and find ultra safe one
-            if(overPick && !overPick.eval.isUltraSafe) overPick=null;
-            if(!overPick){ overPick=pickUltraSafe(overEv, null, 1.16, 1.25); if(overPick) saveLockedPick(dateKey,'single_over15', overPick.match.id); }
-            if(!overPick){
-                wrap.innerHTML=`<div class="p-6 text-center space-y-2"><div class="text-3xl">🛡️</div><div class="text-sm font-black text-gray-900 dark:text-white">NO SAFE TICKET TODAY</div><div class="text-xs text-gray-500">Ultra Safe filter blocked all risky games.<br>No pick = No loss. Check back tomorrow.</div></div>`;
-                currentTicketText=''; return;
-            }
+            let overRes=pickDailyWin(overEv, null); let overPick=overRes.pick; let overTier=overRes.tier;
+            if(overPick) saveLockedPick(dateKey,'single_over15', overPick.match.id);
             const underEv=matches.map(m=>({match:m, eval:evaluatePickWithRealData(m,'single_under45')}));
-            let underPick=underEv.find(x=>x.match.id===getLockedPick(dateKey,'single_under45'));
-            if(underPick && underPick.match.id===overPick.match.id) underPick=null;
-            if(underPick){
-                const comb=underPick.eval.odd*overPick.eval.odd;
-                if(!underPick.eval.isUltraSafe || comb<1.28 || comb>1.40) underPick=null;
-            }
-            if(!underPick){
-                const sortedUnder=[...underEv].filter(x=>x.match.id!==overPick.match.id).sort((a,b)=>b.eval.scoreRank-a.eval.scoreRank);
-                let found=null;
-                for(let cand of sortedUnder){ const comb=cand.eval.odd*overPick.eval.odd; if(comb>=1.28 && comb<=1.40 && cand.eval.isUltraSafe){ found=cand; break; } }
-                if(!found){
-                    wrap.innerHTML=`<div class="p-6 text-center space-y-2"><div class="text-3xl">🛡️</div><div class="text-sm font-black text-gray-900 dark:text-white">NO SAFE TICKET TODAY</div><div class="text-xs text-gray-500">Over 1.5 is safe, but no safe Under 4.5 to combine.<br>Play Over 1.5 single only. No pick = No loss.</div></div>`;
-                    currentTicketText=''; return;
-                }
-                underPick=found; saveLockedPick(dateKey,'single_under45', underPick.match.id);
-            }
+            const sortedUnder=[...underEv].filter(x=>x.match.id!==overPick.match.id).sort((a,b)=>b.eval.scoreRank-a.eval.scoreRank);
+            let underPick=null; let ticketTier=3;
+            for(let cand of sortedUnder){ const comb=cand.eval.odd*overPick.eval.odd; if(comb>=1.28 && comb<=1.40){ underPick=cand; ticketTier=1; break; } }
+            if(!underPick){ for(let cand of sortedUnder){ const comb=cand.eval.odd*overPick.eval.odd; if(comb>=1.41 && comb<=1.60){ underPick=cand; ticketTier=2; break; } } }
+            if(!underPick){ underPick=sortedUnder[0]; ticketTier=3; }
+            if(underPick) saveLockedPick(dateKey,'single_under45', underPick.match.id);
             const combined=(overPick.eval.odd * underPick.eval.odd).toFixed(2);
+            const tierLabel = ticketTier===1 ? '🛡️ ULTRA SAFE' : ticketTier===2 ? '✅ DAILY SAFE' : '⚠️ BACKUP - Play Small';
             const bothFinished = overPick.eval.isFinished && underPick.eval.isFinished;
             const bothWon = bothFinished && overPick.eval.isWon && underPick.eval.isWon;
             const anyLost = bothFinished && (!overPick.eval.isWon || !underPick.eval.isWon);
-            let statusHtml=`<span class="bg-emerald-500 text-white px-3 py-1.5 rounded-xl text-xs font-black nowrap-badge">🛡️ ULTRA SAFE @ ${combined}</span>`;
+            let statusHtml=`<span class="bg-emerald-500 text-white px-3 py-1.5 rounded-xl text-xs font-black nowrap-badge">${tierLabel} @ ${combined}</span>`;
             if(bothWon) statusHtml=`<span class="bg-emerald-500 text-white px-3 py-1.5 rounded-xl text-xs font-black nowrap-badge">✅ TICKET WON @ ${combined}</span>`;
             else if(anyLost) statusHtml=`<span class="bg-red-500 text-white px-3 py-1.5 rounded-xl text-xs font-black nowrap-badge">❌ TICKET LOST</span>`;
             else if(overPick.match.statusState==='in' || underPick.match.statusState==='in') statusHtml=`<span class="bg-emerald-500/20 text-emerald-500 border border-emerald-500/30 px-3 py-1.5 rounded-xl text-xs font-bold nowrap-badge">● LIVE • @ ${combined}</span>`;
-            currentTicketText=`🎫 WINS1 ULTRA SAFE TICKET ${ticketId} • ${dateStr}\n1. ${overPick.match.home} vs ${overPick.match.away} - Over 1.5 Goals @ ${overPick.eval.odd.toFixed(2)} (${overPick.eval.confidence})\n2. ${underPick.match.home} vs ${underPick.match.away} - Under 4.5 Goals @ ${underPick.eval.odd.toFixed(2)} (${underPick.eval.confidence})\nCOMBINED @ ${combined} • WINS1 • 25+ Bet Responsibly`;
+            currentTicketText=`🎫 WINS1 DAILY WIN TICKET ${ticketId} • ${dateStr} • ${tierLabel}\n1. ${overPick.match.home} vs ${overPick.match.away} - Over 1.5 Goals @ ${overPick.eval.odd.toFixed(2)} (${overPick.eval.confidence})\n2. ${underPick.match.home} vs ${underPick.match.away} - Under 4.5 Goals @ ${underPick.eval.odd.toFixed(2)} (${underPick.eval.confidence})\nCOMBINED @ ${combined} • WINS1 • 25+ Bet Responsibly`;
             function ticketRow(num, emoji, pick, market){
                 let statusBadge=`<span class="text-[11px] font-mono text-gray-500 nowrap-badge">⏰ ${pick.match.time}</span>`;
                 if(pick.eval.isFinished) statusBadge = pick.eval.isWon ? `<span class="bg-emerald-500 text-white px-2.5 py-1 rounded-lg text-xs font-black nowrap-badge">✅ ${pick.match.homeScore}-${pick.match.awayScore}</span>` : `<span class="bg-red-500 text-white px-2.5 py-1 rounded-lg text-xs font-black nowrap-badge">❌ ${pick.match.homeScore}-${pick.match.awayScore}</span>`;
@@ -505,7 +489,7 @@
                         <div class="min-w-0">
                             <div class="text-sm font-bold text-gray-900 dark:text-white truncate">${emoji} ${pick.match.home} vs ${pick.match.away}</div>
                             <div class="text-[11px] font-mono text-gray-500 truncate">${pick.match.league} • ${market}</div>
-                            <div class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400">Confidence ${pick.eval.confidence} • 🛡️ ULTRA SAFE</div>
+                            <div class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400">Confidence ${pick.eval.confidence} • ${tierLabel}</div>
                         </div>
                     </div>
                     <div class="flex flex-col items-end gap-1 shrink-0">
@@ -516,15 +500,15 @@
             }
             wrap.innerHTML=`
                 <div class="flex items-center justify-between px-4 pt-4 pb-3 border-b border-gray-100 dark:border-gray-800">
-                    <div><div class="text-xs font-black text-gray-900 dark:text-white">🎫 ${ticketId} • 🛡️ ULTRA SAFE</div><div class="text-[11px] font-mono text-gray-500">${dateStr} • 2 Games • Verified</div></div>
-                    <span class="text-[11px] font-black px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 nowrap-badge">✓ VERIFIED</span>
+                    <div><div class="text-xs font-black text-gray-900 dark:text-white">🎫 ${ticketId} • ${tierLabel}</div><div class="text-[11px] font-mono text-gray-500">${dateStr} • 2 Games • Daily Win</div></div>
+                    <span class="text-[11px] font-black px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 nowrap-badge">✓ DAILY WIN</span>
                 </div>
                 <div class="p-4 space-y-3">
                     ${ticketRow(1,'⚽',overPick,'Over 1.5 Goals')}
                     ${ticketRow(2,'🔒',underPick,'Under 4.5 Goals')}
-                    <div class="flex items-center justify-between bg-gray-900 dark:bg-white rounded-xl px-4 py-3 gap-2"><span class="text-white dark:text-gray-900 text-xs font-black tracking-wide">ULTRA SAFE TICKET TOTAL</span>${statusHtml}</div>
+                    <div class="flex items-center justify-between bg-gray-900 dark:bg-white rounded-xl px-4 py-3 gap-2"><span class="text-white dark:text-gray-900 text-xs font-black tracking-wide">DAILY WIN TICKET TOTAL</span>${statusHtml}</div>
                     <button onclick="copyTicket()" id="copyTicketBtn" class="w-full py-2.5 rounded-xl bg-amber-500 text-gray-950 text-xs font-black hover:bg-amber-400 transition">📋 Copy Ticket</button>
-                    <p class="text-[10px] text-center text-gray-500 font-mono">✅ Verified • Stake Responsibly • 25+ • NLGRB Uganda</p>
+                    <p class="text-[10px] text-center text-gray-500 font-mono">✅ Daily Win • Stake Responsibly • 25+ • NLGRB Uganda</p>
                 </div>`;
         }
         async function fetchMatchData(dateObj,isBackground=false){ selectedDateObj=dateObj; const container=document.getElementById('matchFeedContainer'); if(!container) return; const today=new Date(); const isToday=dateObj.toDateString()===today.toDateString(); document.getElementById('sectionTitleDate').textContent=isToday?"TODAY'S":dateObj.toLocaleDateString('en-US',{month:'short',day:'numeric'}).toUpperCase(); if(!isBackground){ container.innerHTML=`<div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-8 text-center space-y-3"><div class="inline-block w-8 h-8 border-4 border-emerald-400 border-t-transparent rounded-full animate-spin"></div><p class="text-xs text-gray-500 dark:text-gray-400 font-mono">Loading...</p></div>`; } const matches=await fetchRealFixtures(dateObj); if(matches.length===0){ container.innerHTML=`<div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-8 text-center space-y-3"><p class="text-xs text-gray-600 dark:text-gray-300 font-mono">No matches found for this date. Please select another date.</p></div>`; document.getElementById('totalOddsBadge').textContent=`ODDS: 0.00`; return; } const compactDateStr=getYYYYMMDD(dateObj);
@@ -533,28 +517,22 @@
         let excludeId = otherLockedId;
         if(!excludeId && currentCategory==='single_under45'){
             const overEvaluated = matches.map(m=>({match:m, eval:evaluatePickWithRealData(m,'single_over15')}));
-            const ultra = overEvaluated.filter(x=>x.eval.isUltraSafe);
-            ultra.sort((a,b)=>b.eval.scoreRank-a.eval.scoreRank);
-            if(ultra[0]) excludeId = ultra[0].match.id;
+            const res=pickDailyWin(overEvaluated, null);
+            if(res) excludeId = res.pick.match.id;
             if(!getLockedPick(compactDateStr,'single_over15') && excludeId) saveLockedPick(compactDateStr,'single_over15', excludeId);
         }
         const evaluatedList=matches.map(m=>({match:m,eval:evaluatePickWithRealData(m,currentCategory)}));
-        const lockedMatchId=getLockedPick(compactDateStr,currentCategory); let bestPick=null;
+        const lockedMatchId=getLockedPick(compactDateStr,currentCategory); let bestPick=null; let bestTier=3;
         if(lockedMatchId){ bestPick=evaluatedList.find(item=>item.match.id===lockedMatchId); 
-            if(bestPick && (!bestPick.eval.isUltraSafe || bestPick.match.id===excludeId)){ bestPick=null; }
+            if(bestPick && bestPick.match.id===excludeId){ bestPick=null; }
+            else if(bestPick) bestTier=bestPick.eval.tier;
         }
         if(!bestPick){
-            const minOdd = currentCategory==='single_over15' ? 1.16 : 1.08;
-            const maxOdd = currentCategory==='single_over15' ? 1.25 : 1.13;
-            bestPick=pickUltraSafe(evaluatedList, excludeId, minOdd, maxOdd);
-            if(bestPick) saveLockedPick(compactDateStr,currentCategory,bestPick.match.id);
+            const res=pickDailyWin(evaluatedList, excludeId);
+            bestPick=res.pick; bestTier=res.tier;
+            saveLockedPick(compactDateStr,currentCategory,bestPick.match.id);
         }
-        if(!bestPick){
-            document.getElementById('totalOddsBadge').textContent=`ODDS: —`;
-            container.innerHTML=`<div class="bg-white dark:bg-gray-900 border-2 border-amber-500/50 rounded-2xl p-6 text-center space-y-2"><div class="text-3xl">🛡️</div><div class="font-black text-gray-900 dark:text-white">NO ULTRA SAFE PICK TODAY</div><p class="text-xs text-gray-500">All games today are too risky for Ultra Safe filter.<br>No pick = No loss. Check tomorrow or try another date.</p><div class="text-[11px] font-mono text-amber-500">ULTRA SAFE: Over 1.5 @ 1.16-1.25 • Under 4.5 @ 1.08-1.13</div></div>`;
-            return;
-        }
-        const m=bestPick.match; const evaluation=bestPick.eval; document.getElementById('totalOddsBadge').textContent=`ODDS: ${evaluation.odd.toFixed(2)} 🛡️`; let badgeHtml=`<span class="bg-emerald-500 text-white px-3 py-1 rounded-xl text-sm font-mono font-black shadow-lg">🛡️ @ ${evaluation.odd.toFixed(2)}</span>`; if(evaluation.isFinished){ if(evaluation.isWon){ badgeHtml=`<span class="bg-emerald-500 text-white px-3 py-1 rounded-xl text-xs font-mono font-black shadow-lg flex items-center gap-1">✅ WON (${m.homeScore}-${m.awayScore})</span>`; } else { badgeHtml=`<span class="bg-red-500 text-white px-3 py-1 rounded-xl text-xs font-mono font-black shadow-lg flex items-center gap-1">❌ LOST (${m.homeScore}-${m.awayScore})</span>`; } } else if(m.statusState==='in'){ badgeHtml=`<span class="bg-emerald-500/20 text-emerald-500 dark:text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-xl text-xs font-mono font-bold flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-400 pulse-live"></span> LIVE (${m.homeScore}-${m.awayScore})</span>`; } container.innerHTML=`<div class="bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-900/90 border-2 border-emerald-500/50 rounded-2xl p-5 space-y-4 shadow-xl"><div class="flex items-center justify-between text-xs text-amber-500 font-mono font-bold"><span>🏆 ${m.league}</span><span>⏰ ${m.time}</span></div><div class="flex items-center justify-between font-extrabold text-lg text-gray-900 dark:text-white"><span>${m.home} vs ${m.away}</span>${badgeHtml}</div><div class="bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-xl p-4 space-y-2.5 text-xs"><div class="text-gray-900 dark:text-white font-bold text-sm bg-white dark:bg-gray-900 p-2.5 rounded-lg border border-gray-200 dark:border-gray-800/80">${evaluation.label} • 🛡️ ULTRA SAFE ${evaluation.confidence}</div></div></div>`; }
+        const m=bestPick.match; const evaluation=bestPick.eval; const tierLabel = bestTier===1 ? '🛡️ ULTRA SAFE' : bestTier===2 ? '✅ DAILY SAFE' : '⚠️ BACKUP'; document.getElementById('totalOddsBadge').textContent=`ODDS: ${evaluation.odd.toFixed(2)} • ${tierLabel}`; let badgeHtml=`<span class="bg-emerald-500 text-white px-3 py-1 rounded-xl text-sm font-mono font-black shadow-lg">${tierLabel} @ ${evaluation.odd.toFixed(2)}</span>`; if(evaluation.isFinished){ if(evaluation.isWon){ badgeHtml=`<span class="bg-emerald-500 text-white px-3 py-1 rounded-xl text-xs font-mono font-black shadow-lg flex items-center gap-1">✅ WON (${m.homeScore}-${m.awayScore})</span>`; } else { badgeHtml=`<span class="bg-red-500 text-white px-3 py-1 rounded-xl text-xs font-mono font-black shadow-lg flex items-center gap-1">❌ LOST (${m.homeScore}-${m.awayScore})</span>`; } } else if(m.statusState==='in'){ badgeHtml=`<span class="bg-emerald-500/20 text-emerald-500 dark:text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-xl text-xs font-mono font-bold flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-400 pulse-live"></span> LIVE (${m.homeScore}-${m.awayScore})</span>`; } container.innerHTML=`<div class="bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-900/90 border-2 border-emerald-500/50 rounded-2xl p-5 space-y-4 shadow-xl"><div class="flex items-center justify-between text-xs text-amber-500 font-mono font-bold"><span>🏆 ${m.league}</span><span>⏰ ${m.time}</span></div><div class="flex items-center justify-between font-extrabold text-lg text-gray-900 dark:text-white"><span>${m.home} vs ${m.away}</span>${badgeHtml}</div><div class="bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-xl p-4 space-y-2.5 text-xs"><div class="text-gray-900 dark:text-white font-bold text-sm bg-white dark:bg-gray-900 p-2.5 rounded-lg border border-gray-200 dark:border-gray-800/80">${evaluation.label} • ${tierLabel} ${evaluation.confidence}</div></div></div>`; }
         let currentHistoryTab='single_over15';
         function switchHistoryTab(cat){
             currentHistoryTab=cat;
@@ -595,7 +573,7 @@
             const filter = isOver ? mainFilterOver : mainFilterUnder;
             if(!list) return;
             const filtered = data.filter(x=> filter==='all' ? true : filter==='won' ? x.won : !x.won);
-            if(filtered.length===0){ list.innerHTML=`<div class="text-center p-4 text-xs text-gray-500">${filter==='won'?'No wins yet.':filter==='lost'?'No losses. Great!':'No finished history yet. - Ultra Safe skips risky days.'}</div>`; return; }
+            if(filtered.length===0){ list.innerHTML=`<div class="text-center p-4 text-xs text-gray-500">${filter==='won'?'No wins yet.':filter==='lost'?'No losses. Great!':'No finished history yet.'}</div>`; return; }
             list.innerHTML = filtered.map(x=>x.html).join('');
         }
         function updateMainHistoryStats(){
@@ -620,7 +598,8 @@
             const total=pick.match.homeScore+pick.match.awayScore;
             const matchTime=pick.match.time || '';
             const marketLabel = pick.eval.label.includes('Under') ? 'Under 4.5' : 'Over 1.5';
-            return `<div class="flex items-center justify-between bg-white dark:bg-gray-900 border ${isWon?'border-emerald-500/40':'border-red-500/40'} rounded-xl px-3 py-2.5"><div class="flex items-center gap-2.5"><span class="min-w-[52px] h-8 px-1.5 rounded-full ${isWon?'bg-emerald-500 text-white':'bg-red-500 text-white'} flex items-center justify-center text-[11px] font-black font-mono shrink-0">${matchTime}</span><div><div class="text-xs font-bold text-gray-900 dark:text-white">${pick.match.home} vs ${pick.match.away}</div><div class="text-[10px] font-mono text-gray-500">${dateLabel} • ${pick.match.league} • ${total} Goals • ${marketLabel} • 🛡️</div></div></div><div class="text-right shrink-0"><div class="text-xs font-black ${isWon?'text-emerald-500':'text-red-500'}">${isWon?'WON':'LOST'} ${pick.match.homeScore}-${pick.match.awayScore}</div><div class="text-[10px] font-mono text-gray-500">@ ${pick.eval.odd.toFixed(2)}</div></div></div>`;
+            const tierLabel = pick.eval.tier===1 ? '🛡️ ULTRA' : pick.eval.tier===2 ? '✅ DAILY' : '⚠️ BACKUP';
+            return `<div class="flex items-center justify-between bg-white dark:bg-gray-900 border ${isWon?'border-emerald-500/40':'border-red-500/40'} rounded-xl px-3 py-2.5"><div class="flex items-center gap-2.5"><span class="min-w-[52px] h-8 px-1.5 rounded-full ${isWon?'bg-emerald-500 text-white':'bg-red-500 text-white'} flex items-center justify-center text-[11px] font-black font-mono shrink-0">${matchTime}</span><div><div class="text-xs font-bold text-gray-900 dark:text-white">${pick.match.home} vs ${pick.match.away}</div><div class="text-[10px] font-mono text-gray-500">${dateLabel} • ${pick.match.league} • ${total} Goals • ${marketLabel} • ${tierLabel}</div></div></div><div class="text-right shrink-0"><div class="text-xs font-black ${isWon?'text-emerald-500':'text-red-500'}">${isWon?'WON':'LOST'} ${pick.match.homeScore}-${pick.match.awayScore}</div><div class="text-[10px] font-mono text-gray-500">@ ${pick.eval.odd.toFixed(2)}</div></div></div>`;
         }
         async function loadHistoryBatch(){
             if(historyLoading) return; historyLoading=true;
@@ -635,15 +614,11 @@
                     const dateKey=getYYYYMMDD(d);
                     const dateLabel=d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
                     const overEvaluated=matches.map(m=>({match:m,eval:evaluatePickWithRealData(m,'single_over15')}));
-                    const overLocked=getLockedPick(dateKey,'single_over15');
-                    let overPick=overEvaluated.find(x=>x.match.id===overLocked);
-                    if(overPick && !overPick.eval.isUltraSafe) overPick=null;
-                    if(!overPick){ overPick=pickUltraSafe(overEvaluated, null, 1.16, 1.25); }
+                    const overRes=pickDailyWin(overEvaluated, null);
+                    const overPick=overRes?overRes.pick:null;
                     const underEvaluated=matches.map(m=>({match:m,eval:evaluatePickWithRealData(m,'single_under45')}));
-                    const underLocked=getLockedPick(dateKey,'single_under45');
-                    let underPick=underEvaluated.find(x=>x.match.id===underLocked);
-                    if(underPick && (!underPick.eval.isUltraSafe || (overPick && underPick.match.id===overPick.match.id))) underPick=null;
-                    if(!underPick){ underPick=pickUltraSafe(underEvaluated, overPick?overPick.match.id:null, 1.08, 1.13); }
+                    const underRes=pickDailyWin(underEvaluated, overPick?overPick.match.id:null);
+                    const underPick=underRes?underRes.pick:null;
                     if(overPick && overPick.match.statusState==='post'){ mainHistoryDataOver.push({ won: overPick.eval.isWon, odd: overPick.eval.odd, html: historyCard(overPick, d, dateLabel) }); }
                     if(underPick && underPick.match.statusState==='post'){ mainHistoryDataUnder.push({ won: underPick.eval.isWon, odd: underPick.eval.odd, html: historyCard(underPick, d, dateLabel) }); }
                 }catch(e){}
