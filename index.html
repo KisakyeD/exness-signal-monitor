@@ -9,6 +9,8 @@
         tailwind.config = { darkMode: 'class', theme: { extend: { colors: { vip: { gold: '#f59e0b', darkGold: '#b45309' } } } } }
     </script>
     <style>
+        html { overflow-anchor: none; }
+        body { overflow-anchor: none; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         .pulse-live { animation: pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite; }
@@ -71,7 +73,6 @@
         <div class="flex items-center justify-between bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-1.5 no-scrollbar overflow-x-auto gap-2" id="dateRibbon"></div>
         <p class="hidden text-[10px] text-gray-500 dark:text-gray-400 font-mono text-center -mt-3">Calendar is continuous — scroll left/right or pick any date. Picks never stop.</p>
 
-        <!-- PROFESSIONAL TICKET -->
         <section class="space-y-3 relative hidden" id="ticketSection">
             <div class="flex items-center justify-between">
                 <h3 class="font-black text-gray-900 dark:text-white text-base flex items-center gap-2">🎫 DAILY TICKET</h3>
@@ -79,38 +80,27 @@
                     <span id="ticketDateLabel" class="text-[11px] font-mono text-gray-500">TODAY</span>
                     <div class="relative">
                         <button onclick="toggleTicketMenu(event)" id="ticketMenuBtn" class="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 text-lg font-black leading-none">⋮</button>
-                        <!-- PRO TICKET HISTORY -->
                         <div id="ticketHistoryMenu" class="hidden absolute right-0 top-10 w-[340px] max-w-[calc(100vw-2rem)] bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-2xl z-30 overflow-hidden">
                             <div class="p-3 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
-                                <div>
-                                    <div class="text-xs font-black text-gray-900 dark:text-white">🎫 Ticket History</div>
-                                    <div class="text-[10px] font-mono text-gray-500">Last 60 Days • Verified Results</div>
-                                </div>
+                                <div><div class="text-xs font-black text-gray-900 dark:text-white">🎫 Ticket History</div><div class="text-[10px] font-mono text-gray-500">Last 60 Days • Verified Results</div></div>
                                 <button onclick="toggleTicketMenu(event)" class="w-6 h-6 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-xs">✕</button>
                             </div>
-                            <!-- Stats -->
                             <div class="grid grid-cols-3 gap-2 p-3 pb-2 text-center">
                                 <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-2"><div class="text-base font-black text-emerald-500" id="ticketHistWins">0</div><div class="text-[9px] font-mono text-gray-500">WON ⬆️</div></div>
                                 <div class="bg-red-500/10 border border-red-500/30 rounded-xl p-2"><div class="text-base font-black text-red-500" id="ticketHistLosses">0</div><div class="text-[9px] font-mono text-gray-500">LOST ⬇️</div></div>
                                 <div class="bg-amber-500/10 border border-amber-500/30 rounded-xl p-2"><div class="text-base font-black text-amber-500" id="ticketHistRate">0%</div><div class="text-[9px] font-mono text-gray-500">WIN RATE</div></div>
                             </div>
-                            <!-- Streak + Profit -->
                             <div class="mx-3 mb-2 bg-gray-50 dark:bg-gray-800/70 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 flex items-center justify-between">
                                 <div class="text-[11px]"><span class="font-black text-gray-900 dark:text-white" id="ticketStreakLabel">🔥 Streak: —</span><div class="text-[10px] font-mono text-gray-500" id="ticketProfitLabel">Profit (10k stake): —</div></div>
                                 <div class="text-right"><div class="text-[11px] font-black" id="ticketRoiLabel">ROI —</div><div class="text-[9px] font-mono text-gray-500">Return on stake</div></div>
                             </div>
-                            <!-- Filters -->
                             <div class="flex gap-1.5 px-3 pb-2">
                                 <button onclick="setTicketHistoryFilter('all')" id="ticketFilterAll" class="flex-1 py-1.5 rounded-lg text-[11px] font-black bg-amber-500 text-gray-950 transition">All</button>
                                 <button onclick="setTicketHistoryFilter('won')" id="ticketFilterWon" class="flex-1 py-1.5 rounded-lg text-[11px] font-black bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 transition">Won ⬆️</button>
                                 <button onclick="setTicketHistoryFilter('lost')" id="ticketFilterLost" class="flex-1 py-1.5 rounded-lg text-[11px] font-black bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 transition">Lost ⬇️</button>
                             </div>
-                            <div id="ticketHistoryList" class="max-h-[340px] overflow-y-auto p-2 pt-0 space-y-2 no-scrollbar">
-                                <div class="text-center p-4 text-xs font-mono text-gray-500">Tap ⋮ to load ticket history...</div>
-                            </div>
-                            <div class="p-2 border-t border-gray-200 dark:border-gray-700 text-center">
-                                <button onclick="loadTicketHistory(true)" class="text-[11px] font-bold text-amber-500">↻ Refresh Ticket History</button>
-                            </div>
+                            <div id="ticketHistoryList" class="max-h-[340px] overflow-y-auto p-2 pt-0 space-y-2 no-scrollbar"><div class="text-center p-4 text-xs font-mono text-gray-500">Tap ⋮ to load ticket history...</div></div>
+                            <div class="p-2 border-t border-gray-200 dark:border-gray-700 text-center"><button onclick="loadTicketHistory(true)" class="text-[11px] font-bold text-amber-500">↻ Refresh Ticket History</button></div>
                         </div>
                     </div>
                 </div>
@@ -131,11 +121,12 @@
             <div class="grid grid-cols-1 gap-3" id="matchFeedContainer"></div>
         </section>
 
+        <!-- MAIN HISTORY WITH PROFIT / STREAK / FILTER -->
         <section class="space-y-4 pt-2 border-t border-gray-200 dark:border-gray-800">
             <div class="flex items-center justify-between flex-wrap gap-2 pt-4">
                 <div>
                     <h3 class="font-bold text-gray-900 dark:text-white text-base">📈 history — Last 60 Days</h3>
-                    <p class="text-[11px] text-gray-500 dark:text-gray-400 font-mono">⬆️ = Won &nbsp; ⬇️ = Lost &nbsp; • Over & Under are separate, never same game</p>
+                    <p class="text-[11px] text-gray-500 dark:text-gray-400 font-mono">⬆️ = Won &nbsp; ⬇️ = Lost &nbsp; • Profit on 10k stake</p>
                 </div>
                 <button onclick="loadMoreHistory()" id="historyBtn" class="px-4 py-2 rounded-xl bg-amber-500 text-gray-950 text-xs font-black">Load More</button>
             </div>
@@ -143,19 +134,39 @@
                 <button onclick="switchHistoryTab('single_over15')" id="histTab_over" class="flex-1 px-3 py-2.5 rounded-xl text-xs font-black bg-amber-500 text-gray-950 transition">⚽ OVER 1.5 HISTORY</button>
                 <button onclick="switchHistoryTab('single_under45')" id="histTab_under" class="flex-1 px-3 py-2.5 rounded-xl text-xs font-black bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 transition">🔒 UNDER 4.5 HISTORY</button>
             </div>
+            <!-- OVER WRAP -->
             <div id="historyOverWrap" class="space-y-2">
-                <div id="historySummary" class="grid grid-cols-3 gap-2 text-center">
+                <div class="grid grid-cols-3 gap-2 text-center">
                     <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-2"><div class="text-lg font-black text-emerald-500" id="histWins">0</div><div class="text-[10px] font-mono text-gray-500">WINS ⬆️</div></div>
                     <div class="bg-red-500/10 border border-red-500/30 rounded-xl p-2"><div class="text-lg font-black text-red-500" id="histLosses">0</div><div class="text-[10px] font-mono text-gray-500">LOSSES ⬇️</div></div>
                     <div class="bg-amber-500/10 border border-amber-500/30 rounded-xl p-2"><div class="text-lg font-black text-amber-500" id="histRate">0%</div><div class="text-[10px] font-mono text-gray-500">WIN RATE</div></div>
                 </div>
+                <div class="bg-gray-50 dark:bg-gray-800/70 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 flex items-center justify-between">
+                    <div class="text-[11px]"><span class="font-black text-gray-900 dark:text-white" id="histStreakOver">🔥 Streak: —</span><div class="text-[10px] font-mono text-gray-500" id="histProfitOver">Profit (10k stake): —</div></div>
+                    <div class="text-right"><div class="text-[11px] font-black" id="histRoiOver">ROI —</div><div class="text-[9px] font-mono text-gray-500">Return</div></div>
+                </div>
+                <div class="flex gap-1.5">
+                    <button onclick="setMainHistoryFilter('over','all')" id="mainFilterOverAll" class="flex-1 py-1.5 rounded-lg text-[11px] font-black bg-amber-500 text-gray-950 transition">All</button>
+                    <button onclick="setMainHistoryFilter('over','won')" id="mainFilterOverWon" class="flex-1 py-1.5 rounded-lg text-[11px] font-black bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 transition">Won ⬆️</button>
+                    <button onclick="setMainHistoryFilter('over','lost')" id="mainFilterOverLost" class="flex-1 py-1.5 rounded-lg text-[11px] font-black bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 transition">Lost ⬇️</button>
+                </div>
                 <div id="historyList" class="space-y-2"><div class="text-center p-4 text-xs font-mono text-gray-500">Loading history... please wait</div></div>
             </div>
+            <!-- UNDER WRAP -->
             <div id="historyUnderWrap" class="space-y-2 hidden">
                 <div class="grid grid-cols-3 gap-2 text-center">
                     <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-2"><div class="text-lg font-black text-emerald-500" id="histWinsUnder">0</div><div class="text-[10px] font-mono text-gray-500">WINS ⬆️</div></div>
                     <div class="bg-red-500/10 border border-red-500/30 rounded-xl p-2"><div class="text-lg font-black text-red-500" id="histLossesUnder">0</div><div class="text-[10px] font-mono text-gray-500">LOSSES ⬇️</div></div>
                     <div class="bg-amber-500/10 border border-amber-500/30 rounded-xl p-2"><div class="text-lg font-black text-amber-500" id="histRateUnder">0%</div><div class="text-[10px] font-mono text-gray-500">WIN RATE</div></div>
+                </div>
+                <div class="bg-gray-50 dark:bg-gray-800/70 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 flex items-center justify-between">
+                    <div class="text-[11px]"><span class="font-black text-gray-900 dark:text-white" id="histStreakUnder">🔥 Streak: —</span><div class="text-[10px] font-mono text-gray-500" id="histProfitUnder">Profit (10k stake): —</div></div>
+                    <div class="text-right"><div class="text-[11px] font-black" id="histRoiUnder">ROI —</div><div class="text-[9px] font-mono text-gray-500">Return</div></div>
+                </div>
+                <div class="flex gap-1.5">
+                    <button onclick="setMainHistoryFilter('under','all')" id="mainFilterUnderAll" class="flex-1 py-1.5 rounded-lg text-[11px] font-black bg-amber-500 text-gray-950 transition">All</button>
+                    <button onclick="setMainHistoryFilter('under','won')" id="mainFilterUnderWon" class="flex-1 py-1.5 rounded-lg text-[11px] font-black bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 transition">Won ⬆️</button>
+                    <button onclick="setMainHistoryFilter('under','lost')" id="mainFilterUnderLost" class="flex-1 py-1.5 rounded-lg text-[11px] font-black bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 transition">Lost ⬇️</button>
                 </div>
                 <div id="historyListUnder" class="space-y-2"><div class="text-center p-4 text-xs font-mono text-gray-500">Loading history... please wait</div></div>
             </div>
@@ -197,6 +208,7 @@
         let selectedDateObj=new Date();
         let currentCategory='single_over15';
         const categories=['single_over15','single_under45'];
+        // FIX: Ribbon scroll - horizontal only, never moves page up
         function initRibbon(){
             const ribbon=document.getElementById('dateRibbon');
             const calInput=document.getElementById('drawerCalendarInput');
@@ -215,13 +227,16 @@
                 html+=`<button id="ribbon-${isoVal}" type="button" onclick="jumpToDate('${isoVal}')" class="shrink-0 px-3 py-1.5 rounded-lg text-left transition ${isSelected?'bg-amber-500 text-gray-950 font-bold shadow':'bg-gray-100 dark:bg-gray-800/70 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-800 hover:text-black dark:hover:text-white'}"><div class="text-[10px] font-mono leading-tight">${dayLabel}</div><div class="text-xs font-bold leading-tight">${dateLabel}</div></button>`;
             }
             ribbon.innerHTML=html;
-            setTimeout(()=>{ const el=document.getElementById(`ribbon-${toInputDateValue(center)}`); if(el) el.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'}); },50);
+            // FIX: use scrollLeft, NOT scrollIntoView (which jumps page up)
+            setTimeout(()=>{ const el=document.getElementById(`ribbon-${toInputDateValue(center)}`); if(el && ribbon){ const targetLeft = el.offsetLeft - (ribbon.clientWidth/2) + (el.clientWidth/2); ribbon.scrollTo({ left: targetLeft, behavior: 'smooth' }); } },50);
         }
         function getLockedPick(dateStr,category){ try{ const store=JSON.parse(localStorage.getItem('wins1_real_locked_picks')||'{}'); return store[`${dateStr}_${category}`]||null; }catch(e){ return null; } }
         function saveLockedPick(dateStr,category,matchIdentifier){ try{ const store=JSON.parse(localStorage.getItem('wins1_real_locked_picks')||'{}'); store[`${dateStr}_${category}`]=matchIdentifier; localStorage.setItem('wins1_real_locked_picks',JSON.stringify(store)); }catch(e){} }
         function goToHomepage(){ toggleDrawer(false); hideTicket(); selectedDateObj=new Date(); switchCategory('single_over15'); initRibbon(); }
         function hideTicket(){ const t=document.getElementById('ticketSection'); if(t) t.classList.add('hidden'); const ticketBtn=document.getElementById('nav_ticket'); if(ticketBtn) ticketBtn.className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 font-bold text-xs transition"; }
+        // FIX: Ticket scroll - no jump to top, keep position, offset for sticky header
         function goToTicket(){
+            const scrollYBefore = window.scrollY;
             toggleDrawer(false);
             const ticketBtn=document.getElementById('nav_ticket');
             const overBtn=document.getElementById('nav_single_over15');
@@ -231,7 +246,18 @@
             if(underBtn) underBtn.className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 font-medium text-xs transition";
             const t=document.getElementById('ticketSection'); if(t) t.classList.remove('hidden');
             loadComboTicket(selectedDateObj);
-            setTimeout(()=>{ const el=document.getElementById('ticketSection'); if(el){ el.scrollIntoView({behavior:'smooth', block:'start'}); el.classList.remove('ticket-highlight'); void el.offsetWidth; el.classList.add('ticket-highlight'); } }, 150);
+            // Wait for render, then scroll gently to ticket top - 80px for header, not to page top
+            requestAnimationFrame(()=>{
+                setTimeout(()=>{
+                    const el=document.getElementById('ticketSection'); if(!el) return;
+                    const top = el.getBoundingClientRect().top + window.scrollY - 80;
+                    // Only scroll if ticket is not already visible, and never jump to 0
+                    if(top < scrollYBefore - 20 || top > scrollYBefore + window.innerHeight){
+                        window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+                    }
+                    el.classList.remove('ticket-highlight'); void el.offsetWidth; el.classList.add('ticket-highlight');
+                }, 180);
+            });
         }
         function switchCategory(cat){ currentCategory=cat; toggleDrawer(false); hideTicket();
             categories.forEach(c=>{ const navBtn=document.getElementById(`nav_${c}`); if(navBtn){ if(c===cat){ navBtn.className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl bg-amber-500/20 text-amber-400 font-bold text-xs border border-amber-500/40 transition"; } else { navBtn.className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 font-medium text-xs transition"; } } }); const badgeText={'single_over15':"HIGH-SCORING OVER 1.5",'single_under45':"SAFE UNDER 4.5"}; document.getElementById('headerCategoryBadge').textContent=badgeText[cat]||"LIVE VIP"; document.getElementById('sectionTitleCategory').textContent=badgeText[cat]||"SELECTION"; fetchMatchData(selectedDateObj,false); }
@@ -284,7 +310,7 @@
         }
         let ticketMenuOpen=false; let ticketHistoryLoaded=false; let ticketHistoryLoading=false;
         let ticketHistoryData=[]; let ticketHistoryFilter='all';
-        function toggleTicketMenu(e){ if(e) e.stopPropagation(); const menu=document.getElementById('ticketHistoryMenu'); if(!menu) return; ticketMenuOpen=!menu.classList.contains('hidden'); if(ticketMenuOpen){ menu.classList.add('hidden'); ticketMenuOpen=false; } else { menu.classList.remove('hidden'); ticketMenuOpen=true; if(!ticketHistoryLoaded) loadTicketHistory(false); } }
+        function toggleTicketMenu(e){ if(e){ e.stopPropagation(); e.preventDefault(); } const menu=document.getElementById('ticketHistoryMenu'); if(!menu) return; ticketMenuOpen=!menu.classList.contains('hidden'); if(ticketMenuOpen){ menu.classList.add('hidden'); ticketMenuOpen=false; } else { menu.classList.remove('hidden'); ticketMenuOpen=true; if(!ticketHistoryLoaded) loadTicketHistory(false); } }
         document.addEventListener('click', (e)=>{ const menu=document.getElementById('ticketHistoryMenu'); const btn=document.getElementById('ticketMenuBtn'); if(menu && !menu.classList.contains('hidden') && btn && !menu.contains(e.target) && !btn.contains(e.target)){ menu.classList.add('hidden'); ticketMenuOpen=false; } });
         function setTicketHistoryFilter(f){ ticketHistoryFilter=f; const all=document.getElementById('ticketFilterAll'); const won=document.getElementById('ticketFilterWon'); const lost=document.getElementById('ticketFilterLost'); const active="flex-1 py-1.5 rounded-lg text-[11px] font-black bg-amber-500 text-gray-950 transition"; const inactive="flex-1 py-1.5 rounded-lg text-[11px] font-black bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 transition"; if(all) all.className = f==='all'?active:inactive; if(won) won.className = f==='won'? "flex-1 py-1.5 rounded-lg text-[11px] font-black bg-emerald-500 text-white transition" : inactive; if(lost) lost.className = f==='lost'? "flex-1 py-1.5 rounded-lg text-[11px] font-black bg-red-500 text-white transition" : inactive; renderTicketHistoryList(); }
         function shortName(n){ return n.replace('Real Salt Lake','RSL').replace('Tottenham Hotspur','Tottenham').replace('Nottingham Forest','Nottm Forest').replace('Wolverhampton Wanderers','Wolves').replace('Brighton & Hove Albion','Brighton').replace('West Ham United','West Ham').replace('Newcastle United','Newcastle').replace('Manchester United','Man United').replace('Manchester City','Man City'); }
@@ -331,7 +357,7 @@
                 const d=new Date(); d.setDate(d.getDate()-back);
                 try{
                     const matches=await fetchRealFixtures(d);
-                    if(matches.length===0){ ticketHistoryData.push({ day: d.toLocaleDateString('en-US',{weekday:'short'}), date: d.toLocaleDateString('en-US',{month:'short',day:'numeric'}), won:false, combined:'0.00', isEmpty:true, overHome:'No Matches', overAway:'', overScore:'-', overWon:false, underHome:'', underAway:'', underScore:'-', underWon:false }); continue; }
+                    if(matches.length===0) continue;
                     const dateKey=getYYYYMMDD(d);
                     const dateLabel=d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
                     const dayLabel=d.toLocaleDateString('en-US',{weekday:'short'});
@@ -343,14 +369,13 @@
                     if(underPick && overPick && underPick.match.id===overPick.match.id) underPick=null;
                     if(!underPick){ const avail=underEv.filter(x=>!overPick || x.match.id!==overPick.match.id); avail.sort((a,b)=>b.eval.scoreRank-a.eval.scoreRank); underPick=avail[0]||underEv[0]; }
                     if(!overPick || !underPick) continue;
-                    if(overPick.match.statusState!=='post' || underPick.match.statusState!=='post'){ ticketHistoryData.push({ day: dayLabel, date: dateLabel, won:false, combined:(overPick.eval.odd*underPick.eval.odd).toFixed(2), isEmpty:true, overHome:'Not Finished', overAway:'', overScore:'-', overWon:false, underHome:'', underAway:'', underScore:'-', underWon:false }); continue; }
+                    if(overPick.match.statusState!=='post' || underPick.match.statusState!=='post') continue;
                     const ticketWon = overPick.eval.isWon && underPick.eval.isWon;
                     const combined=(overPick.eval.odd * underPick.eval.odd).toFixed(2);
                     ticketHistoryData.push({ day: dayLabel, date: dateLabel, won: ticketWon, combined, isEmpty:false, overHome: overPick.match.home, overAway: overPick.match.away, overScore: `${overPick.match.homeScore}-${overPick.match.awayScore}`, overWon: overPick.eval.isWon, underHome: underPick.match.home, underAway: underPick.match.away, underScore: `${underPick.match.homeScore}-${underPick.match.awayScore}`, underWon: underPick.eval.isWon });
                 }catch(e){}
-                if(back % 10 === 0){ ticketHistoryData = ticketHistoryData.filter(t=>!t.isEmpty); updateTicketHistoryStats(); renderTicketHistoryList(); }
+                if(back % 10 === 0){ updateTicketHistoryStats(); renderTicketHistoryList(); }
             }
-            ticketHistoryData = ticketHistoryData.filter(t=>!t.isEmpty);
             updateTicketHistoryStats(); renderTicketHistoryList();
             ticketHistoryLoading=false;
         }
@@ -459,9 +484,52 @@
                 overBtn.className="flex-1 px-3 py-2.5 rounded-xl text-xs font-black bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 transition";
             }
         }
+        // MAIN HISTORY - Profit / Streak / Filter
         let historyLoading=false; let historyLoadedDays=0;
-        let historyWins=0, historyLosses=0, historyHtml='';
-        let historyWinsUnder=0, historyLossesUnder=0, historyHtmlUnder='';
+        let mainHistoryDataOver=[]; let mainHistoryDataUnder=[];
+        let mainFilterOver='all'; let mainFilterUnder='all';
+        function setMainHistoryFilter(which, f){
+            if(which==='over'){ mainFilterOver=f; } else { mainFilterUnder=f; }
+            const prefix = which==='over' ? 'Over' : 'Under';
+            const ids = { all: `mainFilter${prefix}All`, won: `mainFilter${prefix}Won`, lost: `mainFilter${prefix}Lost` };
+            const activeAll="flex-1 py-1.5 rounded-lg text-[11px] font-black bg-amber-500 text-gray-950 transition";
+            const activeWon="flex-1 py-1.5 rounded-lg text-[11px] font-black bg-emerald-500 text-white transition";
+            const activeLost="flex-1 py-1.5 rounded-lg text-[11px] font-black bg-red-500 text-white transition";
+            const inactive="flex-1 py-1.5 rounded-lg text-[11px] font-black bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 transition";
+            document.getElementById(ids.all).className = f==='all'?activeAll:inactive;
+            document.getElementById(ids.won).className = f==='won'?activeWon:inactive;
+            document.getElementById(ids.lost).className = f==='lost'?activeLost:inactive;
+            renderMainHistory(which);
+        }
+        function renderMainHistory(which){
+            const isOver = which==='over';
+            const data = isOver ? mainHistoryDataOver : mainHistoryDataUnder;
+            const list = document.getElementById(isOver ? 'historyList' : 'historyListUnder');
+            const filter = isOver ? mainFilterOver : mainFilterUnder;
+            if(!list) return;
+            const filtered = data.filter(x=> filter==='all' ? true : filter==='won' ? x.won : !x.won);
+            if(filtered.length===0){ list.innerHTML=`<div class="text-center p-4 text-xs text-gray-500">${filter==='won'?'No wins yet.':filter==='lost'?'No losses. Great!':'No finished history yet.'}</div>`; return; }
+            list.innerHTML = filtered.map(x=>x.html).join('');
+        }
+        function updateMainHistoryStats(){
+            // Over
+            let wO=0,lO=0, pO=0, sO=0; mainHistoryDataOver.forEach(t=>{ if(t.won){ wO++; pO+=10000*(t.odd-1); } else { lO++; pO-=10000; } sO+=10000; });
+            let streakO=0; for(let i=0;i<mainHistoryDataOver.length;i++){ if(mainHistoryDataOver[i].won) streakO++; else break; }
+            document.getElementById('histWins').textContent=wO; document.getElementById('histLosses').textContent=lO;
+            document.getElementById('histRate').textContent = (wO+lO)>0 ? Math.round(wO/(wO+lO)*100)+'%' : '0%';
+            document.getElementById('histStreakOver').textContent = streakO>0 ? `🔥 Streak: ${streakO} WON` : (mainHistoryDataOver.length?`🔥 Streak: 0 — Last Lost`:`🔥 Streak: —`);
+            const pElO=document.getElementById('histProfitOver'); if(pElO){ pElO.textContent=`Profit (10k stake): ${pO>=0?'+':''}${Math.round(pO).toLocaleString()} UGX`; pElO.className=`text-[10px] font-mono ${pO>=0?'text-emerald-600 dark:text-emerald-400':'text-red-500'}`; }
+            const roiO=document.getElementById('histRoiOver'); if(roiO){ const roi=sO>0?(pO/sO*100):0; roiO.textContent=`ROI ${roi>=0?'+':''}${roi.toFixed(1)}%`; roiO.className=`text-[11px] font-black ${roi>=0?'text-emerald-500':'text-red-500'}`; }
+            // Under
+            let wU=0,lU=0, pU=0, sU=0; mainHistoryDataUnder.forEach(t=>{ if(t.won){ wU++; pU+=10000*(t.odd-1); } else { lU++; pU-=10000; } sU+=10000; });
+            let streakU=0; for(let i=0;i<mainHistoryDataUnder.length;i++){ if(mainHistoryDataUnder[i].won) streakU++; else break; }
+            document.getElementById('histWinsUnder').textContent=wU; document.getElementById('histLossesUnder').textContent=lU;
+            document.getElementById('histRateUnder').textContent = (wU+lU)>0 ? Math.round(wU/(wU+lU)*100)+'%' : '0%';
+            document.getElementById('histStreakUnder').textContent = streakU>0 ? `🔥 Streak: ${streakU} WON` : (mainHistoryDataUnder.length?`🔥 Streak: 0 — Last Lost`:`🔥 Streak: —`);
+            const pElU=document.getElementById('histProfitUnder'); if(pElU){ pElU.textContent=`Profit (10k stake): ${pU>=0?'+':''}${Math.round(pU).toLocaleString()} UGX`; pElU.className=`text-[10px] font-mono ${pU>=0?'text-emerald-600 dark:text-emerald-400':'text-red-500'}`; }
+            const roiU=document.getElementById('histRoiUnder'); if(roiU){ const roi=sU>0?(pU/sU*100):0; roiU.textContent=`ROI ${roi>=0?'+':''}${roi.toFixed(1)}%`; roiU.className=`text-[11px] font-black ${roi>=0?'text-emerald-500':'text-red-500'}`; }
+            renderMainHistory('over'); renderMainHistory('under');
+        }
         function historyCard(pick, d, dateLabel){
             const isWon=pick.eval.isWon;
             const total=pick.match.homeScore+pick.match.awayScore;
@@ -472,8 +540,6 @@
         async function loadHistoryBatch(){
             if(historyLoading) return; historyLoading=true;
             const btn=document.getElementById('historyBtn');
-            const list=document.getElementById('historyList');
-            const listUnder=document.getElementById('historyListUnder');
             if(btn) btn.textContent='Loading...';
             const start=historyLoadedDays+1; const end=Math.min(60, historyLoadedDays+7);
             for(let back=start; back<=end; back++){
@@ -496,27 +562,12 @@
                         available.sort((a,b)=>b.eval.scoreRank-a.eval.scoreRank);
                         underPick=available[0] || underEvaluated[0];
                     }
-                    if(overPick && overPick.match.statusState==='post'){
-                        if(overPick.eval.isWon) historyWins++; else historyLosses++;
-                        historyHtml+=historyCard(overPick, d, dateLabel);
-                    }
-                    if(underPick && underPick.match.statusState==='post'){
-                        if(underPick.eval.isWon) historyWinsUnder++; else historyLossesUnder++;
-                        historyHtmlUnder+=historyCard(underPick, d, dateLabel);
-                    }
+                    if(overPick && overPick.match.statusState==='post'){ mainHistoryDataOver.push({ won: overPick.eval.isWon, odd: overPick.eval.odd, html: historyCard(overPick, d, dateLabel) }); }
+                    if(underPick && underPick.match.statusState==='post'){ mainHistoryDataUnder.push({ won: underPick.eval.isWon, odd: underPick.eval.odd, html: historyCard(underPick, d, dateLabel) }); }
                 }catch(e){}
             }
             historyLoadedDays=end;
-            list.innerHTML=historyHtml || `<div class="text-center p-4 text-xs text-gray-500">No finished Over history yet.</div>`;
-            listUnder.innerHTML=historyHtmlUnder || `<div class="text-center p-4 text-xs text-gray-500">No finished Under history yet.</div>`;
-            document.getElementById('histWins').textContent=historyWins;
-            document.getElementById('histLosses').textContent=historyLosses;
-            const totalOver=historyWins+historyLosses;
-            document.getElementById('histRate').textContent= totalOver>0 ? Math.round((historyWins/totalOver)*100)+'%' : '0%';
-            document.getElementById('histWinsUnder').textContent=historyWinsUnder;
-            document.getElementById('histLossesUnder').textContent=historyLossesUnder;
-            const totalUnder=historyWinsUnder+historyLossesUnder;
-            document.getElementById('histRateUnder').textContent= totalUnder>0 ? Math.round((historyWinsUnder/totalUnder)*100)+'%' : '0%';
+            updateMainHistoryStats();
             if(btn) btn.textContent = historyLoadedDays>=60 ? 'All 60 Days Loaded' : 'Load More ('+historyLoadedDays+'/60)';
             historyLoading=false;
             if(historyLoadedDays<60){ setTimeout(()=>{ loadHistoryBatch(); }, 600); }
