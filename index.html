@@ -178,23 +178,15 @@ function evaluateBestMarket(match){
     let s=baseScore; if(xgEst>=3.5) s+=5; if(tempo>=0.75) s+=3;
     if(s>=82){ let prob=clamp(0.55+(s/100)*0.30,0.70,0.90); let odd=parseFloat((1/prob).toFixed(2)); if(odd>=1.30&&odd<=2.10) candidates.push({key:'over25',label:'Over 2.5 Goals',emoji:'🔥',prob,odd,confidence:(prob*100).toFixed(1)+'%',isWon:isFinished?total>=3:false,isFinished,score:Math.min(100,s),reasons,xgEst}) }
   }
-  // ✅ CHANGED ONLY: Over 1.5 now uses its OWN score like Under 5.5 - to give MORE games
-  let over15Score=0;
-  if(xgEst>=2.2) over15Score+=25; else if(xgEst>=1.8) over15Score+=18; else if(xgEst>=1.5) over15Score+=10;
-  if(tempo>=0.60) over15Score+=20; else if(tempo>=0.50) over15Score+=14; else over15Score+=6;
-  if(weak>=0.30) over15Score+=20; else if(weak>=0.20) over15Score+=14; else over15Score+=6;
-  if(bttsScore>=0.50) over15Score+=10; else over15Score+=5;
-  if(ou&&ou>=2.0) over15Score+=15; else if(ou&&ou>=1.5) over15Score+=10; else over15Score+=5;
-  if(both>=0.70) over15Score+=10; else over15Score+=5;
-  if(over15Score>=80){
-    let prob=clamp(0.70+(over15Score/100)*0.28,0.82,0.98); let odd=parseFloat((1/prob).toFixed(2));
-    if(odd>=1.02&&odd<=1.30) candidates.push({key:'over15',label:'Over 1.5 Goals',emoji:'⚽',prob,odd,confidence:(prob*100).toFixed(1)+'%',isWon:isFinished?total>=2:false,isFinished,score:over15Score,reasons:[`xG:${xgEst.toFixed(2)}`,`Tempo:${tempo.toFixed(2)}`,`Defence:${weak.toFixed(2)}`,`Over 1.5 Score:${over15Score}/100`],xgEst})
+  if(!(h.lossRate<0.15&&a.lossRate<0.15) && !(ou&&ou<2.0) && weak>=0.28 && bttsScore>=0.45){
+    if(baseScore>=80){ let prob=clamp(0.60+(baseScore/100)*0.35,0.78,0.96); let odd=parseFloat((1/prob).toFixed(2)); if(odd>=1.05&&odd<=1.30) candidates.push({key:'over15',label:'Over 1.5 Goals',emoji:'⚽',prob,odd,confidence:(prob*100).toFixed(1)+'%',isWon:isFinished?total>=2:false,isFinished,score:baseScore,reasons,xgEst}) }
   }
   if(bttsScore>=0.60 && h.lossRate>=0.30 && a.lossRate>=0.30 && xgEst>=2.6){
     let s=baseScore; if(bttsScore>=0.70) s+=4;
     if(s>=80){ let prob=clamp(0.52+(s/100)*0.30,0.68,0.88); let odd=parseFloat((1/prob).toFixed(2)); if(odd>=1.40&&odd<=2.20) candidates.push({key:'btts',label:'BTTS Yes',emoji:'🥅',prob,odd,confidence:(prob*100).toFixed(1)+'%',isWon:isFinished?(match.homeScore>=1&&match.awayScore>=1):false,isFinished,score:Math.min(100,s),reasons,xgEst}) }
   }
-  // Under 5.5 - UNCHANGED
+  // ✅ CHANGED: UNDER 4.5 -> UNDER 5.5
+  // Under 5.5 wins if total <=5 - much safer, so we allow slightly higher xG
   let underScore=0;
   if(xgEst<=3.6) underScore+=25; else if(xgEst<=4.0) underScore+=18; else if(xgEst<=4.4) underScore+=10;
   if(tempo<=0.70) underScore+=20; else if(tempo<=0.80) underScore+=14; else underScore+=6;
@@ -203,6 +195,7 @@ function evaluateBestMarket(match){
   if(ou&&ou<=3.5) underScore+=15; else if(ou&&ou<=4.0) underScore+=10; else underScore+=5;
   if(both>=0.70) underScore+=10; else underScore+=5;
   if(underScore>=80){
+    // Under 5.5 is very safe, so odds are low: 1.05 - 1.25
     let prob=clamp(0.70+(underScore/100)*0.28,0.82,0.98); let odd=parseFloat((1/prob).toFixed(2));
     if(odd>=1.02&&odd<=1.30) candidates.push({key:'under55',label:'Under 5.5 Goals',emoji:'🔒',prob,odd,confidence:(prob*100).toFixed(1)+'%',isWon:isFinished?total<=5:false,isFinished,score:underScore,reasons:[`xG:${xgEst.toFixed(2)}`,`Tempo:${tempo.toFixed(2)}`,`Defence:${weak.toFixed(2)}`,`Under Score:${underScore}/100`],xgEst})
   }
