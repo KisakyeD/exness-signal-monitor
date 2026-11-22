@@ -67,14 +67,14 @@
     <div class="text-right"><div class="text-white dark:text-gray-900 font-black text-lg" id="dayProfitPreview">—</div><div class="text-[10px] text-gray-300 dark:text-gray-600 font-mono">If all win @ 10k each</div></div>
   </div>
 
-  <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-xl px-3 py-2 text-[11px] font-mono text-emerald-700 dark:text-emerald-300">✅ 10-FACTOR CHECK: Venue • Away • Referee • Corners • BTTS • xG • Shots • H2H • Lineups • Weather — Must score 85/100 to show</div>
+  <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-xl px-3 py-2 text-[11px] font-mono text-emerald-700 dark:text-emerald-300">✅ 10-FACTOR CHECK: Venue • Away • Referee • Corners • BTTS • xG • Shots • H2H • Lineups • Weather — Must score 80/100 to show</div>
 
   <section class="space-y-3">
     <div class="flex items-center justify-between">
       <h3 class="font-bold text-base flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-emerald-400 pulse-live"></span> <span id="sectionTitleDate">TODAY'S</span> OVER 1.5</h3>
       <span class="text-xs bg-amber-500/10 text-amber-600 border border-amber-500/30 px-3 py-1.5 rounded-xl font-mono font-bold" id="totalPicksBadge">0 PICKS</span>
     </div>
-    <p class="text-[11px] text-gray-500 font-mono">ONLY Over 1.5 Goals • Play SINGLE SINGLE • Same stake • 10-Factor 85+ only</p>
+    <p class="text-[11px] text-gray-500 font-mono">ONLY Over 1.5 Goals • Play SINGLE SINGLE • Same stake • 10-Factor 80+ only</p>
     <div class="grid grid-cols-1 gap-3" id="matchFeedContainer"></div>
   </section>
 
@@ -137,39 +137,30 @@ function triggerRefresh(){try{sessionStorage.removeItem('wins1_cache_'+getYYYYMM
 function parseRecordStats(s){if(!s||typeof s!=='string')return{winRate:.40,lossRate:.35,drawRate:.25,played:0,wins:0,draws:0,losses:0};const p=s.split('-').map(n=>parseInt(n,10)).filter(n=>!isNaN(n));if(p.length===3){const[w,d,l]=p;const pl=w+d+l;return{winRate:pl?w/pl:.40,lossRate:pl?l/pl:.35,drawRate:pl?d/pl:.25,played:pl,wins:w,draws:d,losses:l}}if(p.length===2){const[w,l]=p;const pl=w+l;return{winRate:pl?w/pl:.40,lossRate:pl?l/pl:.35,drawRate:0,played:pl,wins:w,draws:0,losses:l}}return{winRate:.40,lossRate:.35,drawRate:.25,played:0,wins:0,draws:0,losses:0}}
 function clamp(v,a,b){return Math.min(b,Math.max(a,v))}
 
-/* ✅ 10-FACTOR ANALYSIS - FROM YOUR PHOTO */
+/* ✅ 10-FACTOR ANALYSIS - OPTION 1: THRESHOLD 80/100 */
 function evaluateOver15_10Factor(match){
   const h=parseRecordStats(match.homeRecord),a=parseRecordStats(match.awayRecord);
   const ou=parseFloat(match.overUnderLine)||null;
-  // Hard reject: not enough data
   if(h.played<5 || a.played<5) return null;
-
   let score=0; let reasons=[];
-  // 1. VENUE ANALYSIS - 15 pts - Home team must score at home: high winRate + not too defensive
   let venue=0;
   if(h.winRate>=0.55 && h.lossRate>=0.25) venue=15;
   else if(h.winRate>=0.45 && h.lossRate>=0.25) venue=11;
   else if(h.winRate>=0.40) venue=6;
   else venue=0;
   score+=venue; reasons.push(`Venue:${venue}/15`);
-
-  // 2. AWAY ANALYSIS - 15 pts - Away team must score away: away not too weak, concedes + scores
   let away=0;
   if(a.winRate>=0.40 && a.lossRate>=0.30) away=15;
   else if(a.winRate>=0.30 && a.lossRate>=0.30) away=11;
-  else if(a.lossRate>=0.35) away=8; // loses a lot = concedes, but also scores sometimes
+  else if(a.lossRate>=0.35) away=8;
   else away=0;
   score+=away; reasons.push(`Away:${away}/15`);
-
-  // 3. REFEREE - 5 pts - Proxy via market O/U: high O/U = ref allows flow + pens
   let ref=0;
   if(ou && ou>=3.0) ref=5;
   else if(ou && ou>=2.5) ref=4;
   else if(ou && ou>=2.0) ref=2;
   else ref=0;
   score+=ref; reasons.push(`Ref:${ref}/5`);
-
-  // 4. CORNERS - 10 pts - Tempo proxy: high tempo = high corners = high attack
   const tempo=(h.winRate+h.lossRate+a.winRate+a.lossRate)/2;
   let corners=0;
   if(tempo>=0.75) corners=10;
@@ -177,8 +168,6 @@ function evaluateOver15_10Factor(match){
   else if(tempo>=0.60) corners=5;
   else corners=0;
   score+=corners; reasons.push(`Corners:${corners}/10`);
-
-  // 5. BTTS HISTORY - 15 pts - Both teams score + concede: 1 - gap + weakness
   const weak=(h.lossRate+a.lossRate)/2;
   const both=1-Math.abs(h.winRate-a.winRate);
   const bttsScore = (both*0.6 + weak*0.4);
@@ -188,18 +177,13 @@ function evaluateOver15_10Factor(match){
   else if(bttsScore>=0.50) btts=7;
   else btts=0;
   score+=btts; reasons.push(`BTTS:${btts}/15`);
-
-  // 6. xG / xGA - 15 pts - Estimated combined xG: attack + defensive weakness + market
   let xgEst = 2.2 + (tempo*0.8) + (weak*1.2) + (ou? (ou-2.5)*0.3 : 0);
-  // e.g. tempo .7 weak .4 ou 2.5 => 2.2+0.56+0.48=3.24 combined xG
   let xg=0;
   if(xgEst>=3.2) xg=15;
   else if(xgEst>=2.9) xg=12;
   else if(xgEst>=2.6) xg=7;
   else xg=0;
   score+=xg; reasons.push(`xG:${xg}/15 (est ${xgEst.toFixed(2)})`);
-
-  // 7. SHOTS & POSSESSION - 10 pts - WinRate = shots/possession proxy: both teams must be active
   let shots=0;
   const active=(h.winRate+a.winRate)/2;
   if(active>=0.48 && weak>=0.35) shots=10;
@@ -207,38 +191,28 @@ function evaluateOver15_10Factor(match){
   else if(active>=0.35) shots=4;
   else shots=0;
   score+=shots; reasons.push(`Shots:${shots}/10`);
-
-  // 8. H2H & MOTIVATION - 5 pts - Competitive game: gap not too big, both motivated
   let h2h=0;
   if(Math.abs(h.winRate-a.winRate)<=0.15) h2h=5;
   else if(Math.abs(h.winRate-a.winRate)<=0.30) h2h=3;
-  else h2h=0; // too one-sided = favourite may park bus after 1-0
+  else h2h=0;
   score+=h2h; reasons.push(`H2H:${h2h}/5`);
-
-  // 9. LINEUPS & FITNESS - 5 pts - Both have enough games = reliable squad, not rotated youth
   let lineup=0;
   if(h.played>=8 && a.played>=8) lineup=5;
   else if(h.played>=5 && a.played>=5) lineup=4;
   else lineup=0;
   score+=lineup; reasons.push(`Lineup:${lineup}/5`);
-
-  // 10. WEATHER & REST - 5 pts - Neutral: we don't gamble on weather we can't verify. Give full if market confirms good conditions (OU>=2.5)
   let weather=0;
   if(ou && ou>=2.5) weather=5;
   else if(ou && ou>=2.0) weather=3;
   else weather=0;
   score+=weather; reasons.push(`Weather:${weather}/5`);
-
-  // HARD REJECTS - even if score high, skip these traps
-  if(h.lossRate<0.15 && a.lossRate<0.15) return null; // both too defensive = 0-0 trap
-  if(ou && ou<2.0) return null; // market says low goals
-  if(weak<0.28) return null; // nobody concedes
-  if(bttsScore<0.45) return null; // BTTS unlikely
-
-  if(score<85) return null;
-
-  // Prob from score: 85=>82%, 90=>88%, 95=>92%, 100=>95%
-  const prob = clamp(0.60 + (score/100)*0.35, 0.80, 0.96);
+  if(h.lossRate<0.15 && a.lossRate<0.15) return null;
+  if(ou && ou<2.0) return null;
+  if(weak<0.28) return null;
+  if(bttsScore<0.45) return null;
+  // ✅ CHANGED: 85 -> 80 ONLY
+  if(score<80) return null;
+  const prob = clamp(0.60 + (score/100)*0.35, 0.78, 0.96);
   const odd=parseFloat((1/prob).toFixed(2));
   if(odd<1.05 || odd>1.30) return null;
   const total=match.homeScore+match.awayScore;
@@ -262,9 +236,9 @@ function renderPicks(){
   const container=document.getElementById('matchFeedContainer');
   let list=[...allTodayPicks].sort((a,b)=>b.score-a.score);
   document.getElementById('totalPicksBadge').textContent=list.length+' PICKS';
-  if(list.length===0){container.innerHTML=`<div class="bg-white dark:bg-gray-900 border rounded-2xl p-6 text-center space-y-2"><div class="text-3xl">🛡️</div><div class="font-black">NO 10-FACTOR PICK TODAY</div><p class="text-xs text-gray-500">No game scored 85/100 today.<br>No pick = No loss. This is how losses drop.</p></div>`;document.getElementById('daySummary').textContent='0 picks • No bet today';document.getElementById('dayProfitPreview').textContent='—';return}
+  if(list.length===0){container.innerHTML=`<div class="bg-white dark:bg-gray-900 border rounded-2xl p-6 text-center space-y-2"><div class="text-3xl">🛡️</div><div class="font-black">NO 10-FACTOR PICK TODAY</div><p class="text-xs text-gray-500">No game scored 80/100 today.<br>No pick = No loss.</p></div>`;document.getElementById('daySummary').textContent='0 picks • No bet today';document.getElementById('dayProfitPreview').textContent='—';return}
   let totalStake=list.length*10000;let ifAllWin=list.reduce((s,p)=>s+10000*p.odd,0);let profitIfAll=ifAllWin-totalStake;
-  document.getElementById('daySummary').textContent=`${list.length} singles • 10k each = ${totalStake.toLocaleString()} UGX • Avg @ ${(list.reduce((s,p)=>s+p.odd,0)/list.length).toFixed(2)} • 10-Factor 85+`;
+  document.getElementById('daySummary').textContent=`${list.length} singles • 10k each = ${totalStake.toLocaleString()} UGX • Avg @ ${(list.reduce((s,p)=>s+p.odd,0)/list.length).toFixed(2)} • 10-Factor 80+`;
   document.getElementById('dayProfitPreview').textContent=`+${Math.round(profitIfAll).toLocaleString()} UGX`;
   container.innerHTML=list.map((p,i)=>{
     let badge=`<span class="text-[11px] font-mono text-gray-500 nowrap-badge">⏰ ${p.match.time}</span>`;
