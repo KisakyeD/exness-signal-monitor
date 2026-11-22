@@ -28,8 +28,8 @@
             </div>
             <nav class="space-y-1.5" id="drawerNavList">
                 <div class="hidden"><span>🎯 LIVE DATA VIP MARKETS</span></div>
-                <!-- CHANGED AS YOU ASKED: Box now says daily over 1.5 VIP -->
                 <button onclick="switchCategory('single_over15')" id="nav_single_over15" class="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl bg-amber-500/20 text-amber-400 font-bold text-xs border border-amber-500/40 transition"><span class="flex items-center gap-1.5">⚽</span><span class="flex items-center">daily over 1.5 VIP</span></button>
+                <button onclick="switchCategory('single_under45')" id="nav_single_under45" class="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 font-medium text-xs transition"><span class="flex items-center gap-1.5">🔒</span><span class="flex items-center">daily under 4.5 VIP</span></button>
             </nav>
             <div class="pt-3 border-t border-gray-200 dark:border-gray-800 space-y-2">
                 <label class="text-[11px] text-gray-500 dark:text-gray-400 font-mono block font-bold">⚙️ SETTINGS</label>
@@ -67,6 +67,20 @@
         <div class="flex items-center justify-between bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-1.5 no-scrollbar overflow-x-auto gap-2" id="dateRibbon"></div>
         <p class="hidden text-[10px] text-gray-500 dark:text-gray-400 font-mono text-center -mt-3">Calendar is continuous — scroll left/right or pick any date. Picks never stop.</p>
 
+        <!-- NEW: DAILY TICKET WITH BOTH GAMES -->
+        <section class="space-y-3">
+            <div class="flex items-center justify-between">
+                <h3 class="font-black text-gray-900 dark:text-white text-base flex items-center gap-2">🎫 TODAY'S TICKET - 2 GAMES</h3>
+                <span id="ticketDateLabel" class="text-[11px] font-mono text-gray-500">TODAY</span>
+            </div>
+            <div id="comboTicketContainer" class="bg-gradient-to-br from-amber-500 to-yellow-400 rounded-2xl p-[2px] shadow-xl shadow-amber-500/20">
+                <div class="bg-white dark:bg-gray-900 rounded-2xl p-4 space-y-3">
+                    <div class="text-center p-4 text-xs font-mono text-gray-500">Loading ticket...</div>
+                </div>
+            </div>
+            <p class="text-[11px] text-center text-gray-500 font-mono">Bet both games together as one ticket • 2 different games • Never same game</p>
+        </section>
+
         <section class="space-y-4">
             <div class="flex items-center justify-between flex-wrap gap-2">
                 <div>
@@ -78,20 +92,34 @@
             <div class="grid grid-cols-1 gap-3" id="matchFeedContainer"></div>
         </section>
 
-        <section class="space-y-3 pt-2 border-t border-gray-200 dark:border-gray-800">
+        <section class="space-y-4 pt-2 border-t border-gray-200 dark:border-gray-800">
             <div class="flex items-center justify-between flex-wrap gap-2 pt-4">
                 <div>
                     <h3 class="font-bold text-gray-900 dark:text-white text-base">📈 history — Last 60 Days</h3>
-                    <p class="text-[11px] text-gray-500 dark:text-gray-400 font-mono">⬆️ = Won &nbsp; ⬇️ = Lost<span class="hidden"> &nbsp; • AI Over 1.5 Picks</span></p>
+                    <p class="text-[11px] text-gray-500 dark:text-gray-400 font-mono">⬆️ = Won &nbsp; ⬇️ = Lost &nbsp; • Over & Under are separate, never same game</p>
                 </div>
                 <button onclick="loadMoreHistory()" id="historyBtn" class="px-4 py-2 rounded-xl bg-amber-500 text-gray-950 text-xs font-black">Load More</button>
             </div>
-            <div id="historySummary" class="hidden grid grid-cols-3 gap-2 text-center">
-                <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-2"><div class="text-lg font-black text-emerald-500" id="histWins">0</div><div class="text-[10px] font-mono text-gray-500">WINS ⬆️</div></div>
-                <div class="bg-red-500/10 border border-red-500/30 rounded-xl p-2"><div class="text-lg font-black text-red-500" id="histLosses">0</div><div class="text-[10px] font-mono text-gray-500">LOSSES ⬇️</div></div>
-                <div class="bg-amber-500/10 border border-amber-500/30 rounded-xl p-2"><div class="text-lg font-black text-amber-500" id="histRate">0%</div><div class="text-[10px] font-mono text-gray-500">WIN RATE</div></div>
+            <div class="flex gap-2">
+                <button onclick="switchHistoryTab('single_over15')" id="histTab_over" class="flex-1 px-3 py-2.5 rounded-xl text-xs font-black bg-amber-500 text-gray-950 transition">⚽ OVER 1.5 HISTORY</button>
+                <button onclick="switchHistoryTab('single_under45')" id="histTab_under" class="flex-1 px-3 py-2.5 rounded-xl text-xs font-black bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 transition">🔒 UNDER 4.5 HISTORY</button>
             </div>
-            <div id="historyList" class="space-y-2"><div class="text-center p-4 text-xs font-mono text-gray-500">Loading history... please wait</div></div>
+            <div id="historyOverWrap" class="space-y-2">
+                <div id="historySummary" class="grid grid-cols-3 gap-2 text-center">
+                    <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-2"><div class="text-lg font-black text-emerald-500" id="histWins">0</div><div class="text-[10px] font-mono text-gray-500">WINS ⬆️</div></div>
+                    <div class="bg-red-500/10 border border-red-500/30 rounded-xl p-2"><div class="text-lg font-black text-red-500" id="histLosses">0</div><div class="text-[10px] font-mono text-gray-500">LOSSES ⬇️</div></div>
+                    <div class="bg-amber-500/10 border border-amber-500/30 rounded-xl p-2"><div class="text-lg font-black text-amber-500" id="histRate">0%</div><div class="text-[10px] font-mono text-gray-500">WIN RATE</div></div>
+                </div>
+                <div id="historyList" class="space-y-2"><div class="text-center p-4 text-xs font-mono text-gray-500">Loading history... please wait</div></div>
+            </div>
+            <div id="historyUnderWrap" class="space-y-2 hidden">
+                <div class="grid grid-cols-3 gap-2 text-center">
+                    <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-2"><div class="text-lg font-black text-emerald-500" id="histWinsUnder">0</div><div class="text-[10px] font-mono text-gray-500">WINS ⬆️</div></div>
+                    <div class="bg-red-500/10 border border-red-500/30 rounded-xl p-2"><div class="text-lg font-black text-red-500" id="histLossesUnder">0</div><div class="text-[10px] font-mono text-gray-500">LOSSES ⬇️</div></div>
+                    <div class="bg-amber-500/10 border border-amber-500/30 rounded-xl p-2"><div class="text-lg font-black text-amber-500" id="histRateUnder">0%</div><div class="text-[10px] font-mono text-gray-500">WIN RATE</div></div>
+                </div>
+                <div id="historyListUnder" class="space-y-2"><div class="text-center p-4 text-xs font-mono text-gray-500">Loading history... please wait</div></div>
+            </div>
             <p id="historyNote" class="hidden text-[10px] text-gray-500 font-mono text-center">History loads fast in small batches. Tap Load More for older days.</p>
         </section>
     </main>
@@ -129,7 +157,7 @@
         function toInputDateValue(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
         let selectedDateObj=new Date();
         let currentCategory='single_over15';
-        const categories=['single_over15'];
+        const categories=['single_over15','single_under45'];
         function initRibbon(){
             const ribbon=document.getElementById('dateRibbon');
             const calInput=document.getElementById('drawerCalendarInput');
@@ -153,9 +181,9 @@
         function getLockedPick(dateStr,category){ try{ const store=JSON.parse(localStorage.getItem('wins1_real_locked_picks')||'{}'); return store[`${dateStr}_${category}`]||null; }catch(e){ return null; } }
         function saveLockedPick(dateStr,category,matchIdentifier){ try{ const store=JSON.parse(localStorage.getItem('wins1_real_locked_picks')||'{}'); store[`${dateStr}_${category}`]=matchIdentifier; localStorage.setItem('wins1_real_locked_picks',JSON.stringify(store)); }catch(e){} }
         function goToHomepage(){ toggleDrawer(false); selectedDateObj=new Date(); switchCategory('single_over15'); initRibbon(); }
-        function switchCategory(cat){ currentCategory=cat; toggleDrawer(false); categories.forEach(c=>{ const navBtn=document.getElementById(`nav_${c}`); if(navBtn){ if(c===cat){ navBtn.className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl bg-amber-500/20 text-amber-400 font-bold text-xs border border-amber-500/40 transition"; } else { navBtn.className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 font-medium text-xs transition"; } } }); const badgeText={'single_over15':"HIGH-SCORING OVER 1.5"}; document.getElementById('headerCategoryBadge').textContent=badgeText[cat]||"LIVE VIP"; document.getElementById('sectionTitleCategory').textContent=badgeText[cat]||"SELECTION"; fetchMatchData(selectedDateObj,false); }
-        function jumpToDate(dateStr){ if(!dateStr) return; const target=new Date(dateStr+'T00:00:00'); selectedDateObj=target; toggleDrawer(false); initRibbon(); fetchMatchData(target,false); }
-        function triggerRefresh(){ const icon=document.getElementById('refreshIcon'); if(icon) icon.classList.add('animate-spin'); try{ sessionStorage.removeItem('wins1_cache_'+getYYYYMMDD(selectedDateObj)); }catch(e){} fetchMatchData(selectedDateObj,false).then(()=>{ setTimeout(()=>{ if(icon) icon.classList.remove('animate-spin'); },500); }); }
+        function switchCategory(cat){ currentCategory=cat; toggleDrawer(false); categories.forEach(c=>{ const navBtn=document.getElementById(`nav_${c}`); if(navBtn){ if(c===cat){ navBtn.className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl bg-amber-500/20 text-amber-400 font-bold text-xs border border-amber-500/40 transition"; } else { navBtn.className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 font-medium text-xs transition"; } } }); const badgeText={'single_over15':"HIGH-SCORING OVER 1.5",'single_under45':"SAFE UNDER 4.5"}; document.getElementById('headerCategoryBadge').textContent=badgeText[cat]||"LIVE VIP"; document.getElementById('sectionTitleCategory').textContent=badgeText[cat]||"SELECTION"; fetchMatchData(selectedDateObj,false); loadComboTicket(selectedDateObj); }
+        function jumpToDate(dateStr){ if(!dateStr) return; const target=new Date(dateStr+'T00:00:00'); selectedDateObj=target; toggleDrawer(false); initRibbon(); fetchMatchData(target,false); loadComboTicket(target); }
+        function triggerRefresh(){ const icon=document.getElementById('refreshIcon'); if(icon) icon.classList.add('animate-spin'); try{ sessionStorage.removeItem('wins1_cache_'+getYYYYMMDD(selectedDateObj)); }catch(e){} fetchMatchData(selectedDateObj,false).then(()=>{ setTimeout(()=>{ if(icon) icon.classList.remove('animate-spin'); },500); }); loadComboTicket(selectedDateObj); }
         function parseRecordStats(recordSummary){ if(!recordSummary||typeof recordSummary!=='string'){ return {wins:0,draws:0,losses:0,played:0,winRate:0.40,lossRate:0.35,summary:"N/A"}; } const parts=recordSummary.split('-').map(n=>parseInt(n,10)).filter(n=>!isNaN(n)); if(parts.length===3){ const [w,d,l]=parts; const played=w+d+l; return {wins:w,draws:d,losses:l,played,winRate:played>0?(w/played):0.40,lossRate:played>0?(l/played):0.35,summary:`${w}W-${d}D-${l}L`}; } else if(parts.length===2){ const [w,l]=parts; const played=w+l; return {wins:w,draws:0,losses:l,played,winRate:played>0?(w/played):0.40,lossRate:played>0?(l/played):0.35,summary:`${w}W-${l}L`}; } return {wins:0,draws:0,losses:0,played:0,winRate:0.40,lossRate:0.35,summary:recordSummary}; }
         function americanToDecimal(ml){ const num=parseFloat(ml); if(isNaN(num)||num===0) return null; if(num<0) return parseFloat((1+(100/Math.abs(num))).toFixed(2)); return parseFloat((1+(num/100)).toFixed(2)); }
         function evaluatePickWithRealData(match,category){
@@ -174,6 +202,18 @@
                 if(over15Prob<0.62) scoreRank-=30;
                 if(match.statusState==='post') isWon=(match.homeScore+match.awayScore)>=2;
             }
+            if(category==='single_under45'){
+                let under45Prob = 0.88 + ((1 - defensiveWeakness)*0.06) + ((1 - attackingTempo)*0.04);
+                if(realOverUnder && realOverUnder >= 3.5) under45Prob -= 0.08;
+                if(realOverUnder && realOverUnder <= 2.5) under45Prob += 0.04;
+                under45Prob = Math.min(0.97, Math.max(0.75, under45Prob));
+                label="Total Goals: Under 4.5 Goals";
+                odd=parseFloat(Math.max(1.08,(1/under45Prob)).toFixed(2));
+                winProb=under45Prob;
+                scoreRank=(under45Prob*100) - (attackingTempo*20) - (defensiveWeakness*15) - (realOverUnder ? (realOverUnder-2.5)*10 : 0);
+                if(match.statusState==='post') isWon=(match.homeScore+match.awayScore)<=4;
+                return {label,odd,confidence:`${(winProb*100).toFixed(1)}%`,analysis:``,isWon,isFinished:match.statusState==='post',scoreRank,over15Prob:under45Prob};
+            }
             if(hRec.played===0&&aRec.played===0) scoreRank-=15;
             const confidencePct=`${(winProb*100).toFixed(1)}%`;
             return {label,odd,confidence:confidencePct,analysis:``,isWon,isFinished:match.statusState==='post',scoreRank,over15Prob};
@@ -189,11 +229,100 @@
             try{ sessionStorage.setItem(cacheKey, JSON.stringify({time:Date.now(), data:fixtures})); }catch(e){}
             return fixtures;
         }
-        async function fetchMatchData(dateObj,isBackground=false){ selectedDateObj=dateObj; const container=document.getElementById('matchFeedContainer'); if(!container) return; const today=new Date(); const isToday=dateObj.toDateString()===today.toDateString(); document.getElementById('sectionTitleDate').textContent=isToday?"TODAY'S":dateObj.toLocaleDateString('en-US',{month:'short',day:'numeric'}).toUpperCase(); if(!isBackground){ container.innerHTML=`<div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-8 text-center space-y-3"><div class="inline-block w-8 h-8 border-4 border-emerald-400 border-t-transparent rounded-full animate-spin"></div><p class="text-xs text-gray-500 dark:text-gray-400 font-mono">Loading...</p></div>`; } const matches=await fetchRealFixtures(dateObj); if(matches.length===0){ container.innerHTML=`<div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-8 text-center space-y-3"><p class="text-xs text-gray-600 dark:text-gray-300 font-mono">No matches found for this date. Please select another date.</p></div>`; document.getElementById('totalOddsBadge').textContent=`ODDS: 0.00`; return; } const compactDateStr=getYYYYMMDD(dateObj); const evaluatedList=matches.map(m=>({match:m,eval:evaluatePickWithRealData(m,currentCategory)})); const lockedMatchId=getLockedPick(compactDateStr,currentCategory); let bestPick=null; if(lockedMatchId){ bestPick=evaluatedList.find(item=>item.match.id===lockedMatchId); } if(!bestPick){ evaluatedList.sort((a,b)=>b.eval.scoreRank-a.eval.scoreRank); bestPick=evaluatedList[0]; saveLockedPick(compactDateStr,currentCategory,bestPick.match.id); } const m=bestPick.match; const evaluation=bestPick.eval; document.getElementById('totalOddsBadge').textContent=`ODDS: ${evaluation.odd.toFixed(2)}`; let badgeHtml=`<span class="bg-amber-500 text-gray-950 px-3 py-1 rounded-xl text-sm font-mono font-black shadow-lg">@ ${evaluation.odd.toFixed(2)}</span>`; if(evaluation.isFinished){ if(evaluation.isWon){ badgeHtml=`<span class="bg-emerald-500 text-gray-950 px-3 py-1 rounded-xl text-xs font-mono font-black shadow-lg flex items-center gap-1">✅ WON (${m.homeScore}-${m.awayScore})</span>`; } else { badgeHtml=`<span class="bg-red-500 text-white px-3 py-1 rounded-xl text-xs font-mono font-black shadow-lg flex items-center gap-1">❌ LOST (${m.homeScore}-${m.awayScore})</span>`; } } else if(m.statusState==='in'){ badgeHtml=`<span class="bg-emerald-500/20 text-emerald-500 dark:text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-xl text-xs font-mono font-bold flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-400 pulse-live"></span> LIVE (${m.homeScore}-${m.awayScore})</span>`; } container.innerHTML=`<div class="bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-900/90 border-2 border-emerald-500/50 rounded-2xl p-5 space-y-4 shadow-xl"><div class="flex items-center justify-between text-xs text-amber-500 font-mono font-bold"><span>🏆 ${m.league}</span><span>⏰ ${m.time}</span></div><div class="flex items-center justify-between font-extrabold text-lg text-gray-900 dark:text-white"><span>${m.home} vs ${m.away}</span>${badgeHtml}</div><div class="bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-xl p-4 space-y-2.5 text-xs"><div class="hidden"><span>📊 Live Data Highest-Probability Pick</span></div><div class="text-gray-900 dark:text-white font-bold text-sm bg-white dark:bg-gray-900 p-2.5 rounded-lg border border-gray-200 dark:border-gray-800/80">${evaluation.label}</div><div class="hidden">${evaluation.analysis}</div></div></div>`; }
-        let historyLoading=false; let historyLoadedDays=0; let historyWins=0; let historyLosses=0; let historyHtml='';
+        // NEW: Daily Ticket - both games together
+        async function loadComboTicket(dateObj){
+            const wrap=document.getElementById('comboTicketContainer');
+            const dateLabel=document.getElementById('ticketDateLabel');
+            if(!wrap) return;
+            const today=new Date(); const isToday=dateObj.toDateString()===today.toDateString();
+            if(dateLabel) dateLabel.textContent = isToday ? "TODAY" : dateObj.toLocaleDateString('en-US',{month:'short',day:'numeric'}).toUpperCase();
+            const matches=await fetchRealFixtures(dateObj);
+            if(matches.length===0){ wrap.innerHTML=`<div class="bg-white dark:bg-gray-900 rounded-2xl p-4 text-center text-xs font-mono text-gray-500">No matches for this date.</div>`; return; }
+            const dateKey=getYYYYMMDD(dateObj);
+            // Over pick
+            const overEv=matches.map(m=>({match:m, eval:evaluatePickWithRealData(m,'single_over15')}));
+            let overPick=overEv.find(x=>x.match.id===getLockedPick(dateKey,'single_over15'));
+            if(!overPick){ overEv.sort((a,b)=>b.eval.scoreRank-a.eval.scoreRank); overPick=overEv[0]; saveLockedPick(dateKey,'single_over15', overPick.match.id); }
+            // Under pick - exclude Over game
+            const underEv=matches.map(m=>({match:m, eval:evaluatePickWithRealData(m,'single_under45')}));
+            let underPick=underEv.find(x=>x.match.id===getLockedPick(dateKey,'single_under45'));
+            if(underPick && underPick.match.id===overPick.match.id) underPick=null;
+            if(!underPick){ const avail=underEv.filter(x=>x.match.id!==overPick.match.id); avail.sort((a,b)=>b.eval.scoreRank-a.eval.scoreRank); underPick=avail[0]||underEv[0]; saveLockedPick(dateKey,'single_under45', underPick.match.id); }
+            const combined=(overPick.eval.odd * underPick.eval.odd).toFixed(2);
+            const bothFinished = overPick.eval.isFinished && underPick.eval.isFinished;
+            const bothWon = bothFinished && overPick.eval.isWon && underPick.eval.isWon;
+            const anyLost = bothFinished && (!overPick.eval.isWon || !underPick.eval.isWon);
+            let statusHtml=`<span class="bg-amber-500 text-gray-950 px-3 py-1.5 rounded-xl text-xs font-black">COMBINED @ ${combined}</span>`;
+            if(bothWon) statusHtml=`<span class="bg-emerald-500 text-white px-3 py-1.5 rounded-xl text-xs font-black">✅ TICKET WON @ ${combined}</span>`;
+            else if(anyLost) statusHtml=`<span class="bg-red-500 text-white px-3 py-1.5 rounded-xl text-xs font-black">❌ TICKET LOST</span>`;
+            else if(overPick.match.statusState==='in' || underPick.match.statusState==='in') statusHtml=`<span class="bg-emerald-500/20 text-emerald-500 border border-emerald-500/30 px-3 py-1.5 rounded-xl text-xs font-bold">● LIVE - COMBINED @ ${combined}</span>`;
+            function ticketRow(num, emoji, pick, market){
+                let resultBadge=`<span class="bg-amber-500 text-gray-950 px-2.5 py-1 rounded-lg text-xs font-black">@ ${pick.eval.odd.toFixed(2)}</span>`;
+                if(pick.eval.isFinished) resultBadge = pick.eval.isWon ? `<span class="bg-emerald-500 text-white px-2.5 py-1 rounded-lg text-xs font-black">✅ ${pick.match.homeScore}-${pick.match.awayScore}</span>` : `<span class="bg-red-500 text-white px-2.5 py-1 rounded-lg text-xs font-black">❌ ${pick.match.homeScore}-${pick.match.awayScore}</span>`;
+                else if(pick.match.statusState==='in') resultBadge=`<span class="bg-emerald-500/20 text-emerald-500 border border-emerald-500/30 px-2.5 py-1 rounded-lg text-xs font-bold">LIVE ${pick.match.homeScore}-${pick.match.awayScore}</span>`;
+                return `<div class="flex items-center justify-between bg-gray-50 dark:bg-gray-800/60 border border-gray-200 dark:border-gray-700 rounded-xl p-3"><div class="flex items-center gap-3"><span class="w-8 h-8 rounded-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 flex items-center justify-center text-xs font-black shrink-0">${num}</span><div><div class="text-sm font-bold text-gray-900 dark:text-white">${emoji} ${pick.match.home} vs ${pick.match.away}</div><div class="text-[11px] font-mono text-gray-500">${pick.match.league} • ⏰ ${pick.match.time} • ${market}</div></div></div>${resultBadge}</div>`;
+            }
+            wrap.innerHTML=`<div class="bg-white dark:bg-gray-900 rounded-2xl p-4 space-y-3">
+                ${ticketRow(1,'⚽',overPick,'Over 1.5 Goals')}
+                ${ticketRow(2,'🔒',underPick,'Under 4.5 Goals')}
+                <div class="flex items-center justify-between bg-gray-900 dark:bg-white rounded-xl px-4 py-3"><span class="text-white dark:text-gray-900 text-xs font-black tracking-wide">🎫 2-GAME TICKET TOTAL</span>${statusHtml}</div>
+                <p class="text-[11px] text-center text-gray-500 font-mono">1.30 x 1.15 example • Your real odds update live • Stake responsibly</p>
+            </div>`;
+        }
+        async function fetchMatchData(dateObj,isBackground=false){ selectedDateObj=dateObj; const container=document.getElementById('matchFeedContainer'); if(!container) return; const today=new Date(); const isToday=dateObj.toDateString()===today.toDateString(); document.getElementById('sectionTitleDate').textContent=isToday?"TODAY'S":dateObj.toLocaleDateString('en-US',{month:'short',day:'numeric'}).toUpperCase(); if(!isBackground){ container.innerHTML=`<div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-8 text-center space-y-3"><div class="inline-block w-8 h-8 border-4 border-emerald-400 border-t-transparent rounded-full animate-spin"></div><p class="text-xs text-gray-500 dark:text-gray-400 font-mono">Loading...</p></div>`; } const matches=await fetchRealFixtures(dateObj); if(matches.length===0){ container.innerHTML=`<div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-8 text-center space-y-3"><p class="text-xs text-gray-600 dark:text-gray-300 font-mono">No matches found for this date. Please select another date.</p></div>`; document.getElementById('totalOddsBadge').textContent=`ODDS: 0.00`; return; } const compactDateStr=getYYYYMMDD(dateObj);
+        const otherCategory = currentCategory==='single_over15' ? 'single_under45' : 'single_over15';
+        const otherLockedId = getLockedPick(compactDateStr, otherCategory);
+        let excludeId = otherLockedId;
+        if(!excludeId && currentCategory==='single_under45'){
+            const overEvaluated = matches.map(m=>({match:m, eval:evaluatePickWithRealData(m,'single_over15')}));
+            overEvaluated.sort((a,b)=>b.eval.scoreRank-a.eval.scoreRank);
+            if(overEvaluated[0]) excludeId = overEvaluated[0].match.id;
+            if(!getLockedPick(compactDateStr,'single_over15')) saveLockedPick(compactDateStr,'single_over15', excludeId);
+        }
+        const evaluatedList=matches.map(m=>({match:m,eval:evaluatePickWithRealData(m,currentCategory)}));
+        const lockedMatchId=getLockedPick(compactDateStr,currentCategory); let bestPick=null;
+        if(lockedMatchId){ bestPick=evaluatedList.find(item=>item.match.id===lockedMatchId); 
+            if(bestPick && bestPick.match.id===excludeId){ bestPick=null; }
+        }
+        if(!bestPick){
+            const available = evaluatedList.filter(item=>item.match.id!==excludeId);
+            available.sort((a,b)=>b.eval.scoreRank-a.eval.scoreRank);
+            bestPick=available[0] || evaluatedList[0];
+            saveLockedPick(compactDateStr,currentCategory,bestPick.match.id);
+        }
+        const m=bestPick.match; const evaluation=bestPick.eval; document.getElementById('totalOddsBadge').textContent=`ODDS: ${evaluation.odd.toFixed(2)}`; let badgeHtml=`<span class="bg-amber-500 text-gray-950 px-3 py-1 rounded-xl text-sm font-mono font-black shadow-lg">@ ${evaluation.odd.toFixed(2)}</span>`; if(evaluation.isFinished){ if(evaluation.isWon){ badgeHtml=`<span class="bg-emerald-500 text-gray-950 px-3 py-1 rounded-xl text-xs font-mono font-black shadow-lg flex items-center gap-1">✅ WON (${m.homeScore}-${m.awayScore})</span>`; } else { badgeHtml=`<span class="bg-red-500 text-white px-3 py-1 rounded-xl text-xs font-mono font-black shadow-lg flex items-center gap-1">❌ LOST (${m.homeScore}-${m.awayScore})</span>`; } } else if(m.statusState==='in'){ badgeHtml=`<span class="bg-emerald-500/20 text-emerald-500 dark:text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-xl text-xs font-mono font-bold flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-400 pulse-live"></span> LIVE (${m.homeScore}-${m.awayScore})</span>`; } container.innerHTML=`<div class="bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-900/90 border-2 border-emerald-500/50 rounded-2xl p-5 space-y-4 shadow-xl"><div class="flex items-center justify-between text-xs text-amber-500 font-mono font-bold"><span>🏆 ${m.league}</span><span>⏰ ${m.time}</span></div><div class="flex items-center justify-between font-extrabold text-lg text-gray-900 dark:text-white"><span>${m.home} vs ${m.away}</span>${badgeHtml}</div><div class="bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-xl p-4 space-y-2.5 text-xs"><div class="hidden"><span>📊 Live Data Highest-Probability Pick</span></div><div class="text-gray-900 dark:text-white font-bold text-sm bg-white dark:bg-gray-900 p-2.5 rounded-lg border border-gray-200 dark:border-gray-800/80">${evaluation.label}</div><div class="hidden">${evaluation.analysis}</div></div></div>`; }
+        let currentHistoryTab='single_over15';
+        function switchHistoryTab(cat){
+            currentHistoryTab=cat;
+            const overWrap=document.getElementById('historyOverWrap');
+            const underWrap=document.getElementById('historyUnderWrap');
+            const overBtn=document.getElementById('histTab_over');
+            const underBtn=document.getElementById('histTab_under');
+            if(cat==='single_over15'){
+                overWrap.classList.remove('hidden'); underWrap.classList.add('hidden');
+                overBtn.className="flex-1 px-3 py-2.5 rounded-xl text-xs font-black bg-amber-500 text-gray-950 transition";
+                underBtn.className="flex-1 px-3 py-2.5 rounded-xl text-xs font-black bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 transition";
+            } else {
+                overWrap.classList.add('hidden'); underWrap.classList.remove('hidden');
+                underBtn.className="flex-1 px-3 py-2.5 rounded-xl text-xs font-black bg-amber-500 text-gray-950 transition";
+                overBtn.className="flex-1 px-3 py-2.5 rounded-xl text-xs font-black bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 transition";
+            }
+        }
+        let historyLoading=false; let historyLoadedDays=0;
+        let historyWins=0, historyLosses=0, historyHtml='';
+        let historyWinsUnder=0, historyLossesUnder=0, historyHtmlUnder='';
+        function historyCard(pick, d, dateLabel){
+            const isWon=pick.eval.isWon;
+            const total=pick.match.homeScore+pick.match.awayScore;
+            const matchTime=pick.match.time || '';
+            const marketLabel = pick.eval.label.includes('Under') ? 'Under 4.5' : 'Over 1.5';
+            return `<div class="flex items-center justify-between bg-white dark:bg-gray-900 border ${isWon?'border-emerald-500/40':'border-red-500/40'} rounded-xl px-3 py-2.5"><div class="flex items-center gap-2.5"><span class="min-w-[52px] h-8 px-1.5 rounded-full ${isWon?'bg-emerald-500 text-white':'bg-red-500 text-white'} flex items-center justify-center text-[11px] font-black font-mono shrink-0">${matchTime}</span><div><div class="text-xs font-bold text-gray-900 dark:text-white">${pick.match.home} vs ${pick.match.away}</div><div class="text-[10px] font-mono text-gray-500">${dateLabel} • ${pick.match.league} • ${total} Goals • ${marketLabel}</div></div></div><div class="text-right shrink-0"><div class="text-xs font-black ${isWon?'text-emerald-500':'text-red-500'}">${isWon?'WON':'LOST'} ${pick.match.homeScore}-${pick.match.awayScore}</div><div class="text-[10px] font-mono text-gray-500">@ ${pick.eval.odd.toFixed(2)}</div></div></div>`;
+        }
         async function loadHistoryBatch(){
             if(historyLoading) return; historyLoading=true;
-            const btn=document.getElementById('historyBtn'); const list=document.getElementById('historyList'); const summary=document.getElementById('historySummary');
+            const btn=document.getElementById('historyBtn');
+            const list=document.getElementById('historyList');
+            const listUnder=document.getElementById('historyListUnder');
             if(btn) btn.textContent='Loading...';
             const start=historyLoadedDays+1; const end=Math.min(60, historyLoadedDays+7);
             for(let back=start; back<=end; back++){
@@ -201,32 +330,49 @@
                 try{
                     const matches=await fetchRealFixtures(d);
                     if(matches.length===0) continue;
-                    const evaluated=matches.map(m=>({match:m,eval:evaluatePickWithRealData(m,'single_over15')}));
-                    const locked=getLockedPick(getYYYYMMDD(d),'single_over15');
-                    let pick=evaluated.find(x=>x.match.id===locked);
-                    if(!pick){ evaluated.sort((a,b)=>b.eval.scoreRank-a.eval.scoreRank); pick=evaluated[0]; }
-                    if(!pick || pick.match.statusState!=='post') continue;
-                    const isWon=pick.eval.isWon;
-                    if(isWon) historyWins++; else historyLosses++;
+                    const dateKey=getYYYYMMDD(d);
                     const dateLabel=d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
-                    const total=pick.match.homeScore+pick.match.awayScore;
-                    const matchTime=pick.match.time || '';
-                    historyHtml+=`<div class="flex items-center justify-between bg-white dark:bg-gray-900 border ${isWon?'border-emerald-500/40':'border-red-500/40'} rounded-xl px-3 py-2.5"><div class="flex items-center gap-2.5"><span class="min-w-[52px] h-8 px-1.5 rounded-full ${isWon?'bg-emerald-500 text-white':'bg-red-500 text-white'} flex items-center justify-center text-[11px] font-black font-mono shrink-0">${matchTime}</span><div><div class="text-xs font-bold text-gray-900 dark:text-white">${pick.match.home} vs ${pick.match.away}</div><div class="text-[10px] font-mono text-gray-500">${dateLabel} • ${pick.match.league} • ${total} Goals</div></div></div><div class="text-right shrink-0"><div class="text-xs font-black ${isWon?'text-emerald-500':'text-red-500'}">${isWon?'WON':'LOST'} ${pick.match.homeScore}-${pick.match.awayScore}</div><div class="text-[10px] font-mono text-gray-500">@ ${pick.eval.odd.toFixed(2)}</div></div></div>`;
+                    const overEvaluated=matches.map(m=>({match:m,eval:evaluatePickWithRealData(m,'single_over15')}));
+                    const overLocked=getLockedPick(dateKey,'single_over15');
+                    let overPick=overEvaluated.find(x=>x.match.id===overLocked);
+                    if(!overPick){ overEvaluated.sort((a,b)=>b.eval.scoreRank-a.eval.scoreRank); overPick=overEvaluated[0]; }
+                    const underEvaluated=matches.map(m=>({match:m,eval:evaluatePickWithRealData(m,'single_under45')}));
+                    const underLocked=getLockedPick(dateKey,'single_under45');
+                    let underPick=underEvaluated.find(x=>x.match.id===underLocked);
+                    if(underPick && overPick && underPick.match.id===overPick.match.id) underPick=null;
+                    if(!underPick){
+                        const available=underEvaluated.filter(x=>!overPick || x.match.id!==overPick.match.id);
+                        available.sort((a,b)=>b.eval.scoreRank-a.eval.scoreRank);
+                        underPick=available[0] || underEvaluated[0];
+                    }
+                    if(overPick && overPick.match.statusState==='post'){
+                        if(overPick.eval.isWon) historyWins++; else historyLosses++;
+                        historyHtml+=historyCard(overPick, d, dateLabel);
+                    }
+                    if(underPick && underPick.match.statusState==='post'){
+                        if(underPick.eval.isWon) historyWinsUnder++; else historyLossesUnder++;
+                        historyHtmlUnder+=historyCard(underPick, d, dateLabel);
+                    }
                 }catch(e){}
             }
             historyLoadedDays=end;
-            list.innerHTML=historyHtml || `<div class="text-center p-4 text-xs text-gray-500">No finished history found yet.</div>`;
-            summary.classList.remove('hidden');
+            list.innerHTML=historyHtml || `<div class="text-center p-4 text-xs text-gray-500">No finished Over history yet.</div>`;
+            listUnder.innerHTML=historyHtmlUnder || `<div class="text-center p-4 text-xs text-gray-500">No finished Under history yet.</div>`;
             document.getElementById('histWins').textContent=historyWins;
             document.getElementById('histLosses').textContent=historyLosses;
-            const totalGames=historyWins+historyLosses; document.getElementById('histRate').textContent= totalGames>0 ? Math.round((historyWins/totalGames)*100)+'%' : '0%';
+            const totalOver=historyWins+historyLosses;
+            document.getElementById('histRate').textContent= totalOver>0 ? Math.round((historyWins/totalOver)*100)+'%' : '0%';
+            document.getElementById('histWinsUnder').textContent=historyWinsUnder;
+            document.getElementById('histLossesUnder').textContent=historyLossesUnder;
+            const totalUnder=historyWinsUnder+historyLossesUnder;
+            document.getElementById('histRateUnder').textContent= totalUnder>0 ? Math.round((historyWinsUnder/totalUnder)*100)+'%' : '0%';
             if(btn) btn.textContent = historyLoadedDays>=60 ? 'All 60 Days Loaded' : 'Load More ('+historyLoadedDays+'/60)';
             historyLoading=false;
             if(historyLoadedDays<60){ setTimeout(()=>{ loadHistoryBatch(); }, 600); }
         }
         function loadMoreHistory(){ loadHistoryBatch(); }
         function loadHistory(){ if(historyLoadedDays===0) loadHistoryBatch(); }
-        initRibbon(); fetchMatchData(selectedDateObj,false);
+        initRibbon(); fetchMatchData(selectedDateObj,false); loadComboTicket(selectedDateObj);
         setTimeout(()=>{ loadHistoryBatch(); }, 800);
     </script>
 </body>
