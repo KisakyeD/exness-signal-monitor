@@ -187,7 +187,8 @@
     </main>
 
     <footer class="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 py-6 px-4 text-center mt-auto">
-        <!-- ✅ EXNESS PHOTO OUTSIDE TERMS BOX - AS BUTTON -->
+        <!-- ✅ SPONSORED BY ON TOP OF EXNESS PHOTO -->
+        <p class="text-[11px] font-bold text-gray-900 dark:text-white mb-2">Sponsored by</p>
         <a href="https://one.exnessonelink.com/a/m3alh1ljmu?source=app" target="_blank" rel="noopener" class="block max-w-4xl mx-auto mb-4 rounded-2xl overflow-hidden border-2 border-black shadow-lg">
             <div class="bg-[#FFDD00] py-5 px-4 flex items-center justify-center">
                 <span class="text-black font-black text-4xl tracking-tight lowercase" style="font-family: Arial, Helvetica, sans-serif;">exness</span>
@@ -195,10 +196,10 @@
             <span class="totally-invisible">Tap to visit Exness • Sponsored</span>
         </a>
 
-        <!-- ✅ CLICKABLE TERMS & REGULATIONS - TAP TO OPEN / CLOSE -->
+        <!-- ✅ CLICKABLE TERMS - TAP TO OPEN IS TOTALLY INVISIBLE -->
         <div class="max-w-4xl mx-auto text-left bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-2xl overflow-hidden">
             <button onclick="toggleTerms()" id="termsBtn" class="w-full flex items-center justify-between p-4 text-left hover:bg-gray-100 dark:hover:bg-gray-900 transition cursor-pointer">
-                <span class="text-xs font-black text-gray-900 dark:text-white">📜 TERMS & REGULATIONS <span class="text-[10px] font-mono font-normal text-amber-500">— TAP TO OPEN</span></span>
+                <span class="text-xs font-black text-gray-900 dark:text-white">📜 TERMS & REGULATIONS <span class="totally-invisible">— TAP TO OPEN</span></span>
                 <span id="termsArrow" class="text-gray-500 text-sm font-black transition-transform duration-300">▼</span>
             </button>
             <div id="termsContent" class="hidden px-4 pb-4 space-y-3">
@@ -217,7 +218,6 @@
         function toggleTerms(){
             const c=document.getElementById('termsContent');
             const a=document.getElementById('termsArrow');
-            const btn=document.getElementById('termsBtn');
             if(!c) return;
             const isHidden=c.classList.contains('hidden');
             if(isHidden){ c.classList.remove('hidden'); if(a) a.style.transform='rotate(180deg)'; }
