@@ -63,7 +63,6 @@
     </header>
 
     <main class="flex-grow max-w-4xl w-full mx-auto px-4 py-6 space-y-6">
-        <!-- CONTINUOUS DATE RIBBON - MOVES WITH SELECTED DATE -->
         <div class="flex items-center justify-between bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-1.5 no-scrollbar overflow-x-auto gap-2" id="dateRibbon"></div>
         <p class="text-[10px] text-gray-500 dark:text-gray-400 font-mono text-center -mt-3">Calendar is continuous — scroll left/right or pick any date. Picks never stop.</p>
 
@@ -78,11 +77,11 @@
             <div class="grid grid-cols-1 gap-3" id="matchFeedContainer"></div>
         </section>
 
-        <!-- HISTORY -60 DAYS - UP / DOWN LIST -->
+        <!-- HISTORY -60 DAYS - UP / DOWN LIST - AUTO LOADS NOW -->
         <section class="space-y-3 pt-2 border-t border-gray-200 dark:border-gray-800">
             <div class="flex items-center justify-between flex-wrap gap-2 pt-4">
                 <div>
-                    <h3 class="font-bold text-gray-900 dark:text-white text-base">� history — Last 60 Days</h3>
+                    <h3 class="font-bold text-gray-900 dark:text-white text-base">📈 history — Last 60 Days</h3>
                     <p class="text-[11px] text-gray-500 dark:text-gray-400 font-mono">⬆️ = Won &nbsp; ⬇️ = Lost &nbsp; • AI Over 1.5 Picks</p>
                 </div>
                 <button onclick="loadHistory()" id="historyBtn" class="px-4 py-2 rounded-xl bg-amber-500 text-gray-950 text-xs font-black">Load History</button>
@@ -92,14 +91,13 @@
                 <div class="bg-red-500/10 border border-red-500/30 rounded-xl p-2"><div class="text-lg font-black text-red-500" id="histLosses">0</div><div class="text-[10px] font-mono text-gray-500">LOSSES ⬇️</div></div>
                 <div class="bg-amber-500/10 border border-amber-500/30 rounded-xl p-2"><div class="text-lg font-black text-amber-500" id="histRate">0%</div><div class="text-[10px] font-mono text-gray-500">WIN RATE</div></div>
             </div>
-            <div id="historyList" class="space-y-2"></div>
-            <p id="historyNote" class="text-[10px] text-gray-500 font-mono text-center">Tap Load History to see all past 60 days. History uses the same AI pick for each day.</p>
+            <div id="historyList" class="space-y-2"><div class="text-center p-4 text-xs font-mono text-gray-500">Loading 60 days history... please wait</div></div>
+            <p id="historyNote" class="text-[10px] text-gray-500 font-mono text-center">History loads automatically. History uses the same AI pick for each day.</p>
         </section>
     </main>
 
     <footer class="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 py-6 px-4 text-center mt-auto">
         <p class="text-xs text-gray-500 dark:text-gray-400">Sponsored by <a href="https://one.exnessonelink.com/a/m3alh1ljmu?source=app" target="_blank" class="text-amber-500 font-semibold underline">Exness Global Markets</a></p>
-        <!-- REGULATIONS - ADDED BELOW SPONSOR AS YOU ASKED -->
         <div class="max-w-4xl mx-auto mt-5 text-left bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-2xl p-4 space-y-2">
             <h4 class="text-xs font-black text-gray-900 dark:text-white">📜 TERMS & REGULATIONS</h4>
             <p class="text-[11px] leading-relaxed text-gray-600 dark:text-gray-400">1. <b class="text-gray-900 dark:text-white">Age 25+ Only:</b> You must be 25 years or older to use betting tips in Uganda. No persons under 25 allowed.</p>
@@ -132,8 +130,6 @@
         let selectedDateObj=new Date();
         let currentCategory='single_over15';
         const categories=['single_over15'];
-
-        // CONTINUOUS CALENDAR - centers on selected date, -60 to +365, moves with selection
         function initRibbon(){
             const ribbon=document.getElementById('dateRibbon');
             const calInput=document.getElementById('drawerCalendarInput');
@@ -152,7 +148,6 @@
                 html+=`<button id="ribbon-${isoVal}" type="button" onclick="jumpToDate('${isoVal}')" class="shrink-0 px-3 py-1.5 rounded-lg text-left transition ${isSelected?'bg-amber-500 text-gray-950 font-bold shadow':'bg-gray-100 dark:bg-gray-800/70 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-800 hover:text-black dark:hover:text-white'}"><div class="text-[10px] font-mono leading-tight">${dayLabel}</div><div class="text-xs font-bold leading-tight">${dateLabel}</div></button>`;
             }
             ribbon.innerHTML=html;
-            // MOVE CALENDAR WITH SELECTED DATE
             setTimeout(()=>{ const el=document.getElementById(`ribbon-${toInputDateValue(center)}`); if(el) el.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'}); },50);
         }
         function getLockedPick(dateStr,category){ try{ const store=JSON.parse(localStorage.getItem('wins1_real_locked_picks')||'{}'); return store[`${dateStr}_${category}`]||null; }catch(e){ return null; } }
@@ -163,23 +158,18 @@
         function triggerRefresh(){ const icon=document.getElementById('refreshIcon'); if(icon) icon.classList.add('animate-spin'); fetchMatchData(selectedDateObj,false).then(()=>{ setTimeout(()=>{ if(icon) icon.classList.remove('animate-spin'); },500); }); }
         function parseRecordStats(recordSummary){ if(!recordSummary||typeof recordSummary!=='string'){ return {wins:0,draws:0,losses:0,played:0,winRate:0.40,lossRate:0.35,summary:"N/A"}; } const parts=recordSummary.split('-').map(n=>parseInt(n,10)).filter(n=>!isNaN(n)); if(parts.length===3){ const [w,d,l]=parts; const played=w+d+l; return {wins:w,draws:d,losses:l,played,winRate:played>0?(w/played):0.40,lossRate:played>0?(l/played):0.35,summary:`${w}W-${d}D-${l}L`}; } else if(parts.length===2){ const [w,l]=parts; const played=w+l; return {wins:w,draws:0,losses:l,played,winRate:played>0?(w/played):0.40,lossRate:played>0?(l/played):0.35,summary:`${w}W-${l}L`}; } return {wins:0,draws:0,losses:0,played:0,winRate:0.40,lossRate:0.35,summary:recordSummary}; }
         function americanToDecimal(ml){ const num=parseFloat(ml); if(isNaN(num)||num===0) return null; if(num<0) return parseFloat((1+(100/Math.abs(num))).toFixed(2)); return parseFloat((1+(num/100)).toFixed(2)); }
-
-        // IMPROVED AI - FOR WINNING: leaky defence + attacking tempo + market O/U
         function evaluatePickWithRealData(match,category){
             const hRec=parseRecordStats(match.homeRecord); const aRec=parseRecordStats(match.awayRecord);
             const realHomeOdd=americanToDecimal(match.homeMoneyline); const realAwayOdd=americanToDecimal(match.awayMoneyline); const realOverUnder=parseFloat(match.overUnderLine)||null;
             const attackingTempo=(hRec.winRate+hRec.lossRate+aRec.winRate+aRec.lossRate)/2;
-            const defensiveWeakness=(hRec.lossRate+aRec.lossRate)/2; // teams that concede a lot = more goals
+            const defensiveWeakness=(hRec.lossRate+aRec.lossRate)/2;
             const bothScoreTendency=1-Math.abs(hRec.winRate-aRec.winRate);
-            // Market is strongest signal: if bookmakers set O/U 2.5+, goals expected
             let marketBoost=0; if(realOverUnder){ if(realOverUnder>=3.5) marketBoost=0.18; else if(realOverUnder>=2.5) marketBoost=0.12; else if(realOverUnder>=2.0) marketBoost=0.02; else marketBoost=-0.08; }
-            // AI formula - stricter
             let over15Prob=0.58 + (attackingTempo*0.18) + (defensiveWeakness*0.28) + (bothScoreTendency*0.08) + marketBoost;
             over15Prob=Math.min(0.97,Math.max(0.52,over15Prob));
             let label="Total Goals: Over 1.5 Goals"; let odd=parseFloat(Math.max(1.15,(1/over15Prob)).toFixed(2)); let winProb=over15Prob; let scoreRank=0; let isWon=false;
             if(category==='single_over15'){
                 scoreRank=(over15Prob*100) + (realOverUnder?(realOverUnder-2.0)*18:0) + (defensiveWeakness*25) + (bothScoreTendency*8);
-                // Penalize low-confidence matches heavily so AI avoids them
                 if(over15Prob<0.70) scoreRank-=20;
                 if(over15Prob<0.62) scoreRank-=30;
                 if(match.statusState==='post') isWon=(match.homeScore+match.awayScore)>=2;
@@ -190,15 +180,12 @@
         }
         async function fetchRealFixtures(dateObj){ const compactDate=getYYYYMMDD(dateObj); let fixtures=[]; const espnLeagues=['eng.1','esp.1','ita.1','ger.1','fra.1','uefa.champions','uefa.europa','usa.1','ned.1','por.1']; const requests=espnLeagues.map(lg=>fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/${lg}/scoreboard?dates=${compactDate}`).then(r=>r.ok?r.json():null).catch(()=>null)); const results=await Promise.all(requests); results.forEach(data=>{ if(data&&Array.isArray(data.events)){ const leagueName=(data.leagues&&data.leagues[0]&&data.leagues[0].name)||"Official League"; data.events.forEach(ev=>{ const comp=ev.competitions&&ev.competitions[0]; if(comp&&comp.competitors&&comp.competitors.length===2){ const homeObj=comp.competitors.find(c=>c.homeAway==='home')||comp.competitors[0]; const awayObj=comp.competitors.find(c=>c.homeAway==='away')||comp.competitors[1]; const homeName=homeObj.team.displayName; const awayName=awayObj.team.displayName; if(!fixtures.some(f=>f.home===homeName&&f.away===awayName)){ const dt=new Date(ev.date); const timeStr=isNaN(dt)?"19:00":dt.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',hour12:false}); const statusState=(ev.status&&ev.status.type&&ev.status.type.state)||"pre"; const homeRecord=(homeObj.records&&homeObj.records[0]&&homeObj.records[0].summary)||""; const awayRecord=(awayObj.records&&awayObj.records[0]&&awayObj.records[0].summary)||""; const homeForm=homeObj.form||""; const venue=(comp.venue&&comp.venue.fullName)||""; const oddsObj=(comp.odds&&comp.odds[0])||null; const homeMoneyline=oddsObj&&oddsObj.homeTeamOdds?oddsObj.homeTeamOdds.moneyLine:null; const awayMoneyline=oddsObj&&oddsObj.awayTeamOdds?oddsObj.awayTeamOdds.moneyLine:null; const overUnderLine=oddsObj?oddsObj.overUnder:null; const oddsProvider=oddsObj&&oddsObj.provider?oddsObj.provider.name:null; fixtures.push({id:`${homeName}_vs_${awayName}`,home:homeName,away:awayName,league:leagueName,time:timeStr,statusState:statusState,homeScore:parseInt(homeObj.score,10)||0,awayScore:parseInt(awayObj.score,10)||0,homeRecord,awayRecord,homeForm,venue,homeMoneyline,awayMoneyline,overUnderLine,oddsProvider}); } } }); } }); return fixtures; }
         async function fetchMatchData(dateObj,isBackground=false){ selectedDateObj=dateObj; const container=document.getElementById('matchFeedContainer'); if(!container) return; const today=new Date(); const isToday=dateObj.toDateString()===today.toDateString(); document.getElementById('sectionTitleDate').textContent=isToday?"TODAY'S":dateObj.toLocaleDateString('en-US',{month:'short',day:'numeric'}).toUpperCase(); if(!isBackground){ container.innerHTML=`<div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-8 text-center space-y-3"><div class="inline-block w-8 h-8 border-4 border-emerald-400 border-t-transparent rounded-full animate-spin"></div><p class="text-xs text-gray-500 dark:text-gray-400 font-mono">Loading...</p></div>`; } const matches=await fetchRealFixtures(dateObj); if(matches.length===0){ container.innerHTML=`<div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-8 text-center space-y-3"><p class="text-xs text-gray-600 dark:text-gray-300 font-mono">No matches found for this date. Please select another date.</p></div>`; document.getElementById('totalOddsBadge').textContent=`ODDS: 0.00`; return; } const compactDateStr=getYYYYMMDD(dateObj); const evaluatedList=matches.map(m=>({match:m,eval:evaluatePickWithRealData(m,currentCategory)})); const lockedMatchId=getLockedPick(compactDateStr,currentCategory); let bestPick=null; if(lockedMatchId){ bestPick=evaluatedList.find(item=>item.match.id===lockedMatchId); } if(!bestPick){ evaluatedList.sort((a,b)=>b.eval.scoreRank-a.eval.scoreRank); bestPick=evaluatedList[0]; saveLockedPick(compactDateStr,currentCategory,bestPick.match.id); } const m=bestPick.match; const evaluation=bestPick.eval; document.getElementById('totalOddsBadge').textContent=`ODDS: ${evaluation.odd.toFixed(2)}`; let badgeHtml=`<span class="bg-amber-500 text-gray-950 px-3 py-1 rounded-xl text-sm font-mono font-black shadow-lg">@ ${evaluation.odd.toFixed(2)}</span>`; if(evaluation.isFinished){ if(evaluation.isWon){ badgeHtml=`<span class="bg-emerald-500 text-gray-950 px-3 py-1 rounded-xl text-xs font-mono font-black shadow-lg flex items-center gap-1">✅ WON (${m.homeScore}-${m.awayScore})</span>`; } else { badgeHtml=`<span class="bg-red-500 text-white px-3 py-1 rounded-xl text-xs font-mono font-black shadow-lg flex items-center gap-1">❌ LOST (${m.homeScore}-${m.awayScore})</span>`; } } else if(m.statusState==='in'){ badgeHtml=`<span class="bg-emerald-500/20 text-emerald-500 dark:text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-xl text-xs font-mono font-bold flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-400 pulse-live"></span> LIVE (${m.homeScore}-${m.awayScore})</span>`; } container.innerHTML=`<div class="bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-900/90 border-2 border-emerald-500/50 rounded-2xl p-5 space-y-4 shadow-xl"><div class="flex items-center justify-between text-xs text-amber-500 font-mono font-bold"><span>🏆 ${m.league}</span><span>⏰ ${m.time}</span></div><div class="flex items-center justify-between font-extrabold text-lg text-gray-900 dark:text-white"><span>${m.home} vs ${m.away}</span>${badgeHtml}</div><div class="bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-xl p-4 space-y-2.5 text-xs"><div class="hidden"><span>📊 Live Data Highest-Probability Pick</span></div><div class="text-gray-900 dark:text-white font-bold text-sm bg-white dark:bg-gray-900 p-2.5 rounded-lg border border-gray-200 dark:border-gray-800/80">${evaluation.label}</div><div class="hidden">${evaluation.analysis}</div></div></div>`; }
-
-        // HISTORY -60 DAYS - UP / DOWN LIST
         let historyLoading=false;
         async function loadHistory(){
             if(historyLoading) return; historyLoading=true;
             const btn=document.getElementById('historyBtn'); const list=document.getElementById('historyList'); const summary=document.getElementById('historySummary');
             if(btn) btn.textContent='Loading...'; list.innerHTML=`<div class="text-center p-4 text-xs font-mono text-gray-500">Loading 60 days history... please wait</div>`;
             let wins=0, losses=0; let html='';
-            // Load newest to oldest, 5 days at a time so it doesn't freeze
             for(let back=1; back<=60; back++){
                 const d=new Date(); d.setDate(d.getDate()-back);
                 try{
@@ -214,7 +201,6 @@
                     const dateLabel=d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
                     const total=pick.match.homeScore+pick.match.awayScore;
                     html+=`<div class="flex items-center justify-between bg-white dark:bg-gray-900 border ${isWon?'border-emerald-500/40':'border-red-500/40'} rounded-xl px-3 py-2.5"><div class="flex items-center gap-2.5"><span class="w-8 h-8 rounded-full ${isWon?'bg-emerald-500 text-white':'bg-red-500 text-white'} flex items-center justify-center text-sm font-black">${isWon?'⬆️':'⬇️'}</span><div><div class="text-xs font-bold text-gray-900 dark:text-white">${pick.match.home} vs ${pick.match.away}</div><div class="text-[10px] font-mono text-gray-500">${dateLabel} • ${pick.match.league} • ${total} Goals</div></div></div><div class="text-right shrink-0"><div class="text-xs font-black ${isWon?'text-emerald-500':'text-red-500'}">${isWon?'WON':'LOST'} ${pick.match.homeScore}-${pick.match.awayScore}</div><div class="text-[10px] font-mono text-gray-500">@ ${pick.eval.odd.toFixed(2)}</div></div></div>`;
-                    // Show progressively
                     if(back%5===0){ list.innerHTML=html; }
                 }catch(e){}
             }
@@ -228,6 +214,8 @@
         }
 
         initRibbon(); fetchMatchData(selectedDateObj,false);
+        // AUTO LOAD HISTORY ON HOMEPAGE - ADDED AS YOU ASKED
+        setTimeout(()=>{ loadHistory(); }, 800);
     </script>
 </body>
 </html>
