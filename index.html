@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WINS1 | 4 Markets - 10 Factor</title>
+    <title>WINS1 | Good Odds 1.80-2.20 - 10 Factor</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>tailwind.config = { darkMode: 'class' }</script>
     <style>
@@ -28,7 +28,9 @@
       <button id="closeDrawerBtn" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800">✕</button>
     </div>
     <nav class="space-y-1.5">
-      <button onclick="goToHomepage()" class="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl bg-amber-500 text-gray-950 font-black text-xs">⚽ 4 Markets • 10-Factor</button>
+      <button onclick="goToHomepage()" class="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl bg-amber-500 text-gray-950 font-black text-xs">🔥 Good Odds 1.80-2.20 • 10-Factor</button>
+      <!-- ✅ NEW: TICKET IN HAMBURGER -->
+      <button onclick="openTicket()" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-black text-xs"><span>🎫 Ticket</span><span class="text-[10px] font-bold bg-amber-500 text-gray-950 px-2 py-0.5 rounded-full" id="ticketCountBadge">0 picks</span></button>
       <a href="https://wa.me/qr/OSDCY2ACDMP5M1" target="_blank" class="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl bg-[#25D366]/10 text-[#25D366] font-bold text-xs border border-[#25D366]/40">💬 B2B & B2C on WhatsApp</a>
     </nav>
     <div class="pt-3 border-t border-gray-200 dark:border-gray-800 space-y-2">
@@ -43,8 +45,27 @@
       <input type="date" id="drawerCalendarInput" onchange="jumpToDate(this.value)" class="w-full bg-gray-100 dark:bg-gray-800 border rounded-xl px-3 py-2 text-xs">
     </div>
   </div>
-  <div class="pt-4 border-t text-center text-[10px] text-gray-500">WINS1 • 4 Markets 10-Factor</div>
+  <div class="pt-4 border-t text-center text-[10px] text-gray-500">WINS1 • Good Odds 1.80-2.20</div>
 </aside>
+
+<!-- ✅ TICKET MODAL -->
+<div id="ticketModal" class="fixed inset-0 bg-black/70 z-[60] hidden items-center justify-center p-4">
+  <div class="bg-white dark:bg-gray-900 rounded-2xl w-full max-w-md max-h-[85vh] overflow-y-auto no-scrollbar">
+    <div class="p-4 border-b flex items-center justify-between sticky top-0 bg-white dark:bg-gray-900 rounded-t-2xl">
+      <div><div class="font-black text-base">🎫 Today's Ticket</div><div class="text-[11px] font-mono text-gray-500" id="ticketModalDate">—</div></div>
+      <button onclick="closeTicket()" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800">✕</button>
+    </div>
+    <div class="p-4 space-y-3" id="ticketModalBody"></div>
+    <div class="p-4 border-t space-y-2">
+      <div class="flex items-center justify-between text-xs"><span class="font-mono text-gray-500">Stake</span><div class="flex items-center gap-2"><button onclick="changeTicketStake(-5000)" class="px-2 py-1 rounded-lg bg-gray-100 dark:bg-gray-800 font-black">-</button><span id="ticketStakeLabel" class="font-black">10,000 UGX</span><button onclick="changeTicketStake(5000)" class="px-2 py-1 rounded-lg bg-gray-100 dark:bg-gray-800 font-black">+</button></div></div>
+      <div class="flex items-center justify-between bg-amber-500/10 border border-amber-500/30 rounded-xl px-3 py-2"><span class="text-xs font-bold">Total Odds</span><span class="font-black text-amber-600" id="ticketTotalOdds">@ —</span></div>
+      <div class="flex items-center justify-between bg-emerald-500/10 border border-emerald-500/30 rounded-xl px-3 py-2"><span class="text-xs font-bold">Potential Win</span><span class="font-black text-emerald-600" id="ticketPotentialWin">—</span></div>
+      <div class="flex items-center justify-between text-[11px] font-mono text-gray-500"><span>Profit if win</span><span id="ticketProfit">—</span></div>
+      <button onclick="copyTicket()" class="w-full py-3 rounded-xl bg-amber-500 text-gray-950 font-black text-sm">📋 Copy Ticket</button>
+      <p class="text-[10px] text-center text-gray-500 font-mono">Singles recommended • Ticket is for fun / combined • 25+ Bet Responsibly</p>
+    </div>
+  </div>
+</div>
 
 <header class="sticky top-0 z-40 bg-white/90 dark:bg-gray-900/90 border-b px-4 py-3 backdrop-blur-md">
   <div class="max-w-4xl mx-auto flex items-center justify-between">
@@ -54,6 +75,7 @@
       <a href="https://wa.me/qr/OSDCY2ACDMP5M1" target="_blank" class="w-9 h-9 rounded-full bg-[#25D366] flex items-center justify-center wa-pulse shrink-0"><svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c0-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></a>
     </div>
     <div class="flex items-center space-x-2">
+      <button onclick="openTicket()" class="px-3 py-2 rounded-lg bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xs font-black">🎫 Ticket</button>
       <button onclick="triggerRefresh()" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-xs font-mono">↻ Refresh</button>
       <button id="themeToggleBtn" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800"><span id="themeIcon">☀️</span></button>
     </div>
@@ -64,17 +86,25 @@
   <div class="flex items-center justify-between bg-white dark:bg-gray-900 border rounded-xl p-1.5 no-scrollbar overflow-x-auto gap-2" id="dateRibbon"></div>
 
   <div class="bg-gray-900 dark:bg-white rounded-2xl p-4 flex items-center justify-between gap-2">
-    <div><div class="text-white dark:text-gray-900 font-black text-sm">⚽ TODAY'S PICKS • 4 MARKETS 10-FACTOR</div><div class="text-[11px] text-gray-300 dark:text-gray-600 font-mono" id="daySummary">Loading...</div></div>
+    <div><div class="text-white dark:text-gray-900 font-black text-sm">🔥 TODAY'S PICKS • GOOD ODDS 1.80-2.20 • 10-FACTOR</div><div class="text-[11px] text-gray-300 dark:text-gray-600 font-mono" id="daySummary">Loading...</div></div>
     <div class="text-right"><div class="text-white dark:text-gray-900 font-black text-lg" id="dayProfitPreview">—</div><div class="text-[10px] text-gray-300 dark:text-gray-600 font-mono">If all win @ 10k each</div></div>
   </div>
 
-  <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-xl px-3 py-2 text-[11px] font-mono text-emerald-700 dark:text-emerald-300">✅ 10-FACTOR: Venue • Away • Referee • Corners • BTTS • xG • Shots • H2H • Lineups • Weather — Over/BTTS 80/100 • Under 5.5 90/100 ULTRA-STRICT</div>
+  <div class="bg-amber-500/10 border border-amber-500/30 rounded-xl px-3 py-2 text-[11px] font-mono text-amber-700 dark:text-amber-300">✅ TARGET B: Good Odds 1.80-2.20 prioritised • Over 2.5 / BTTS / 1+Over 1.5 first • Over 1.5 / Under 5.5 = fallback only • 80/100 • Under 5.5 90/100 STRICT • 🎫 Ticket in menu</div>
+
+  <div id="topGoodOddsSection" class="space-y-2">
+    <h3 class="font-black text-sm">🔥 TOP 3 GOOD ODDS TODAY • 1.80-2.20 • Play These First</h3>
+    <div id="topGoodOddsList" class="grid grid-cols-1 gap-2"></div>
+    <button onclick="openTicket()" class="w-full py-2.5 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-black text-xs">🎫 View Today's Ticket →</button>
+  </div>
 
   <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1" id="marketFilters">
     <button onclick="setMarketFilter('all')" data-filter="all" class="filter-btn active shrink-0 px-3 py-2 rounded-xl border text-xs font-bold bg-white dark:bg-gray-900">ALL ( <span id="countAll">0</span> )</button>
-    <button onclick="setMarketFilter('over15')" data-filter="over15" class="filter-btn shrink-0 px-3 py-2 rounded-xl border text-xs font-bold bg-white dark:bg-gray-900">⚽ Over 1.5 ( <span id="countOver15">0</span> )</button>
+    <button onclick="setMarketFilter('good')" data-filter="good" class="filter-btn shrink-0 px-3 py-2 rounded-xl border text-xs font-bold bg-white dark:bg-gray-900">🔥 Good 1.80+ ( <span id="countGood">0</span> )</button>
     <button onclick="setMarketFilter('over25')" data-filter="over25" class="filter-btn shrink-0 px-3 py-2 rounded-xl border text-xs font-bold bg-white dark:bg-gray-900">🔥 Over 2.5 ( <span id="countOver25">0</span> )</button>
     <button onclick="setMarketFilter('btts')" data-filter="btts" class="filter-btn shrink-0 px-3 py-2 rounded-xl border text-xs font-bold bg-white dark:bg-gray-900">🥅 BTTS ( <span id="countBtts">0</span> )</button>
+    <button onclick="setMarketFilter('homeOver')" data-filter="homeOver" class="filter-btn shrink-0 px-3 py-2 rounded-xl border text-xs font-bold bg-white dark:bg-gray-900">🏠 1+Over 1.5 ( <span id="countHomeOver">0</span> )</button>
+    <button onclick="setMarketFilter('over15')" data-filter="over15" class="filter-btn shrink-0 px-3 py-2 rounded-xl border text-xs font-bold bg-white dark:bg-gray-900">⚽ Over 1.5 Safe ( <span id="countOver15">0</span> )</button>
     <button onclick="setMarketFilter('under55')" data-filter="under55" class="filter-btn shrink-0 px-3 py-2 rounded-xl border text-xs font-bold bg-white dark:bg-gray-900">🔒 Under 5.5 STRICT ( <span id="countUnder55">0</span> )</button>
   </div>
 
@@ -83,13 +113,13 @@
       <h3 class="font-bold text-base flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-emerald-400 pulse-live"></span> <span id="sectionTitleDate">TODAY'S</span> PICKS</h3>
       <span class="text-xs bg-amber-500/10 text-amber-600 border border-amber-500/30 px-3 py-1.5 rounded-xl font-mono font-bold" id="totalPicksBadge">0 PICKS</span>
     </div>
-    <p class="text-[11px] text-gray-500 font-mono">Play SINGLE SINGLE • Same stake • 1 Best Market per Game • Over/BTTS 80+ • Under 5.5 90+ STRICT</p>
+    <p class="text-[11px] text-gray-500 font-mono">Play SINGLE SINGLE • Good Odds First • 1 Best Market per Game • 80+ • Under 5.5 90+ STRICT</p>
     <div class="grid grid-cols-1 gap-3" id="matchFeedContainer"></div>
   </section>
 
   <section class="space-y-4 pt-4 border-t">
     <div class="flex items-center justify-between">
-      <div><h3 class="font-bold text-base">📈 History — Last 60 Days</h3><p class="text-[11px] text-gray-500 font-mono">All Markets 10-Factor singles • Flat 10k stake</p></div>
+      <div><h3 class="font-bold text-base">📈 History — Last 60 Days</h3><p class="text-[11px] text-gray-500 font-mono">Good Odds 1.80-2.20 prioritised • Flat 10k stake</p></div>
       <button onclick="loadMoreHistory()" id="historyBtn" class="px-4 py-2 rounded-xl bg-amber-500 text-gray-950 text-xs font-black">Load More</button>
     </div>
     <div class="grid grid-cols-3 gap-2 text-center">
@@ -135,6 +165,8 @@ function toInputDateValue(d){return d.getFullYear()+'-'+String(d.getMonth()+1).p
 let selectedDateObj=new Date();
 let allTodayPicks=[];
 let currentMarketFilter='all';
+let ticketStake=10000;
+let currentTicket=[];
 function setMarketFilter(f){currentMarketFilter=f;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.toggle('active',b.dataset.filter===f));renderPicks()}
 function initRibbon(){
   const ribbon=document.getElementById('dateRibbon');const cal=document.getElementById('drawerCalendarInput');if(cal)cal.value=toInputDateValue(selectedDateObj);if(!ribbon)return;
@@ -148,7 +180,42 @@ function triggerRefresh(){try{sessionStorage.removeItem('wins1_cache_'+getYYYYMM
 function parseRecordStats(s){if(!s||typeof s!=='string')return{winRate:.40,lossRate:.35,drawRate:.25,played:0,wins:0,draws:0,losses:0};const p=s.split('-').map(n=>parseInt(n,10)).filter(n=>!isNaN(n));if(p.length===3){const[w,d,l]=p;const pl=w+d+l;return{winRate:pl?w/pl:.40,lossRate:pl?l/pl:.35,drawRate:pl?d/pl:.25,played:pl,wins:w,draws:d,losses:l}}if(p.length===2){const[w,l]=p;const pl=w+l;return{winRate:pl?w/pl:.40,lossRate:pl?l/pl:.35,drawRate:0,played:pl,wins:w,draws:0,losses:l}}return{winRate:.40,lossRate:.35,drawRate:.25,played:0,wins:0,draws:0,losses:0}}
 function clamp(v,a,b){return Math.min(b,Math.max(a,v))}
 
-/* ✅ 10-FACTOR - UNDER 5.5 ULTRA-STRICT FIX */
+/* ✅ TICKET LOGIC */
+function getTicketPicks(){
+  // Ticket = Top 3 Good Odds (1.80+) - if less than 3 good, fill with highest score picks
+  let good=[...allTodayPicks].filter(p=>p.isGood).sort((a,b)=>b.score-a.score);
+  if(good.length>=3) return good.slice(0,3);
+  let rest=[...allTodayPicks].filter(p=>!p.isGood).sort((a,b)=>b.score-a.score);
+  return [...good, ...rest].slice(0,3);
+}
+function updateTicketUI(){
+  currentTicket=getTicketPicks();
+  const badge=document.getElementById('ticketCountBadge'); if(badge) badge.textContent=currentTicket.length+' picks';
+  const total=currentTicket.reduce((s,p)=>s*p.odd,1);
+  document.getElementById('ticketTotalOdds').textContent='@ '+total.toFixed(2);
+  document.getElementById('ticketStakeLabel').textContent=ticketStake.toLocaleString()+' UGX';
+  const win=Math.round(ticketStake*total);
+  document.getElementById('ticketPotentialWin').textContent=win.toLocaleString()+' UGX';
+  document.getElementById('ticketProfit').textContent='+'+(win-ticketStake).toLocaleString()+' UGX';
+  document.getElementById('ticketModalDate').textContent=selectedDateObj.toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'});
+  const body=document.getElementById('ticketModalBody');
+  if(currentTicket.length===0){ body.innerHTML=`<div class="text-center p-6 text-xs text-gray-500">No picks for Ticket today.<br>Check back later.</div>`; return }
+  body.innerHTML=currentTicket.map((p,i)=>`<div class="flex items-center justify-between bg-gray-50 dark:bg-gray-800/70 border rounded-xl px-3 py-2.5"><div><div class="text-xs font-black">${i+1}. ${p.match.home} vs ${p.match.away}</div><div class="text-[11px] font-mono text-gray-500">${p.emoji} ${p.label} • ${p.score}/100 • ${p.match.time} • ${p.match.league}</div></div><div class="text-right shrink-0 font-black text-sm">@ ${p.odd.toFixed(2)}</div></div>`).join('') + `<div class="text-[11px] font-mono text-center text-gray-500">Top 3 Good Odds • 10-Factor 80+ • Play as singles + ticket</div>`;
+}
+function openTicket(){ toggleDrawer(false); updateTicketUI(); const m=document.getElementById('ticketModal'); m.classList.remove('hidden'); m.classList.add('flex'); }
+function closeTicket(){ const m=document.getElementById('ticketModal'); m.classList.add('hidden'); m.classList.remove('flex'); }
+function changeTicketStake(d){ ticketStake=Math.max(1000, ticketStake+d); updateTicketUI(); }
+function copyTicket(){
+  if(currentTicket.length===0) return;
+  const total=currentTicket.reduce((s,p)=>s*p.odd,1);
+  let txt=`🎫 WINS1 TICKET • ${selectedDateObj.toLocaleDateString('en-US',{month:'short',day:'numeric'})}\n`;
+  currentTicket.forEach((p,i)=>{ txt+=`${i+1}. ${p.match.home} vs ${p.match.away} - ${p.label} @ ${p.odd.toFixed(2)}\n`; });
+  txt+=`Total Odds @ ${total.toFixed(2)} • Stake ${ticketStake.toLocaleString()} UGX • Win ${Math.round(ticketStake*total).toLocaleString()} UGX • 25+ Bet Responsibly`;
+  if(navigator.clipboard) navigator.clipboard.writeText(txt);
+}
+document.getElementById('ticketModal').addEventListener('click', (e)=>{ if(e.target.id==='ticketModal') closeTicket(); });
+
+/* ✅ TARGET B: 1.80-2.20 PRIORITISED - 10 FACTOR */
 function evaluateBestMarket(match){
   const h=parseRecordStats(match.homeRecord),a=parseRecordStats(match.awayRecord);
   const ou=parseFloat(match.overUnderLine)||null;
@@ -174,19 +241,19 @@ function evaluateBestMarket(match){
   const total=match.homeScore+match.awayScore;
   const isFinished=match.statusState==='post';
   const candidates=[];
-  if(xgEst>=3.0 && tempo>=0.65 && bttsScore>=0.55){
-    let s=baseScore; if(xgEst>=3.5) s+=5; if(tempo>=0.75) s+=3;
-    if(s>=82){ let prob=clamp(0.55+(s/100)*0.30,0.70,0.90); let odd=parseFloat((1/prob).toFixed(2)); if(odd>=1.30&&odd<=2.10) candidates.push({key:'over25',label:'Over 2.5 Goals',emoji:'🔥',prob,odd,confidence:(prob*100).toFixed(1)+'%',isWon:isFinished?total>=3:false,isFinished,score:Math.min(100,s),reasons,xgEst}) }
+  if(xgEst>=2.9 && tempo>=0.62 && bttsScore>=0.50){
+    if(baseScore>=80){ let prob=clamp(0.48+(baseScore/100)*0.30,0.50,0.65); let odd=parseFloat((1/prob).toFixed(2)); if(odd>=1.70&&odd<=2.20) candidates.push({key:'over25',label:'Over 2.5 Goals',emoji:'🔥',prob,odd,confidence:(prob*100).toFixed(1)+'%',isWon:isFinished?total>=3:false,isFinished,score:baseScore,reasons,xgEst,isGood:true}) }
+  }
+  if(bttsScore>=0.58 && h.lossRate>=0.28 && a.lossRate>=0.28 && xgEst>=2.5){
+    if(baseScore>=80){ let prob=clamp(0.48+(baseScore/100)*0.28,0.50,0.62); let odd=parseFloat((1/prob).toFixed(2)); if(odd>=1.70&&odd<=2.20) candidates.push({key:'btts',label:'BTTS Yes',emoji:'🥅',prob,odd,confidence:(prob*100).toFixed(1)+'%',isWon:isFinished?(match.homeScore>=1&&match.awayScore>=1):false,isFinished,score:baseScore,reasons,xgEst,isGood:true}) }
+  }
+  if(h.winRate>=0.55 && h.lossRate>=0.20 && weak>=0.30 && xgEst>=2.6 && baseScore>=80){
+    let prob=clamp(0.46+(baseScore/100)*0.28,0.48,0.60); let odd=parseFloat((1/prob).toFixed(2));
+    if(odd>=1.70&&odd<=2.20) candidates.push({key:'homeOver',label:'1 + Over 1.5 (Home Win + Over)',emoji:'🏠',prob,odd,confidence:(prob*100).toFixed(1)+'%',isWon:isFinished?(match.homeScore>match.awayScore&&total>=2):false,isFinished,score:baseScore,reasons:[...reasons,`Home WinRate:${(h.winRate*100).toFixed(0)}%`],xgEst,isGood:true})
   }
   if(!(h.lossRate<0.15&&a.lossRate<0.15) && !(ou&&ou<2.0) && weak>=0.28 && bttsScore>=0.45){
-    if(baseScore>=80){ let prob=clamp(0.60+(baseScore/100)*0.35,0.78,0.96); let odd=parseFloat((1/prob).toFixed(2)); if(odd>=1.05&&odd<=1.30) candidates.push({key:'over15',label:'Over 1.5 Goals',emoji:'⚽',prob,odd,confidence:(prob*100).toFixed(1)+'%',isWon:isFinished?total>=2:false,isFinished,score:baseScore,reasons,xgEst}) }
+    if(baseScore>=80){ let prob=clamp(0.60+(baseScore/100)*0.35,0.78,0.96); let odd=parseFloat((1/prob).toFixed(2)); if(odd>=1.05&&odd<=1.40) candidates.push({key:'over15',label:'Over 1.5 Goals',emoji:'⚽',prob,odd,confidence:(prob*100).toFixed(1)+'%',isWon:isFinished?total>=2:false,isFinished,score:baseScore,reasons,xgEst,isGood:false}) }
   }
-  if(bttsScore>=0.60 && h.lossRate>=0.30 && a.lossRate>=0.30 && xgEst>=2.6){
-    let s=baseScore; if(bttsScore>=0.70) s+=4;
-    if(s>=80){ let prob=clamp(0.52+(s/100)*0.30,0.68,0.88); let odd=parseFloat((1/prob).toFixed(2)); if(odd>=1.40&&odd<=2.20) candidates.push({key:'btts',label:'BTTS Yes',emoji:'🥅',prob,odd,confidence:(prob*100).toFixed(1)+'%',isWon:isFinished?(match.homeScore>=1&&match.awayScore>=1):false,isFinished,score:Math.min(100,s),reasons,xgEst}) }
-  }
-  // ✅ ULTRA-STRICT UNDER 5.5 - HARD REJECTS FIRST
-  // If ANY fails, NO Under pick at all - never pick leftovers
   const underHardPass = (xgEst<=2.8) && (tempo<=0.65) && (weak<=0.35) && (!ou || ou<=2.5) && (h.drawRate>=0.20 || a.drawRate>=0.20);
   if(underHardPass){
     let underScore=0;
@@ -195,14 +262,16 @@ function evaluateBestMarket(match){
     if(weak<=0.25) underScore+=25; else if(weak<=0.30) underScore+=20; else if(weak<=0.35) underScore+=14;
     if(ou&&ou<=2.0) underScore+=15; else if(ou&&ou<=2.5) underScore+=10; else underScore+=5;
     if(h.drawRate>=0.30||a.drawRate>=0.30) underScore+=5; else underScore+=3;
-    // ✅ REQUIRE 90/100, not 80
     if(underScore>=90){
       let prob=clamp(0.75+(underScore/100)*0.23,0.85,0.98); let odd=parseFloat((1/prob).toFixed(2));
-      if(odd>=1.02&&odd<=1.25) candidates.push({key:'under55',label:'Under 5.5 Goals',emoji:'🔒',prob,odd,confidence:(prob*100).toFixed(1)+'%',isWon:isFinished?total<=5:false,isFinished,score:underScore,reasons:[`STRICT xG:${xgEst.toFixed(2)} ≤2.8`,`Tempo:${tempo.toFixed(2)} ≤0.65`,`Defence:${weak.toFixed(2)} ≤0.35`,`OU:${ou||'—'} ≤2.5`,`Under Score:${underScore}/100`],xgEst})
+      if(odd>=1.02&&odd<=1.25) candidates.push({key:'under55',label:'Under 5.5 Goals',emoji:'🔒',prob,odd,confidence:(prob*100).toFixed(1)+'%',isWon:isFinished?total<=5:false,isFinished,score:underScore,reasons:[`STRICT xG:${xgEst.toFixed(2)} ≤2.8`,`Tempo:${tempo.toFixed(2)} ≤0.65`,`Defence:${weak.toFixed(2)} ≤0.35`,`OU:${ou||'—'} ≤2.5`,`Under Score:${underScore}/100`],xgEst,isGood:false})
     }
   }
   if(candidates.length===0) return null;
-  candidates.sort((x,y)=>y.score-x.score);
+  candidates.sort((x,y)=>{
+    if(x.isGood!==y.isGood) return y.isGood - x.isGood;
+    return y.score - x.score;
+  });
   return candidates[0];
 }
 const fixtureCache=new Map();
@@ -217,31 +286,44 @@ async function fetchRealFixtures(dateObj){
   results.forEach(data=>{if(data&&Array.isArray(data.events)){const ln=(data.leagues&&data.leagues[0]&&data.leagues[0].name)||"League";data.events.forEach(ev=>{const comp=ev.competitions&&ev.competitions[0];if(comp&&comp.competitors&&comp.competitors.length===2){const ho=comp.competitors.find(c=>c.homeAway==='home')||comp.competitors[0];const ao=comp.competitors.find(c=>c.homeAway==='away')||comp.competitors[1];const hn=ho.team.displayName,an=ao.team.displayName;if(!fixtures.some(f=>f.home===hn&&f.away===an)){const dt=new Date(ev.date);const ts=isNaN(dt)?"19:00":dt.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',hour12:false});const st=(ev.status&&ev.status.type&&ev.status.type.state)||"pre";const hr=(ho.records&&ho.records[0]&&ho.records[0].summary)||"";const ar=(ao.records&&ao.records[0]&&ao.records[0].summary)||"";const oddsObj=(comp.odds&&comp.odds[0])||null;fixtures.push({id:`${hn}_vs_${an}`,home:hn,away:an,league:ln,time:ts,statusState:st,homeScore:parseInt(ho.score,10)||0,awayScore:parseInt(ao.score,10)||0,homeRecord:hr,awayRecord:ar,overUnderLine:oddsObj?oddsObj.overUnder:null})}}})}});
   fixtureCache.set(cd,fixtures);try{sessionStorage.setItem(ck,JSON.stringify({time:Date.now(),data:fixtures}))}catch(e){}return fixtures;
 }
+function renderTopGoodOdds(){
+  const el=document.getElementById('topGoodOddsList');
+  const good=[...allTodayPicks].filter(p=>p.isGood).sort((a,b)=>b.score-a.score).slice(0,3);
+  if(good.length===0){el.innerHTML=`<div class="bg-white dark:bg-gray-900 border rounded-xl p-3 text-center text-xs text-gray-500">No Good Odds (1.80+) today — play Safe picks below.</div>`;return}
+  el.innerHTML=good.map((p,i)=>`<div class="bg-amber-500/10 border border-amber-500/40 rounded-xl p-3 flex items-center justify-between gap-2"><div><div class="text-xs font-black">🔥 #${i+1} ${p.match.home} vs ${p.match.away}</div><div class="text-[11px] font-mono text-gray-500">${p.emoji} ${p.label} • ${p.score}/100 • ${p.confidence} • ⏰ ${p.match.time}</div></div><div class="text-right shrink-0"><div class="font-black text-amber-600">@ ${p.odd.toFixed(2)}</div><button onclick="copySingle('${p.match.id}','${p.key}')" class="text-[10px] font-bold text-amber-600">📋 Copy</button></div></div>`).join('');
+}
 function renderPicks(){
   const container=document.getElementById('matchFeedContainer');
-  let all=[...allTodayPicks].sort((a,b)=>b.score-a.score);
+  let all=[...allTodayPicks].sort((a,b)=>{
+    if(a.isGood!==b.isGood) return b.isGood - a.isGood;
+    return b.score-a.score;
+  });
   document.getElementById('countAll').textContent=all.length;
+  document.getElementById('countGood').textContent=all.filter(p=>p.isGood).length;
   document.getElementById('countOver15').textContent=all.filter(p=>p.key==='over15').length;
   document.getElementById('countOver25').textContent=all.filter(p=>p.key==='over25').length;
   document.getElementById('countBtts').textContent=all.filter(p=>p.key==='btts').length;
+  document.getElementById('countHomeOver').textContent=all.filter(p=>p.key==='homeOver').length;
   document.getElementById('countUnder55').textContent=all.filter(p=>p.key==='under55').length;
-  let list=currentMarketFilter==='all'?all:all.filter(p=>p.key===currentMarketFilter);
+  renderTopGoodOdds(); updateTicketUI();
+  let list=currentMarketFilter==='all'?all:currentMarketFilter==='good'?all.filter(p=>p.isGood):all.filter(p=>p.key===currentMarketFilter);
   document.getElementById('totalPicksBadge').textContent=list.length+' PICKS';
   if(list.length===0){container.innerHTML=`<div class="bg-white dark:bg-gray-900 border rounded-2xl p-6 text-center space-y-2"><div class="text-3xl">🛡️</div><div class="font-black">NO PICK FOR THIS FILTER</div><p class="text-xs text-gray-500">No game scored 80/100 for this market today.<br>Try ALL.</p></div>`;return}
   let totalStake=all.length*10000;let ifAllWin=all.reduce((s,p)=>s+10000*p.odd,0);let profitIfAll=ifAllWin-totalStake;
-  document.getElementById('daySummary').textContent=`${all.length} singles • 10k each = ${totalStake.toLocaleString()} UGX • Avg @ ${(all.reduce((s,p)=>s+p.odd,0)/all.length).toFixed(2)} • 4 Markets`;
+  document.getElementById('daySummary').textContent=`${all.length} singles • ${all.filter(p=>p.isGood).length} Good Odds • 10k each = ${totalStake.toLocaleString()} UGX • Avg @ ${(all.reduce((s,p)=>s+p.odd,0)/all.length).toFixed(2)}`;
   document.getElementById('dayProfitPreview').textContent=`+${Math.round(profitIfAll).toLocaleString()} UGX`;
   container.innerHTML=list.map((p,i)=>{
     let badge=`<span class="text-[11px] font-mono text-gray-500 nowrap-badge">⏰ ${p.match.time}</span>`;
     if(p.isFinished) badge=p.isWon?`<span class="bg-emerald-500 text-white px-2.5 py-1 rounded-lg text-xs font-black nowrap-badge">✅ ${p.match.homeScore}-${p.match.awayScore}</span>`:`<span class="bg-red-500 text-white px-2.5 py-1 rounded-lg text-xs font-black nowrap-badge">❌ ${p.match.homeScore}-${p.match.awayScore}</span>`;
     else if(p.match.statusState==='in') badge=`<span class="bg-emerald-500/20 text-emerald-500 border border-emerald-500/30 px-2.5 py-1 rounded-lg text-xs font-bold nowrap-badge">● LIVE ${p.match.homeScore}-${p.match.awayScore}</span>`;
-    const marketColor=p.key==='over25'?'bg-orange-500 text-white':p.key==='btts'?'bg-blue-500 text-white':p.key==='under55'?'bg-gray-700 text-white':'bg-emerald-500 text-white';
-    return `<div class="bg-white dark:bg-gray-900 border rounded-2xl p-4 space-y-2">
+    const marketColor=p.key==='over25'?'bg-orange-500 text-white':p.key==='btts'?'bg-blue-500 text-white':p.key==='homeOver'?'bg-purple-500 text-white':p.key==='under55'?'bg-gray-700 text-white':'bg-emerald-500 text-white';
+    const goodTag=p.isGood?`<span class="bg-amber-500 text-gray-950 px-2 py-1 rounded-lg text-[10px] font-black nowrap-badge">🔥 GOOD 1.80+</span>`:`<span class="bg-gray-100 dark:bg-gray-800 text-gray-500 px-2 py-1 rounded-lg text-[10px] font-bold nowrap-badge">SAFE</span>`;
+    return `<div class="bg-white dark:bg-gray-900 border ${p.isGood?'border-amber-500/50':'border-gray-200 dark:border-gray-800'} rounded-2xl p-4 space-y-2">
       <div class="flex items-center justify-between gap-3">
       <div class="flex items-center gap-3 min-w-0"><span class="w-9 h-9 rounded-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 flex items-center justify-center text-xs font-black shrink-0">${i+1}</span>
       <div class="min-w-0"><div class="text-sm font-bold truncate">${p.match.home} vs ${p.match.away}</div><div class="text-[11px] font-mono text-gray-500 truncate">${p.match.league} • ${p.emoji} ${p.label} • Score ${p.score}/100</div><div class="text-[11px] font-bold text-emerald-600">Confidence ${p.confidence} • Est xG ${p.xgEst.toFixed(2)}</div></div></div>
       <div class="flex flex-col items-end gap-1 shrink-0"><span class="bg-gray-900 dark:bg-white text-white dark:text-gray-900 px-3 py-1.5 rounded-lg text-sm font-black nowrap-badge">@ ${p.odd.toFixed(2)}</span>${badge}<button onclick="copySingle('${p.match.id}','${p.key}')" class="text-[10px] font-bold text-amber-500">📋 Copy</button></div></div>
-      <div class="flex gap-2 items-center"><span class="text-[10px] font-black px-2 py-1 rounded-lg ${marketColor} nowrap-badge">${p.emoji} ${p.label}</span><span class="text-[10px] font-mono text-gray-500 bg-gray-50 dark:bg-gray-800/60 rounded-lg px-2 py-1.5 flex-1 truncate">${p.reasons.join(' • ')}</span></div></div>`;
+      <div class="flex gap-2 items-center">${goodTag}<span class="text-[10px] font-black px-2 py-1 rounded-lg ${marketColor} nowrap-badge">${p.emoji} ${p.label}</span><span class="text-[10px] font-mono text-gray-500 bg-gray-50 dark:bg-gray-800/60 rounded-lg px-2 py-1.5 flex-1 truncate">${p.reasons.join(' • ')}</span></div></div>`;
   }).join('');
 }
 function copySingle(id,key){
@@ -250,7 +332,7 @@ function copySingle(id,key){
 }
 async function fetchMatchData(dateObj){
   selectedDateObj=dateObj;const container=document.getElementById('matchFeedContainer');const today=new Date();const isT=dateObj.toDateString()===today.toDateString();document.getElementById('sectionTitleDate').textContent=isT?"TODAY'S":dateObj.toLocaleDateString('en-US',{month:'short',day:'numeric'}).toUpperCase();
-  container.innerHTML=`<div class="p-8 text-center text-xs text-gray-500">Running 10-Factor Analysis — 4 Markets...</div>`;
+  container.innerHTML=`<div class="p-8 text-center text-xs text-gray-500">Running 10-Factor Analysis — Good Odds 1.80-2.20...</div>`;
   const matches=await fetchRealFixtures(dateObj);
   allTodayPicks=[];
   matches.forEach(m=>{const pk=evaluateBestMarket(m);if(pk)allTodayPicks.push({...pk,match:m})});
@@ -275,7 +357,7 @@ async function loadHistoryBatch(){
     const d=new Date();d.setDate(d.getDate()-back);
     try{
       const matches=await fetchRealFixtures(d);const dateLabel=d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
-      matches.forEach(m=>{const pk=evaluateBestMarket(m);if(pk&&m.statusState==='post'){mainHistory.push({won:pk.isWon,odd:pk.odd,html:`<div class="flex items-center justify-between bg-white dark:bg-gray-900 border ${pk.isWon?'border-emerald-500/40':'border-red-500/40'} rounded-xl px-3 py-2.5"><div class="flex items-center gap-2.5"><span class="min-w-[52px] h-8 px-1.5 rounded-full ${pk.isWon?'bg-emerald-500 text-white':'bg-red-500 text-white'} flex items-center justify-center text-[11px] font-black">${m.time}</span><div><div class="text-xs font-bold">${m.home} vs ${m.away}</div><div class="text-[10px] font-mono text-gray-500">${dateLabel} • ${pk.emoji} ${pk.label} • ${m.homeScore}-${m.awayScore} • ${pk.score}/100</div></div></div><div class="text-right shrink-0"><div class="text-xs font-black ${pk.isWon?'text-emerald-500':'text-red-500'}">${pk.isWon?'WON':'LOST'} ${m.homeScore}-${m.awayScore}</div><div class="text-[10px] font-mono text-gray-500">@ ${pk.odd.toFixed(2)}</div></div></div>`})}});
+      matches.forEach(m=>{const pk=evaluateBestMarket(m);if(pk&&m.statusState==='post'){mainHistory.push({won:pk.isWon,odd:pk.odd,html:`<div class="flex items-center justify-between bg-white dark:bg-gray-900 border ${pk.isWon?'border-emerald-500/40':'border-red-500/40'} rounded-xl px-3 py-2.5"><div class="flex items-center gap-2.5"><span class="min-w-[52px] h-8 px-1.5 rounded-full ${pk.isWon?'bg-emerald-500 text-white':'bg-red-500 text-white'} flex items-center justify-center text-[11px] font-black">${m.time}</span><div><div class="text-xs font-bold">${m.home} vs ${m.away}</div><div class="text-[10px] font-mono text-gray-500">${dateLabel} • ${pk.emoji} ${pk.label} • ${m.homeScore}-${m.awayScore} • ${pk.score}/100 ${pk.isGood?'• 🔥 GOOD':''}</div></div></div><div class="text-right shrink-0"><div class="text-xs font-black ${pk.isWon?'text-emerald-500':'text-red-500'}">${pk.isWon?'WON':'LOST'} ${m.homeScore}-${m.awayScore}</div><div class="text-[10px] font-mono text-gray-500">@ ${pk.odd.toFixed(2)}</div></div></div>`})}});
     }catch(e){}
   }
   historyLoadedDays=end;updateHistoryStats();if(btn)btn.textContent=historyLoadedDays>=60?'All 60 Days Loaded':'Load More ('+historyLoadedDays+'/60)';historyLoading=false;if(historyLoadedDays<60)setTimeout(()=>loadHistoryBatch(),600);
