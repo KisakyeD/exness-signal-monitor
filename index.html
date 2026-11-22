@@ -30,9 +30,8 @@
             </div>
             <nav class="space-y-1.5" id="drawerNavList">
                 <div class="hidden"><span>🎯 LIVE DATA VIP MARKETS</span></div>
-                <!-- ADDED: Ticket in hamburger -->
-                <button onclick="goToTicket()" id="nav_ticket" class="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl bg-amber-500 text-gray-950 font-black text-xs border border-amber-500 shadow-lg shadow-amber-500/20 transition"><span class="flex items-center gap-1.5">🎫</span><span class="flex items-center">daily ticket - 2 games</span><span class="ml-auto text-[9px] bg-gray-950 text-amber-400 px-1.5 py-0.5 rounded-full font-black">HOT</span></button>
-                <button onclick="switchCategory('single_over15')" id="nav_single_over15" class="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 font-medium text-xs transition"><span class="flex items-center gap-1.5">⚽</span><span class="flex items-center">daily over 1.5 VIP</span></button>
+                <button onclick="goToTicket()" id="nav_ticket" class="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 font-bold text-xs transition"><span class="flex items-center gap-1.5">🎫</span><span class="flex items-center">daily ticket - 2 games</span><span class="ml-auto text-[9px] bg-amber-500 text-gray-950 px-1.5 py-0.5 rounded-full font-black">HOT</span></button>
+                <button onclick="switchCategory('single_over15')" id="nav_single_over15" class="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl bg-amber-500/20 text-amber-400 font-bold text-xs border border-amber-500/40 transition"><span class="flex items-center gap-1.5">⚽</span><span class="flex items-center">daily over 1.5 VIP</span></button>
                 <button onclick="switchCategory('single_under45')" id="nav_single_under45" class="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 font-medium text-xs transition"><span class="flex items-center gap-1.5">🔒</span><span class="flex items-center">daily under 4.5 VIP</span></button>
             </nav>
             <div class="pt-3 border-t border-gray-200 dark:border-gray-800 space-y-2">
@@ -71,7 +70,8 @@
         <div class="flex items-center justify-between bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-1.5 no-scrollbar overflow-x-auto gap-2" id="dateRibbon"></div>
         <p class="hidden text-[10px] text-gray-500 dark:text-gray-400 font-mono text-center -mt-3">Calendar is continuous — scroll left/right or pick any date. Picks never stop.</p>
 
-        <section class="space-y-3 relative" id="ticketSection">
+        <!-- TICKET REMOVED FROM HOME PAGE - ONLY SHOWS WHEN TAPPED FROM HAMBURGER -->
+        <section class="space-y-3 relative hidden" id="ticketSection">
             <div class="flex items-center justify-between">
                 <h3 class="font-black text-gray-900 dark:text-white text-base flex items-center gap-2">🎫 TODAY'S TICKET - 2 GAMES</h3>
                 <div class="flex items-center gap-2">
@@ -208,31 +208,24 @@
         }
         function getLockedPick(dateStr,category){ try{ const store=JSON.parse(localStorage.getItem('wins1_real_locked_picks')||'{}'); return store[`${dateStr}_${category}`]||null; }catch(e){ return null; } }
         function saveLockedPick(dateStr,category,matchIdentifier){ try{ const store=JSON.parse(localStorage.getItem('wins1_real_locked_picks')||'{}'); store[`${dateStr}_${category}`]=matchIdentifier; localStorage.setItem('wins1_real_locked_picks',JSON.stringify(store)); }catch(e){} }
-        function goToHomepage(){ toggleDrawer(false); selectedDateObj=new Date(); switchCategory('single_over15'); initRibbon(); }
-        // NEW: Hamburger -> Ticket
+        function goToHomepage(){ toggleDrawer(false); hideTicket(); selectedDateObj=new Date(); switchCategory('single_over15'); initRibbon(); }
+        function hideTicket(){ const t=document.getElementById('ticketSection'); if(t) t.classList.add('hidden'); const ticketBtn=document.getElementById('nav_ticket'); if(ticketBtn) ticketBtn.className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 font-bold text-xs transition"; }
         function goToTicket(){
             toggleDrawer(false);
-            // Highlight Ticket button in hamburger
             const ticketBtn=document.getElementById('nav_ticket');
             const overBtn=document.getElementById('nav_single_over15');
             const underBtn=document.getElementById('nav_single_under45');
             if(ticketBtn) ticketBtn.className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl bg-amber-500 text-gray-950 font-black text-xs border border-amber-500 shadow-lg shadow-amber-500/20 transition";
             if(overBtn) overBtn.className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 font-medium text-xs transition";
             if(underBtn) underBtn.className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 font-medium text-xs transition";
-            // Make sure ticket for current date is loaded, then scroll to it
+            const t=document.getElementById('ticketSection'); if(t) t.classList.remove('hidden');
             loadComboTicket(selectedDateObj);
-            setTimeout(()=>{
-                const el=document.getElementById('ticketSection');
-                if(el){ el.scrollIntoView({behavior:'smooth', block:'start'}); el.classList.remove('ticket-highlight'); void el.offsetWidth; el.classList.add('ticket-highlight'); }
-            }, 150);
+            setTimeout(()=>{ const el=document.getElementById('ticketSection'); if(el){ el.scrollIntoView({behavior:'smooth', block:'start'}); el.classList.remove('ticket-highlight'); void el.offsetWidth; el.classList.add('ticket-highlight'); } }, 150);
         }
-        function switchCategory(cat){ currentCategory=cat; toggleDrawer(false);
-            // Reset Ticket button to inactive when picking Over/Under
-            const ticketBtn=document.getElementById('nav_ticket');
-            if(ticketBtn) ticketBtn.className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 font-bold text-xs transition";
-            categories.forEach(c=>{ const navBtn=document.getElementById(`nav_${c}`); if(navBtn){ if(c===cat){ navBtn.className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl bg-amber-500/20 text-amber-400 font-bold text-xs border border-amber-500/40 transition"; } else { navBtn.className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 font-medium text-xs transition"; } } }); const badgeText={'single_over15':"HIGH-SCORING OVER 1.5",'single_under45':"SAFE UNDER 4.5"}; document.getElementById('headerCategoryBadge').textContent=badgeText[cat]||"LIVE VIP"; document.getElementById('sectionTitleCategory').textContent=badgeText[cat]||"SELECTION"; fetchMatchData(selectedDateObj,false); loadComboTicket(selectedDateObj); }
-        function jumpToDate(dateStr){ if(!dateStr) return; const target=new Date(dateStr+'T00:00:00'); selectedDateObj=target; toggleDrawer(false); initRibbon(); fetchMatchData(target,false); loadComboTicket(target); }
-        function triggerRefresh(){ const icon=document.getElementById('refreshIcon'); if(icon) icon.classList.add('animate-spin'); try{ sessionStorage.removeItem('wins1_cache_'+getYYYYMMDD(selectedDateObj)); }catch(e){} fetchMatchData(selectedDateObj,false).then(()=>{ setTimeout(()=>{ if(icon) icon.classList.remove('animate-spin'); },500); }); loadComboTicket(selectedDateObj); }
+        function switchCategory(cat){ currentCategory=cat; toggleDrawer(false); hideTicket();
+            categories.forEach(c=>{ const navBtn=document.getElementById(`nav_${c}`); if(navBtn){ if(c===cat){ navBtn.className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl bg-amber-500/20 text-amber-400 font-bold text-xs border border-amber-500/40 transition"; } else { navBtn.className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 font-medium text-xs transition"; } } }); const badgeText={'single_over15':"HIGH-SCORING OVER 1.5",'single_under45':"SAFE UNDER 4.5"}; document.getElementById('headerCategoryBadge').textContent=badgeText[cat]||"LIVE VIP"; document.getElementById('sectionTitleCategory').textContent=badgeText[cat]||"SELECTION"; fetchMatchData(selectedDateObj,false); }
+        function jumpToDate(dateStr){ if(!dateStr) return; const target=new Date(dateStr+'T00:00:00'); selectedDateObj=target; toggleDrawer(false); initRibbon(); fetchMatchData(target,false); const t=document.getElementById('ticketSection'); if(t && !t.classList.contains('hidden')) loadComboTicket(target); }
+        function triggerRefresh(){ const icon=document.getElementById('refreshIcon'); if(icon) icon.classList.add('animate-spin'); try{ sessionStorage.removeItem('wins1_cache_'+getYYYYMMDD(selectedDateObj)); }catch(e){} fetchMatchData(selectedDateObj,false).then(()=>{ setTimeout(()=>{ if(icon) icon.classList.remove('animate-spin'); },500); }); const t=document.getElementById('ticketSection'); if(t && !t.classList.contains('hidden')) loadComboTicket(selectedDateObj); }
         function parseRecordStats(recordSummary){ if(!recordSummary||typeof recordSummary!=='string'){ return {wins:0,draws:0,losses:0,played:0,winRate:0.40,lossRate:0.35,summary:"N/A"}; } const parts=recordSummary.split('-').map(n=>parseInt(n,10)).filter(n=>!isNaN(n)); if(parts.length===3){ const [w,d,l]=parts; const played=w+d+l; return {wins:w,draws:d,losses:l,played,winRate:played>0?(w/played):0.40,lossRate:played>0?(l/played):0.35,summary:`${w}W-${d}D-${l}L`}; } else if(parts.length===2){ const [w,l]=parts; const played=w+l; return {wins:w,draws:0,losses:l,played,winRate:played>0?(w/played):0.40,lossRate:played>0?(l/played):0.35,summary:`${w}W-${l}L`}; } return {wins:0,draws:0,losses:0,played:0,winRate:0.40,lossRate:0.35,summary:recordSummary}; }
         function americanToDecimal(ml){ const num=parseFloat(ml); if(isNaN(num)||num===0) return null; if(num<0) return parseFloat((1+(100/Math.abs(num))).toFixed(2)); return parseFloat((1+(num/100)).toFixed(2)); }
         function evaluatePickWithRealData(match,category){
@@ -461,7 +454,7 @@
         }
         function loadMoreHistory(){ loadHistoryBatch(); }
         function loadHistory(){ if(historyLoadedDays===0) loadHistoryBatch(); }
-        initRibbon(); fetchMatchData(selectedDateObj,false); loadComboTicket(selectedDateObj);
+        initRibbon(); fetchMatchData(selectedDateObj,false);
         setTimeout(()=>{ loadHistoryBatch(); }, 800);
     </script>
 </body>
