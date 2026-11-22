@@ -21,54 +21,49 @@
 <button onclick="document.documentElement.classList.toggle('dark')" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800">☀️/🌙</button>
 </div>
 <div class="max-w-7xl mx-auto mt-3 flex gap-2">
-<input id="searchInput" onkeyup="if(event.key==='Enter')searchMovies()" placeholder="🔍 Search movie... e.g. Avengers, Coming to America" class="flex-1 bg-gray-100 dark:bg-gray-800 border rounded-xl px-4 py-2.5 text-sm outline-none focus:border-red-500">
+<input id="searchInput" onkeyup="if(event.key==='Enter')searchMovies()" placeholder="🔍 Search movie... e.g. Avengers" class="flex-1 bg-gray-100 dark:bg-gray-800 border rounded-xl px-4 py-2.5 text-sm outline-none focus:border-red-500">
 <button onclick="searchMovies()" class="px-4 py-2.5 rounded-xl bg-red-600 text-white font-black text-sm">Search</button>
 </div>
 <div class="max-w-7xl mx-auto mt-2 flex gap-2 overflow-x-auto no-scrollbar pb-1" id="genreRow"></div>
 </header>
 
 <main class="max-w-7xl mx-auto px-3 py-4 space-y-6">
-<!-- PLAYER -->
+<!-- PLAYER - FIXED -->
 <div class="bg-black rounded-2xl overflow-hidden border-2 border-gray-200 dark:border-gray-800">
 <div class="relative aspect-video bg-black">
-<video id="mainPlayer" controls playsinline class="w-full h-full bg-black hidden"></video>
+<iframe id="archivePlayer" class="w-full h-full hidden" allowfullscreen allow="autoplay; encrypted-media"></iframe>
 <iframe id="trailerFrame" class="w-full h-full hidden" allowfullscreen allow="autoplay; encrypted-media"></iframe>
 <div id="playerPlaceholder" class="absolute inset-0 flex flex-col items-center justify-center text-center p-6 bg-gradient-to-br from-red-900 via-gray-900 to-black text-white">
-<div class="text-5xl mb-2">🎬</div><p class="font-black text-xl">WORLD MOVIES</p><p class="text-sm text-gray-300">Click a FREE movie to watch full movie now<br>Or click any trending movie to watch trailer</p>
+<div class="text-5xl mb-2">🎬</div><p class="font-black text-xl">WORLD MOVIES</p><p class="text-sm text-gray-300">Click a FREE movie to watch full movie now</p>
 <button onclick="playFree(0)" class="mt-4 px-5 py-2.5 bg-red-600 rounded-xl font-black text-sm">▶️ Watch Free Movie Now</button>
 </div>
 </div>
 <div class="bg-gray-900 text-white px-4 py-3 flex items-center justify-between gap-2">
-<div class="min-w-0"><div id="nowPlaying" class="font-black text-sm truncate">Select a movie 🎬</div><div id="nowMeta" class="text-[11px] font-mono text-gray-400 truncate">Free legal movies from Internet Archive • Trailers via YouTube</div></div>
-<button onclick="shareMovie()" class="shrink-0 px-3 py-1.5 rounded-lg bg-green-500 text-white text-xs font-black">Share</button>
+<div class="min-w-0"><div id="nowPlaying" class="font-black text-sm truncate">Select a movie 🎬</div><div id="nowMeta" class="text-[11px] font-mono text-gray-400 truncate">Free legal movies from Internet Archive</div></div>
+<div class="flex gap-2 shrink-0">
+<a id="openArchiveBtn" href="https://archive.org" target="_blank" class="px-3 py-1.5 rounded-lg bg-white text-gray-900 text-xs font-black">Open in Archive</a>
+<button onclick="shareMovie()" class="px-3 py-1.5 rounded-lg bg-green-500 text-white text-xs font-black">Share</button>
+</div>
 </div>
 </div>
 
-<!-- ✅ FREE LEGAL MOVIES -->
 <div>
-<div class="flex items-center justify-between mb-2"><h2 class="font-black">🎬 FREE FULL MOVIES - Watch Now (No Key Needed)</h2><span class="text-[10px] font-mono bg-emerald-500/20 text-emerald-600 px-2 py-1 rounded-lg">● LEGAL • PUBLIC DOMAIN</span></div>
+<div class="flex items-center justify-between mb-2"><h2 class="font-black">🎬 FREE FULL MOVIES - Watch Now</h2><span class="text-[10px] font-mono bg-emerald-500/20 text-emerald-600 px-2 py-1 rounded-lg">● FIXED • NOW PLAYS</span></div>
 <div id="freeGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3"></div>
 </div>
 
-<!-- TRENDING -->
 <div>
 <div class="flex items-center justify-between mb-2"><h2 id="sectionTitle" class="font-black">🔥 Trending Now</h2><span class="text-[11px] font-mono text-gray-500">Powered by TMDB</span></div>
 <div id="movieGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3"></div>
-<div class="text-center mt-4"><button id="loadMoreBtn" onclick="loadMore()" class="px-6 py-3 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-black text-sm">Load More</button></div>
-</div>
-
-<div class="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 text-xs">
-<p class="font-black mb-1">⚠️ Legal Notice</p>
-<p class="text-gray-600 dark:text-gray-300">Free movies are Public Domain from Internet Archive (archive.org) - 100% legal to stream. Trending movies show trailers, ratings and info only. "Watch Now" links to Netflix, Showmax, YouTube Movies. We do NOT host pirated movies.</p>
+<div class="text-center mt-4"><button onclick="loadMore()" class="px-6 py-3 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-black text-sm">Load More</button></div>
 </div>
 </main>
 
-<!-- MODAL FOR TRENDING MOVIE INFO -->
 <div id="modal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm p-4 overflow-y-auto" onclick="if(event.target===this)closeModal()">
 <div class="max-w-3xl mx-auto bg-white dark:bg-gray-900 rounded-2xl overflow-hidden mt-8">
 <div class="p-5 space-y-3">
 <div class="flex gap-4">
-<img id="mPoster" class="w-24 rounded-xl shadow-lg">
+<img id="mPoster" class="w-24 rounded-xl shadow-lg bg-gray-200">
 <div class="flex-1">
 <h3 id="mTitle" class="font-black text-lg leading-tight"></h3>
 <div id="mMeta" class="text-xs font-mono text-gray-500 mt-1"></div>
@@ -80,40 +75,37 @@
 <div class="flex flex-wrap gap-2 pt-1">
 <button onclick="playTrailerFromModal()" class="px-4 py-2 rounded-xl bg-red-600 text-white text-sm font-black">▶️ Play Trailer</button>
 <a id="watchNetflix" target="_blank" class="px-4 py-2 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-sm font-black">🔍 Check Netflix</a>
-<a id="watchYT" target="_blank" class="px-4 py-2 rounded-xl bg-gray-100 dark:bg-gray-800 text-sm font-black">▶️ YouTube Movies</a>
 </div>
 </div>
 </div>
 </div>
-
-<footer class="border-t py-4 text-center text-[11px] text-gray-500">WORLD MOVIES • Free Legal Movies + Trailers • 25+ Watch Responsibly</footer>
 
 <script>
-const API_KEY='YOUR_TMDB_API_KEY'; // <-- PASTE FREE KEY from themoviedb.org here for trending
+const API_KEY='YOUR_TMDB_API_KEY';
 const IMG='https://image.tmdb.org/t/p/w500';
 let movies=[], page=1, mode='trending', currentGenre='', currentQuery='', currentMovie=null, currentTrailerKey='';
-const GENRES=[{id:'',name:'🔥 All'},{id:28,name:'💥 Action'},{id:35,name:'😂 Comedy'},{id:18,name:'🎭 Drama'},{id:27,name:'😱 Horror'},{id:10749,name:'❤️ Romance'},{id:878,name:'🚀 Sci-Fi'},{id:16,name:'🎨 Animation'},{id:99,name:'📚 Documentary'}];
+const GENRES=[{id:'',name:'🔥 All'},{id:28,name:'💥 Action'},{id:35,name:'😂 Comedy'},{id:18,name:'🎭 Drama'},{id:27,name:'😱 Horror'},{id:10749,name:'❤️ Romance'},{id:878,name:'🚀 Sci-Fi'},{id:16,name:'🎨 Animation'}];
 
-// ✅ 12 FREE LEGAL FULL MOVIES - Internet Archive Public Domain
+// ✅ FIXED: Use Archive.org EMBED ID - not direct mp4. Poster = archive.org/services/img/ID
 const FREE_MOVIES=[
- {title:'Night of the Living Dead', year:1968, rating:7.8, genre:'Horror', poster:'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Night_of_the_Living_Dead_%281968%29_poster.jpg/640px-Night_of_the_Living_Dead_%281968%29_poster.jpg', video:'https://archive.org/download/night_of_the_living_dead/night_of_the_living_dead.mp4', desc:'Original zombie classic. A group trapped in a farmhouse.'},
- {title:'The Kid - Charlie Chaplin', year:1921, rating:8.3, genre:'Comedy', poster:'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/The_Kid_%281921%29_poster.jpg/640px-The_Kid_%281921%29_poster.jpg', video:'https://archive.org/download/the_kid_1921/the_kid_1921.mp4', desc:'Chaplin finds an abandoned baby and raises him.'},
- {title:'Metropolis', year:1927, rating:8.3, genre:'Sci-Fi', poster:'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Metropolis_poster.jpg/640px-Metropolis_poster.jpg', video:'https://archive.org/download/metropolis_1927/metropolis_1927.mp4', desc:'Futuristic city, workers vs rich. Greatest sci-fi ever.'},
- {title:'Nosferatu', year:1922, rating:7.9, genre:'Horror', poster:'https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/NosferatuPoster.jpg/640px-NosferatuPoster.jpg', video:'https://archive.org/download/nosferatu_1922/nosferatu_1922.mp4', desc:'Original vampire film - Dracula story.'},
- {title:'The General - Buster Keaton', year:1926, rating:8.1, genre:'Action Comedy', poster:'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/The_General_%281926%29_poster.jpg/640px-The_General_%281926%29_poster.jpg', video:'https://archive.org/download/the_general_1926/the_general_1926.mp4', desc:'Train chase masterpiece. Funniest silent film.'},
- {title:'His Girl Friday', year:1940, rating:7.8, genre:'Comedy', poster:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/His_Girl_Friday_%281940_poster%29.jpg/640px-His_Girl_Friday_%281940_poster%29.jpg', video:'https://archive.org/download/his_girl_friday/his_girl_friday.mp4', desc:'Fast newspaper comedy. Cary Grant.'},
- {title:'Detour', year:1945, rating:7.2, genre:'Crime Noir', poster:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Detour_%281945%29_poster.jpg/640px-Detour_%281945%29_poster.jpg', video:'https://archive.org/download/detour_1945/detour_1945.mp4', desc:'Hitchhiker gets caught in murder. Film noir classic.'},
- {title:'The Stranger', year:1946, rating:7.4, genre:'Thriller', poster:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/The_Stranger_%281946_film_poster%29.jpg/640px-The_Stranger_%281946_film_poster%29.jpg', video:'https://archive.org/download/the_stranger_1946/the_stranger_1946.mp4', desc:'Orson Welles hunts a Nazi hiding in small town.'},
- {title:'Scarlet Street', year:1945, rating:7.8, genre:'Drama Noir', poster:'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Scarlet_Street_%281945%29_poster.jpg/640px-Scarlet_Street_%281945%29_poster.jpg', video:'https://archive.org/download/scarlet_street_1945/scarlet_street_1945.mp4', desc:'Painter falls for con woman. Fritz Lang.'},
- {title:'Plan 9 From Outer Space', year:1959, rating:3.9, genre:'Sci-Fi Comedy', poster:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Plan_9_from_Outer_Space_%281959%29_poster.jpg/640px-Plan_9_from_Outer_Space_%281959%29_poster.jpg', video:'https://archive.org/download/plan_9_from_outer_space/plan_9_from_outer_space.mp4', desc:'So bad it is funny. Famous worst movie ever.'},
- {title:'Charade', year:1963, rating:7.9, genre:'Thriller Romance', poster:'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Charade_%281963%29_poster.jpg/640px-Charade_%281963%29_poster.jpg', video:'https://archive.org/download/charade_1963/charade_1963.mp4', desc:'Audrey Hepburn + Cary Grant in Paris. Hitchcock style.'},
- {title:'The Little Shop of Horrors', year:1960, rating:6.4, genre:'Horror Comedy', poster:'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Little_Shop_of_Horrors_%281960%29_poster.jpg/640px-Little_Shop_of_Horrors_%281960%29_poster.jpg', video:'https://archive.org/download/little_shop_of_horrors_1960/little_shop_of_horrors_1960.mp4', desc:'Man-eating plant! Original cult classic.'},
+ {title:'Night of the Living Dead', year:1968, rating:7.8, genre:'Horror', id:'night_of_the_living_dead', desc:'Original zombie classic.'},
+ {title:'The Kid - Charlie Chaplin', year:1921, rating:8.3, genre:'Comedy', id:'the_kid', desc:'Chaplin finds abandoned baby.'},
+ {title:'Metropolis', year:1927, rating:8.3, genre:'Sci-Fi', id:'Metropolis1927', desc:'Futuristic city classic.'},
+ {title:'Nosferatu', year:1922, rating:7.9, genre:'Horror', id:'Nosferatu_1922', desc:'Original vampire film.'},
+ {title:'The General', year:1926, rating:8.1, genre:'Action Comedy', id:'TheGeneral1926', desc:'Buster Keaton train chase.'},
+ {title:'His Girl Friday', year:1940, rating:7.8, genre:'Comedy', id:'his_girl_friday', desc:'Cary Grant newspaper comedy.'},
+ {title:'Detour', year:1945, rating:7.2, genre:'Crime Noir', id:'Detour1945', desc:'Film noir classic.'},
+ {title:'Plan 9 From Outer Space', year:1959, rating:3.9, genre:'Sci-Fi Comedy', id:'Plan9FromOuterSpace', desc:'So bad it is funny.'},
+ {title:'Charade', year:1963, rating:7.9, genre:'Thriller', id:'Charade1963', desc:'Hepburn + Cary Grant in Paris.'},
+ {title:'The Little Shop of Horrors', year:1960, rating:6.4, genre:'Horror Comedy', id:'TheLittleShopOfHorrors', desc:'Man-eating plant!'},
+ {title:'Scarlet Street', year:1945, rating:7.8, genre:'Drama Noir', id:'ScarletStreet', desc:'Fritz Lang noir.'},
+ {title:'Carnival of Souls', year:1962, rating:6.9, genre:'Horror', id:'CarnivalOfSouls', desc:'Haunting cult horror.'},
 ];
-
+function posterUrl(id){ return `https://archive.org/services/img/${id}`; }
 function renderFree(){
   document.getElementById('freeGrid').innerHTML=FREE_MOVIES.map((m,i)=>`
   <button onclick="playFree(${i})" class="movie-card text-left bg-white dark:bg-gray-900 border rounded-xl overflow-hidden hover:border-red-500">
-    <div class="overflow-hidden aspect-[2/3] bg-gray-200 dark:bg-gray-800"><img src="${m.poster}" loading="lazy" class="w-full h-full object-cover" onerror="this.style.display='none'"></div>
+    <div class="overflow-hidden aspect-[2/3] bg-gray-800 flex items-center justify-center"><img src="${posterUrl(m.id)}" loading="lazy" class="w-full h-full object-cover" onerror="this.style.display='none'; this.parentNode.innerHTML='<div class=text-4xl>🎬</div>'"></div>
     <div class="p-2"><div class="text-[12px] font-bold truncate">${m.title}</div>
     <div class="flex justify-between items-center mt-1"><span class="text-[10px] font-mono text-gray-500">${m.year} • ${m.genre}</span><span class="text-[11px] font-black text-amber-600">⭐ ${m.rating}</span></div>
     <div class="mt-1.5 text-[10px] bg-red-600 text-white text-center py-1.5 rounded-lg font-black">▶️ WATCH FREE</div></div>
@@ -123,63 +115,51 @@ function playFree(i){
   const m=FREE_MOVIES[i]; currentMovie={title:m.title, overview:m.desc, release_date:String(m.year), vote_average:m.rating};
   document.getElementById('playerPlaceholder').style.display='none';
   document.getElementById('trailerFrame').classList.add('hidden'); document.getElementById('trailerFrame').src='';
-  const v=document.getElementById('mainPlayer'); v.classList.remove('hidden'); v.src=m.video; v.play().catch(()=>{});
-  document.getElementById('nowPlaying').textContent='▶️ Now Playing (FREE FULL MOVIE): '+m.title;
-  document.getElementById('nowMeta').textContent=`${m.year} • ${m.genre} • ⭐ ${m.rating} • Public Domain - Legal • ${m.desc}`;
+  // ✅ FIX: Archive.org embed player - works on mobile, no direct mp4 block
+  const f=document.getElementById('archivePlayer'); f.classList.remove('hidden');
+  f.src=`https://archive.org/embed/${m.id}?autoplay=1`;
+  document.getElementById('openArchiveBtn').href=`https://archive.org/details/${m.id}`;
+  document.getElementById('nowPlaying').textContent='▶️ Now Playing (FREE): '+m.title;
+  document.getElementById('nowMeta').textContent=`${m.year} • ${m.genre} • ⭐ ${m.rating} • Public Domain • If it shows loading, tap Open in Archive`;
   window.scrollTo({top:0, behavior:'smooth'});
 }
 function playTrailerFromModal(){
   if(!currentTrailerKey) return;
   closeModal();
   document.getElementById('playerPlaceholder').style.display='none';
-  const v=document.getElementById('mainPlayer'); v.classList.add('hidden'); v.pause();
+  document.getElementById('archivePlayer').classList.add('hidden'); document.getElementById('archivePlayer').src='';
   const f=document.getElementById('trailerFrame'); f.classList.remove('hidden'); f.src=`https://www.youtube.com/embed/${currentTrailerKey}?autoplay=1`;
   document.getElementById('nowPlaying').textContent='▶️ Trailer: '+currentMovie.title;
   window.scrollTo({top:0, behavior:'smooth'});
 }
-function renderGenres(){
-  document.getElementById('genreRow').innerHTML=GENRES.map(g=>`<button onclick="filterGenre('${g.id}','${g.name}')" class="shrink-0 px-3 py-1.5 rounded-xl text-xs font-bold border ${String(currentGenre)===String(g.id)?'bg-red-600 text-white border-red-600':'bg-gray-100 dark:bg-gray-800'}">${g.name}</button>`).join('');
-}
+function renderGenres(){ document.getElementById('genreRow').innerHTML=GENRES.map(g=>`<button onclick="filterGenre('${g.id}','${g.name}')" class="shrink-0 px-3 py-1.5 rounded-xl text-xs font-bold border ${String(currentGenre)===String(g.id)?'bg-red-600 text-white border-red-600':'bg-gray-100 dark:bg-gray-800'}">${g.name}</button>`).join(''); }
 function filterGenre(id,name){ currentGenre=id; mode='genre'; page=1; movies=[]; document.getElementById('sectionTitle').textContent=name+' Movies'; renderGenres(); fetchMovies(); }
 async function fetchMovies(){
-  if(API_KEY==='YOUR_TMDB_API_KEY'){ document.getElementById('movieGrid').innerHTML=`<div class="col-span-full p-6 text-center border rounded-xl"><p class="font-black mb-2">⚠️ Add your free TMDB API key for Trending</p><p class="text-sm text-gray-500">Free movies above already work without key.<br>1. themoviedb.org → Sign Up → Settings → API → Copy Key<br>2. Replace YOUR_TMDB_API_KEY in code</p></div>`; return; }
+  if(API_KEY==='YOUR_TMDB_API_KEY'){ document.getElementById('movieGrid').innerHTML=`<div class="col-span-full p-6 text-center border rounded-xl"><p class="font-black mb-2">Add free TMDB key for Trending</p><p class="text-sm text-gray-500">Free movies above work without key.</p></div>`; return; }
   let url='';
   if(mode==='trending') url=`https://api.themoviedb.org/3/trending/movie/week?api_key=${API_KEY}&page=${page}`;
   else if(mode==='genre') url=`https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_genres=${currentGenre}&sort_by=popularity.desc&page=${page}`;
   else if(mode==='search') url=`https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(currentQuery)}&page=${page}`;
-  const r=await fetch(url).then(x=>x.json());
-  movies=[...movies, ...(r.results||[])];
-  renderMovies();
+  const r=await fetch(url).then(x=>x.json()); movies=[...movies, ...(r.results||[])]; renderMovies();
 }
-function renderMovies(){
-  document.getElementById('movieGrid').innerHTML=movies.map(m=>`
-  <button onclick="openMovie(${m.id})" class="movie-card text-left bg-white dark:bg-gray-900 border rounded-xl overflow-hidden hover:border-red-500">
-    <div class="overflow-hidden aspect-[2/3] bg-gray-200 dark:bg-gray-800"><img src="${m.poster_path?IMG+m.poster_path:''}" loading="lazy" class="w-full h-full object-cover" onerror="this.style.display='none'"></div>
-    <div class="p-2"><div class="text-[12px] font-bold truncate">${m.title}</div>
-    <div class="flex justify-between items-center mt-1"><span class="text-[10px] font-mono text-gray-500">${(m.release_date||'').slice(0,4)}</span><span class="text-[11px] font-black text-amber-600">⭐ ${Number(m.vote_average||0).toFixed(1)}</span></div>
-    <div class="mt-1.5 text-[10px] bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-center py-1.5 rounded-lg font-black">▶️ TRAILER</div></div>
-  </button>`).join('');
-}
+function renderMovies(){ document.getElementById('movieGrid').innerHTML=movies.map(m=>`<button onclick="openMovie(${m.id})" class="movie-card text-left bg-white dark:bg-gray-900 border rounded-xl overflow-hidden hover:border-red-500"><div class="overflow-hidden aspect-[2/3] bg-gray-200 dark:bg-gray-800"><img src="${m.poster_path?IMG+m.poster_path:''}" loading="lazy" class="w-full h-full object-cover" onerror="this.style.display='none'"></div><div class="p-2"><div class="text-[12px] font-bold truncate">${m.title}</div><div class="flex justify-between mt-1"><span class="text-[10px] text-gray-500">${(m.release_date||'').slice(0,4)}</span><span class="text-[11px] font-black text-amber-600">⭐ ${Number(m.vote_average||0).toFixed(1)}</span></div><div class="mt-1.5 text-[10px] bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-center py-1.5 rounded-lg font-black">▶️ TRAILER</div></div></button>`).join(''); }
 function loadMore(){ page++; fetchMovies(); }
 function searchMovies(){ const q=document.getElementById('searchInput').value.trim(); if(!q) return; currentQuery=q; mode='search'; page=1; movies=[]; document.getElementById('sectionTitle').textContent=`🔍 Results for "${q}"`; fetchMovies(); }
 async function openMovie(id){
-  if(API_KEY==='YOUR_TMDB_API_KEY'){ alert('Add TMDB key first for trailers. Free movies above work without key.'); return; }
   const m=await fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=${API_KEY}&append_to_response=videos`).then(x=>x.json());
   currentMovie=m;
   document.getElementById('mPoster').src=m.poster_path?IMG+m.poster_path:'';
   document.getElementById('mTitle').textContent=m.title;
   document.getElementById('mMeta').textContent=`${(m.release_date||'').slice(0,4)} • ${(m.runtime||'?')} min • ${(m.genres||[]).map(g=>g.name).join(', ')}`;
   document.getElementById('mRating').textContent=`⭐ ${Number(m.vote_average||0).toFixed(1)} / 10`;
-  document.getElementById('mOverview').textContent=m.overview||'No overview.';
+  document.getElementById('mOverview').textContent=m.overview||'';
   const vid=(m.videos?.results||[]).find(v=>v.site==='YouTube'&&v.type==='Trailer')||(m.videos?.results||[]).find(v=>v.site==='YouTube');
   currentTrailerKey=vid?vid.key:'';
   document.getElementById('watchNetflix').href=`https://www.netflix.com/search?q=${encodeURIComponent(m.title)}`;
-  document.getElementById('watchYT').href=`https://www.youtube.com/results?search_query=${encodeURIComponent(m.title+' full movie')}`;
   document.getElementById('modal').classList.remove('hidden');
-  document.body.style.overflow='hidden';
 }
-function closeModal(){ document.getElementById('modal').classList.add('hidden'); document.body.style.overflow=''; }
-function shareMovie(){ if(!currentMovie) return; const t=`🎬 ${currentMovie.title} - Watch FREE on WORLD MOVIES: ${location.href}`; if(navigator.clipboard) navigator.clipboard.writeText(t).then(()=>alert('Copied! Share on WhatsApp ✅')); }
+function closeModal(){ document.getElementById('modal').classList.add('hidden'); }
+function shareMovie(){ if(!currentMovie) return; const t=`🎬 ${currentMovie.title} - Watch FREE on WORLD MOVIES: ${location.href}`; if(navigator.clipboard) navigator.clipboard.writeText(t).then(()=>alert('Copied!')); }
 renderFree(); renderGenres(); fetchMovies();
 </script>
 </body>
