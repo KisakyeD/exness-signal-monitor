@@ -68,14 +68,14 @@
     <div class="text-right"><div class="text-white dark:text-gray-900 font-black text-lg" id="dayProfitPreview">—</div><div class="text-[10px] text-gray-300 dark:text-gray-600 font-mono">If all win @ 10k each</div></div>
   </div>
 
-  <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-xl px-3 py-2 text-[11px] font-mono text-emerald-700 dark:text-emerald-300">✅ 10-FACTOR: Venue • Away • Referee • Corners • BTTS • xG • Shots • H2H • Lineups • Weather — Must score 80/100 • 1 Best Market per Game</div>
+  <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-xl px-3 py-2 text-[11px] font-mono text-emerald-700 dark:text-emerald-300">✅ 10-FACTOR: Venue • Away • Referee • Corners • BTTS • xG • Shots • H2H • Lineups • Weather — Over/BTTS 80/100 • Under 5.5 90/100 ULTRA-STRICT</div>
 
   <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1" id="marketFilters">
     <button onclick="setMarketFilter('all')" data-filter="all" class="filter-btn active shrink-0 px-3 py-2 rounded-xl border text-xs font-bold bg-white dark:bg-gray-900">ALL ( <span id="countAll">0</span> )</button>
     <button onclick="setMarketFilter('over15')" data-filter="over15" class="filter-btn shrink-0 px-3 py-2 rounded-xl border text-xs font-bold bg-white dark:bg-gray-900">⚽ Over 1.5 ( <span id="countOver15">0</span> )</button>
     <button onclick="setMarketFilter('over25')" data-filter="over25" class="filter-btn shrink-0 px-3 py-2 rounded-xl border text-xs font-bold bg-white dark:bg-gray-900">🔥 Over 2.5 ( <span id="countOver25">0</span> )</button>
     <button onclick="setMarketFilter('btts')" data-filter="btts" class="filter-btn shrink-0 px-3 py-2 rounded-xl border text-xs font-bold bg-white dark:bg-gray-900">🥅 BTTS ( <span id="countBtts">0</span> )</button>
-    <button onclick="setMarketFilter('under55')" data-filter="under55" class="filter-btn shrink-0 px-3 py-2 rounded-xl border text-xs font-bold bg-white dark:bg-gray-900">🔒 Under 5.5 ( <span id="countUnder55">0</span> )</button>
+    <button onclick="setMarketFilter('under55')" data-filter="under55" class="filter-btn shrink-0 px-3 py-2 rounded-xl border text-xs font-bold bg-white dark:bg-gray-900">🔒 Under 5.5 STRICT ( <span id="countUnder55">0</span> )</button>
   </div>
 
   <section class="space-y-3">
@@ -83,7 +83,7 @@
       <h3 class="font-bold text-base flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-emerald-400 pulse-live"></span> <span id="sectionTitleDate">TODAY'S</span> PICKS</h3>
       <span class="text-xs bg-amber-500/10 text-amber-600 border border-amber-500/30 px-3 py-1.5 rounded-xl font-mono font-bold" id="totalPicksBadge">0 PICKS</span>
     </div>
-    <p class="text-[11px] text-gray-500 font-mono">Play SINGLE SINGLE • Same stake • 1 Best Market per Game • 80+ only</p>
+    <p class="text-[11px] text-gray-500 font-mono">Play SINGLE SINGLE • Same stake • 1 Best Market per Game • Over/BTTS 80+ • Under 5.5 90+ STRICT</p>
     <div class="grid grid-cols-1 gap-3" id="matchFeedContainer"></div>
   </section>
 
@@ -148,7 +148,7 @@ function triggerRefresh(){try{sessionStorage.removeItem('wins1_cache_'+getYYYYMM
 function parseRecordStats(s){if(!s||typeof s!=='string')return{winRate:.40,lossRate:.35,drawRate:.25,played:0,wins:0,draws:0,losses:0};const p=s.split('-').map(n=>parseInt(n,10)).filter(n=>!isNaN(n));if(p.length===3){const[w,d,l]=p;const pl=w+d+l;return{winRate:pl?w/pl:.40,lossRate:pl?l/pl:.35,drawRate:pl?d/pl:.25,played:pl,wins:w,draws:d,losses:l}}if(p.length===2){const[w,l]=p;const pl=w+l;return{winRate:pl?w/pl:.40,lossRate:pl?l/pl:.35,drawRate:0,played:pl,wins:w,draws:0,losses:l}}return{winRate:.40,lossRate:.35,drawRate:.25,played:0,wins:0,draws:0,losses:0}}
 function clamp(v,a,b){return Math.min(b,Math.max(a,v))}
 
-/* ✅ 10-FACTOR - 4 MARKETS - UNDER 5.5 */
+/* ✅ 10-FACTOR - UNDER 5.5 ULTRA-STRICT FIX */
 function evaluateBestMarket(match){
   const h=parseRecordStats(match.homeRecord),a=parseRecordStats(match.awayRecord);
   const ou=parseFloat(match.overUnderLine)||null;
@@ -185,19 +185,21 @@ function evaluateBestMarket(match){
     let s=baseScore; if(bttsScore>=0.70) s+=4;
     if(s>=80){ let prob=clamp(0.52+(s/100)*0.30,0.68,0.88); let odd=parseFloat((1/prob).toFixed(2)); if(odd>=1.40&&odd<=2.20) candidates.push({key:'btts',label:'BTTS Yes',emoji:'🥅',prob,odd,confidence:(prob*100).toFixed(1)+'%',isWon:isFinished?(match.homeScore>=1&&match.awayScore>=1):false,isFinished,score:Math.min(100,s),reasons,xgEst}) }
   }
-  // ✅ CHANGED: UNDER 4.5 -> UNDER 5.5
-  // Under 5.5 wins if total <=5 - much safer, so we allow slightly higher xG
-  let underScore=0;
-  if(xgEst<=3.6) underScore+=25; else if(xgEst<=4.0) underScore+=18; else if(xgEst<=4.4) underScore+=10;
-  if(tempo<=0.70) underScore+=20; else if(tempo<=0.80) underScore+=14; else underScore+=6;
-  if(weak<=0.40) underScore+=20; else if(weak<=0.50) underScore+=14; else underScore+=6;
-  if(h.drawRate>=0.25||a.drawRate>=0.25) underScore+=10; else underScore+=5;
-  if(ou&&ou<=3.5) underScore+=15; else if(ou&&ou<=4.0) underScore+=10; else underScore+=5;
-  if(both>=0.70) underScore+=10; else underScore+=5;
-  if(underScore>=80){
-    // Under 5.5 is very safe, so odds are low: 1.05 - 1.25
-    let prob=clamp(0.70+(underScore/100)*0.28,0.82,0.98); let odd=parseFloat((1/prob).toFixed(2));
-    if(odd>=1.02&&odd<=1.30) candidates.push({key:'under55',label:'Under 5.5 Goals',emoji:'🔒',prob,odd,confidence:(prob*100).toFixed(1)+'%',isWon:isFinished?total<=5:false,isFinished,score:underScore,reasons:[`xG:${xgEst.toFixed(2)}`,`Tempo:${tempo.toFixed(2)}`,`Defence:${weak.toFixed(2)}`,`Under Score:${underScore}/100`],xgEst})
+  // ✅ ULTRA-STRICT UNDER 5.5 - HARD REJECTS FIRST
+  // If ANY fails, NO Under pick at all - never pick leftovers
+  const underHardPass = (xgEst<=2.8) && (tempo<=0.65) && (weak<=0.35) && (!ou || ou<=2.5) && (h.drawRate>=0.20 || a.drawRate>=0.20);
+  if(underHardPass){
+    let underScore=0;
+    if(xgEst<=2.2) underScore+=30; else if(xgEst<=2.5) underScore+=25; else if(xgEst<=2.8) underScore+=18;
+    if(tempo<=0.55) underScore+=25; else if(tempo<=0.60) underScore+=20; else if(tempo<=0.65) underScore+=14;
+    if(weak<=0.25) underScore+=25; else if(weak<=0.30) underScore+=20; else if(weak<=0.35) underScore+=14;
+    if(ou&&ou<=2.0) underScore+=15; else if(ou&&ou<=2.5) underScore+=10; else underScore+=5;
+    if(h.drawRate>=0.30||a.drawRate>=0.30) underScore+=5; else underScore+=3;
+    // ✅ REQUIRE 90/100, not 80
+    if(underScore>=90){
+      let prob=clamp(0.75+(underScore/100)*0.23,0.85,0.98); let odd=parseFloat((1/prob).toFixed(2));
+      if(odd>=1.02&&odd<=1.25) candidates.push({key:'under55',label:'Under 5.5 Goals',emoji:'🔒',prob,odd,confidence:(prob*100).toFixed(1)+'%',isWon:isFinished?total<=5:false,isFinished,score:underScore,reasons:[`STRICT xG:${xgEst.toFixed(2)} ≤2.8`,`Tempo:${tempo.toFixed(2)} ≤0.65`,`Defence:${weak.toFixed(2)} ≤0.35`,`OU:${ou||'—'} ≤2.5`,`Under Score:${underScore}/100`],xgEst})
+    }
   }
   if(candidates.length===0) return null;
   candidates.sort((x,y)=>y.score-x.score);
@@ -227,7 +229,7 @@ function renderPicks(){
   document.getElementById('totalPicksBadge').textContent=list.length+' PICKS';
   if(list.length===0){container.innerHTML=`<div class="bg-white dark:bg-gray-900 border rounded-2xl p-6 text-center space-y-2"><div class="text-3xl">🛡️</div><div class="font-black">NO PICK FOR THIS FILTER</div><p class="text-xs text-gray-500">No game scored 80/100 for this market today.<br>Try ALL.</p></div>`;return}
   let totalStake=all.length*10000;let ifAllWin=all.reduce((s,p)=>s+10000*p.odd,0);let profitIfAll=ifAllWin-totalStake;
-  document.getElementById('daySummary').textContent=`${all.length} singles • 10k each = ${totalStake.toLocaleString()} UGX • Avg @ ${(all.reduce((s,p)=>s+p.odd,0)/all.length).toFixed(2)} • 4 Markets 80+`;
+  document.getElementById('daySummary').textContent=`${all.length} singles • 10k each = ${totalStake.toLocaleString()} UGX • Avg @ ${(all.reduce((s,p)=>s+p.odd,0)/all.length).toFixed(2)} • 4 Markets`;
   document.getElementById('dayProfitPreview').textContent=`+${Math.round(profitIfAll).toLocaleString()} UGX`;
   container.innerHTML=list.map((p,i)=>{
     let badge=`<span class="text-[11px] font-mono text-gray-500 nowrap-badge">⏰ ${p.match.time}</span>`;
