@@ -3,194 +3,184 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WORLD TV | All Free Channels</title>
+<title>WORLD MOVIES | Free Movies + Trailers</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 <script>tailwind.config={darkMode:'class'}</script>
 <style>
 .no-scrollbar::-webkit-scrollbar{display:none}.no-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
-.channel-card.active{border-color:#f59e0b!important;background:#f59e0b/10!important}
-.totally-invisible{display:none!important}
+.movie-card:hover img{transform:scale(1.05)} .movie-card img{transition:transform .3s}
 </style>
 </head>
-<body class="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 min-h-screen flex flex-col font-sans">
-<header class="sticky top-0 z-40 bg-white/90 dark:bg-gray-900/90 border-b px-4 py-3 backdrop-blur-md">
-<div class="max-w-7xl mx-auto flex items-center justify-between gap-2">
+<body class="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 min-h-screen font-sans">
+<header class="sticky top-0 z-40 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md border-b px-4 py-3">
+<div class="max-w-7xl mx-auto flex items-center justify-between gap-3">
 <div class="flex items-center gap-2">
-<div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-500 to-yellow-300 flex items-center justify-center font-black text-gray-950">TV</div>
-<div><h1 class="font-extrabold text-lg leading-none">WORLD TV</h1><p class="text-[10px] font-mono text-gray-500">ALL FREE CHANNELS • <span id="totalCount">Loading...</span></p></div>
+<div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-red-600 to-amber-500 flex items-center justify-center font-black text-white">M</div>
+<div><h1 class="font-extrabold text-lg leading-none">WORLD MOVIES</h1><p class="text-[10px] font-mono text-gray-500">FREE MOVIES • TRAILERS • RATINGS</p></div>
 </div>
-<button onclick="toggleTheme()" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800">☀️/🌙</button>
+<button onclick="document.documentElement.classList.toggle('dark')" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800">☀️/🌙</button>
 </div>
+<div class="max-w-7xl mx-auto mt-3 flex gap-2">
+<input id="searchInput" onkeyup="if(event.key==='Enter')searchMovies()" placeholder="🔍 Search movie... e.g. Avengers, Coming to America" class="flex-1 bg-gray-100 dark:bg-gray-800 border rounded-xl px-4 py-2.5 text-sm outline-none focus:border-red-500">
+<button onclick="searchMovies()" class="px-4 py-2.5 rounded-xl bg-red-600 text-white font-black text-sm">Search</button>
+</div>
+<div class="max-w-7xl mx-auto mt-2 flex gap-2 overflow-x-auto no-scrollbar pb-1" id="genreRow"></div>
 </header>
 
-<main class="max-w-7xl mx-auto w-full px-3 py-4 space-y-4 flex-1">
+<main class="max-w-7xl mx-auto px-3 py-4 space-y-6">
 <!-- PLAYER -->
 <div class="bg-black rounded-2xl overflow-hidden border-2 border-gray-200 dark:border-gray-800">
-<video id="videoPlayer" controls autoplay playsinline class="w-full aspect-video bg-black"></video>
+<div class="relative aspect-video bg-black">
+<video id="mainPlayer" controls playsinline class="w-full h-full bg-black hidden"></video>
+<iframe id="trailerFrame" class="w-full h-full hidden" allowfullscreen allow="autoplay; encrypted-media"></iframe>
+<div id="playerPlaceholder" class="absolute inset-0 flex flex-col items-center justify-center text-center p-6 bg-gradient-to-br from-red-900 via-gray-900 to-black text-white">
+<div class="text-5xl mb-2">🎬</div><p class="font-black text-xl">WORLD MOVIES</p><p class="text-sm text-gray-300">Click a FREE movie to watch full movie now<br>Or click any trending movie to watch trailer</p>
+<button onclick="playFree(0)" class="mt-4 px-5 py-2.5 bg-red-600 rounded-xl font-black text-sm">▶️ Watch Free Movie Now</button>
+</div>
+</div>
 <div class="bg-gray-900 text-white px-4 py-3 flex items-center justify-between gap-2">
-<div class="min-w-0">
-<div id="nowPlaying" class="font-black text-sm truncate">Select a channel to start watching 📺</div>
-<div id="nowMeta" class="text-[11px] font-mono text-gray-400 truncate">Free • Legal Public Streams • Powered by IPTV-org</div>
-</div>
-<div class="flex gap-2 shrink-0">
-<button onclick="shareChannel()" class="px-3 py-1.5 rounded-lg bg-green-500 text-white text-xs font-black">Share</button>
-<button onclick="toggleFav()" id="favBtn" class="px-3 py-1.5 rounded-lg bg-white/20 text-white text-xs font-black">♡ Fav</button>
-</div>
+<div class="min-w-0"><div id="nowPlaying" class="font-black text-sm truncate">Select a movie 🎬</div><div id="nowMeta" class="text-[11px] font-mono text-gray-400 truncate">Free legal movies from Internet Archive • Trailers via YouTube</div></div>
+<button onclick="shareMovie()" class="shrink-0 px-3 py-1.5 rounded-lg bg-green-500 text-white text-xs font-black">Share</button>
 </div>
 </div>
 
-<!-- SEARCH + FILTERS -->
-<div class="space-y-2">
-<input id="searchInput" oninput="applyFilter()" placeholder="🔍 Search channel... e.g. NTV, BBC, Al Jazeera, Sports" class="w-full bg-gray-100 dark:bg-gray-800 border rounded-xl px-4 py-3 text-sm outline-none focus:border-amber-500">
-<div class="flex gap-2 overflow-x-auto no-scrollbar pb-1">
-<select id="countryFilter" onchange="applyFilter()" class="shrink-0 bg-gray-100 dark:bg-gray-800 border rounded-xl px-3 py-2 text-xs font-bold"><option value="">🌍 All Countries</option></select>
-<select id="catFilter" onchange="applyFilter()" class="shrink-0 bg-gray-100 dark:bg-gray-800 border rounded-xl px-3 py-2 text-xs font-bold"><option value="">📺 All Categories</option><option>News</option><option>Sports</option><option>Movies</option><option>Entertainment</option><option>Kids</option><option>Music</option><option>Documentary</option><option>Religious</option></select>
-<select id="favFilter" onchange="applyFilter()" class="shrink-0 bg-gray-100 dark:bg-gray-800 border rounded-xl px-3 py-2 text-xs font-bold"><option value="">All Channels</option><option value="fav">❤️ My Favourites Only</option></select>
-<button onclick="loadUganda()" class="shrink-0 px-3 py-2 rounded-xl bg-amber-500 text-gray-950 text-xs font-black">🇺🇬 Uganda</button>
-<button onclick="loadPopular()" class="shrink-0 px-3 py-2 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xs font-black">🔥 Popular</button>
-</div>
-<div class="flex justify-between text-[11px] font-mono text-gray-500"><span id="showingCount">—</span><span>Tip: If one fails, click another — some streams are geo-blocked</span></div>
+<!-- ✅ FREE LEGAL MOVIES -->
+<div>
+<div class="flex items-center justify-between mb-2"><h2 class="font-black">🎬 FREE FULL MOVIES - Watch Now (No Key Needed)</h2><span class="text-[10px] font-mono bg-emerald-500/20 text-emerald-600 px-2 py-1 rounded-lg">● LEGAL • PUBLIC DOMAIN</span></div>
+<div id="freeGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3"></div>
 </div>
 
-<!-- GRID -->
-<div id="channelGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2"></div>
-<div id="loadMoreWrap" class="text-center"><button onclick="showMore()" id="loadMoreBtn" class="px-6 py-3 rounded-xl bg-amber-500 text-gray-950 font-black text-sm">Load More Channels</button></div>
+<!-- TRENDING -->
+<div>
+<div class="flex items-center justify-between mb-2"><h2 id="sectionTitle" class="font-black">🔥 Trending Now</h2><span class="text-[11px] font-mono text-gray-500">Powered by TMDB</span></div>
+<div id="movieGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3"></div>
+<div class="text-center mt-4"><button id="loadMoreBtn" onclick="loadMore()" class="px-6 py-3 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-black text-sm">Load More</button></div>
+</div>
 
-<!-- INFO -->
-<div class="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 text-xs space-y-1">
-<p class="font-black">⚠️ About Free Channels</p>
-<p class="text-gray-600 dark:text-gray-300">This site only lists publicly available free streams from IPTV-org database. Some channels may be offline or blocked in your country. We do NOT host DSTV, SuperSport, beIN, Sky Sports, or other paid channels. For premium sports, please use legal providers.</p>
+<div class="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 text-xs">
+<p class="font-black mb-1">⚠️ Legal Notice</p>
+<p class="text-gray-600 dark:text-gray-300">Free movies are Public Domain from Internet Archive (archive.org) - 100% legal to stream. Trending movies show trailers, ratings and info only. "Watch Now" links to Netflix, Showmax, YouTube Movies. We do NOT host pirated movies.</p>
 </div>
 </main>
 
-<footer class="bg-white dark:bg-gray-900 border-t py-4 text-center text-[11px] text-gray-500">WORLD TV • Free Channels • 25+ Watch Responsibly</footer>
+<!-- MODAL FOR TRENDING MOVIE INFO -->
+<div id="modal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm p-4 overflow-y-auto" onclick="if(event.target===this)closeModal()">
+<div class="max-w-3xl mx-auto bg-white dark:bg-gray-900 rounded-2xl overflow-hidden mt-8">
+<div class="p-5 space-y-3">
+<div class="flex gap-4">
+<img id="mPoster" class="w-24 rounded-xl shadow-lg">
+<div class="flex-1">
+<h3 id="mTitle" class="font-black text-lg leading-tight"></h3>
+<div id="mMeta" class="text-xs font-mono text-gray-500 mt-1"></div>
+<div id="mRating" class="mt-2 inline-block px-2 py-1 rounded-lg bg-amber-500 text-gray-950 font-black text-sm"></div>
+</div>
+<button onclick="closeModal()" class="h-9 w-9 shrink-0 rounded-full bg-gray-100 dark:bg-gray-800 font-black">✕</button>
+</div>
+<p id="mOverview" class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed"></p>
+<div class="flex flex-wrap gap-2 pt-1">
+<button onclick="playTrailerFromModal()" class="px-4 py-2 rounded-xl bg-red-600 text-white text-sm font-black">▶️ Play Trailer</button>
+<a id="watchNetflix" target="_blank" class="px-4 py-2 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-sm font-black">🔍 Check Netflix</a>
+<a id="watchYT" target="_blank" class="px-4 py-2 rounded-xl bg-gray-100 dark:bg-gray-800 text-sm font-black">▶️ YouTube Movies</a>
+</div>
+</div>
+</div>
+</div>
+
+<footer class="border-t py-4 text-center text-[11px] text-gray-500">WORLD MOVIES • Free Legal Movies + Trailers • 25+ Watch Responsibly</footer>
 
 <script>
-let allChannels=[]; let filtered=[]; let shown=0; const PAGE=120;
-let current=null; let favs=JSON.parse(localStorage.getItem('worldtv_favs')||'[]');
-let hls=null;
+const API_KEY='YOUR_TMDB_API_KEY'; // <-- PASTE FREE KEY from themoviedb.org here for trending
+const IMG='https://image.tmdb.org/t/p/w500';
+let movies=[], page=1, mode='trending', currentGenre='', currentQuery='', currentMovie=null, currentTrailerKey='';
+const GENRES=[{id:'',name:'🔥 All'},{id:28,name:'💥 Action'},{id:35,name:'😂 Comedy'},{id:18,name:'🎭 Drama'},{id:27,name:'😱 Horror'},{id:10749,name:'❤️ Romance'},{id:878,name:'🚀 Sci-Fi'},{id:16,name:'🎨 Animation'},{id:99,name:'📚 Documentary'}];
 
-function toggleTheme(){document.documentElement.classList.toggle('dark')}
+// ✅ 12 FREE LEGAL FULL MOVIES - Internet Archive Public Domain
+const FREE_MOVIES=[
+ {title:'Night of the Living Dead', year:1968, rating:7.8, genre:'Horror', poster:'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Night_of_the_Living_Dead_%281968%29_poster.jpg/640px-Night_of_the_Living_Dead_%281968%29_poster.jpg', video:'https://archive.org/download/night_of_the_living_dead/night_of_the_living_dead.mp4', desc:'Original zombie classic. A group trapped in a farmhouse.'},
+ {title:'The Kid - Charlie Chaplin', year:1921, rating:8.3, genre:'Comedy', poster:'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/The_Kid_%281921%29_poster.jpg/640px-The_Kid_%281921%29_poster.jpg', video:'https://archive.org/download/the_kid_1921/the_kid_1921.mp4', desc:'Chaplin finds an abandoned baby and raises him.'},
+ {title:'Metropolis', year:1927, rating:8.3, genre:'Sci-Fi', poster:'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Metropolis_poster.jpg/640px-Metropolis_poster.jpg', video:'https://archive.org/download/metropolis_1927/metropolis_1927.mp4', desc:'Futuristic city, workers vs rich. Greatest sci-fi ever.'},
+ {title:'Nosferatu', year:1922, rating:7.9, genre:'Horror', poster:'https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/NosferatuPoster.jpg/640px-NosferatuPoster.jpg', video:'https://archive.org/download/nosferatu_1922/nosferatu_1922.mp4', desc:'Original vampire film - Dracula story.'},
+ {title:'The General - Buster Keaton', year:1926, rating:8.1, genre:'Action Comedy', poster:'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/The_General_%281926%29_poster.jpg/640px-The_General_%281926%29_poster.jpg', video:'https://archive.org/download/the_general_1926/the_general_1926.mp4', desc:'Train chase masterpiece. Funniest silent film.'},
+ {title:'His Girl Friday', year:1940, rating:7.8, genre:'Comedy', poster:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/His_Girl_Friday_%281940_poster%29.jpg/640px-His_Girl_Friday_%281940_poster%29.jpg', video:'https://archive.org/download/his_girl_friday/his_girl_friday.mp4', desc:'Fast newspaper comedy. Cary Grant.'},
+ {title:'Detour', year:1945, rating:7.2, genre:'Crime Noir', poster:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Detour_%281945%29_poster.jpg/640px-Detour_%281945%29_poster.jpg', video:'https://archive.org/download/detour_1945/detour_1945.mp4', desc:'Hitchhiker gets caught in murder. Film noir classic.'},
+ {title:'The Stranger', year:1946, rating:7.4, genre:'Thriller', poster:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/The_Stranger_%281946_film_poster%29.jpg/640px-The_Stranger_%281946_film_poster%29.jpg', video:'https://archive.org/download/the_stranger_1946/the_stranger_1946.mp4', desc:'Orson Welles hunts a Nazi hiding in small town.'},
+ {title:'Scarlet Street', year:1945, rating:7.8, genre:'Drama Noir', poster:'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Scarlet_Street_%281945%29_poster.jpg/640px-Scarlet_Street_%281945%29_poster.jpg', video:'https://archive.org/download/scarlet_street_1945/scarlet_street_1945.mp4', desc:'Painter falls for con woman. Fritz Lang.'},
+ {title:'Plan 9 From Outer Space', year:1959, rating:3.9, genre:'Sci-Fi Comedy', poster:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Plan_9_from_Outer_Space_%281959%29_poster.jpg/640px-Plan_9_from_Outer_Space_%281959%29_poster.jpg', video:'https://archive.org/download/plan_9_from_outer_space/plan_9_from_outer_space.mp4', desc:'So bad it is funny. Famous worst movie ever.'},
+ {title:'Charade', year:1963, rating:7.9, genre:'Thriller Romance', poster:'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Charade_%281963%29_poster.jpg/640px-Charade_%281963%29_poster.jpg', video:'https://archive.org/download/charade_1963/charade_1963.mp4', desc:'Audrey Hepburn + Cary Grant in Paris. Hitchcock style.'},
+ {title:'The Little Shop of Horrors', year:1960, rating:6.4, genre:'Horror Comedy', poster:'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Little_Shop_of_Horrors_%281960%29_poster.jpg/640px-Little_Shop_of_Horrors_%281960%29_poster.jpg', video:'https://archive.org/download/little_shop_of_horrors_1960/little_shop_of_horrors_1960.mp4', desc:'Man-eating plant! Original cult classic.'},
+];
 
-async function init(){
-  try{
-    // IPTV-org public API - free channels + streams
-    const [chRes, stRes] = await Promise.all([
-      fetch('https://iptv-org.github.io/api/channels.json').then(r=>r.json()),
-      fetch('https://iptv-org.github.io/api/streams.json').then(r=>r.json())
-    ]);
-    // Map streams by channel id - keep only http streams
-    const streamMap={};
-    stRes.forEach(s=>{ if(s.url && (s.url.includes('.m3u8')||s.url.includes('youtube')||s.url.includes('youtu.be'))){ if(!streamMap[s.channel]) streamMap[s.channel]=[]; streamMap[s.channel].push(s.url); }});
-    // Build channel list
-    allChannels = chRes.filter(c=>streamMap[c.id]).map(c=>({
-      id:c.id, name:c.name, country:c.country, categories:c.categories||[], logo:c.logo, url: streamMap[c.id][0]
-    }));
-    // Sort: Uganda first, then popular
-    allChannels.sort((a,b)=> (a.country==='UG'?-1:0)-(b.country==='UG'?-1:0));
-    document.getElementById('totalCount').textContent = allChannels.length.toLocaleString() + ' Channels';
-    // Country dropdown
-    const countries=[...new Set(allChannels.map(c=>c.country))].sort();
-    const sel=document.getElementById('countryFilter');
-    countries.forEach(cc=>{ if(!cc) return; const o=document.createElement('option'); o.value=cc; o.textContent=cc; sel.appendChild(o); });
-    sel.value=''; // start all
-    applyFilter();
-    // Auto-play first Uganda / popular
-    const ug = allChannels.find(c=>c.country==='UG') || allChannels[0];
-    if(ug) playChannel(ug);
-  }catch(e){
-    document.getElementById('channelGrid').innerHTML='<div class="col-span-full p-8 text-center text-sm">Failed to load channels. Check internet and refresh.<br><button onclick="location.reload()" class="mt-2 px-4 py-2 bg-amber-500 rounded-lg font-black">Retry</button></div>';
-  }
+function renderFree(){
+  document.getElementById('freeGrid').innerHTML=FREE_MOVIES.map((m,i)=>`
+  <button onclick="playFree(${i})" class="movie-card text-left bg-white dark:bg-gray-900 border rounded-xl overflow-hidden hover:border-red-500">
+    <div class="overflow-hidden aspect-[2/3] bg-gray-200 dark:bg-gray-800"><img src="${m.poster}" loading="lazy" class="w-full h-full object-cover" onerror="this.style.display='none'"></div>
+    <div class="p-2"><div class="text-[12px] font-bold truncate">${m.title}</div>
+    <div class="flex justify-between items-center mt-1"><span class="text-[10px] font-mono text-gray-500">${m.year} • ${m.genre}</span><span class="text-[11px] font-black text-amber-600">⭐ ${m.rating}</span></div>
+    <div class="mt-1.5 text-[10px] bg-red-600 text-white text-center py-1.5 rounded-lg font-black">▶️ WATCH FREE</div></div>
+  </button>`).join('');
 }
-
-function applyFilter(){
-  const q=(document.getElementById('searchInput').value||'').toLowerCase();
-  const co=document.getElementById('countryFilter').value;
-  const cat=document.getElementById('catFilter').value;
-  const favOnly=document.getElementById('favFilter').value==='fav';
-  filtered=allChannels.filter(c=>{
-    if(q && !c.name.toLowerCase().includes(q)) return false;
-    if(co && c.country!==co) return false;
-    if(cat && !(c.categories||[]).includes(cat.toLowerCase())) return false;
-    if(favOnly && !favs.includes(c.id)) return false;
-    return true;
-  });
-  shown=0;
-  document.getElementById('showingCount').textContent=`Showing ${Math.min(PAGE,filtered.length)} of ${filtered.length.toLocaleString()} channels`;
-  renderGrid(true);
-}
-
-function renderGrid(reset){
-  const grid=document.getElementById('channelGrid');
-  if(reset) grid.innerHTML='';
-  const slice=filtered.slice(shown, shown+PAGE);
-  shown+=slice.length;
-  grid.innerHTML+=slice.map(c=>`
-    <button onclick='playChannelById("${c.id}")' class="channel-card ${current&&current.id===c.id?'active':''} bg-white dark:bg-gray-900 border rounded-xl p-2 text-left flex items-center gap-2 hover:border-amber-500">
-      <img src="${c.logo||''}" onerror="this.style.display='none'" class="w-9 h-9 rounded-lg object-contain bg-white shrink-0">
-      <span class="min-w-0"><span class="block text-[12px] font-bold truncate">${c.name.replace(/</g,'')}</span><span class="block text-[10px] font-mono text-gray-500">${c.country||''} • ${(c.categories||[]).slice(0,1).join('')||'TV'}</span></span>
-    </button>`).join('');
-  document.getElementById('loadMoreBtn').style.display = shown>=filtered.length ? 'none':'inline-block';
-}
-
-function showMore(){ renderGrid(false); document.getElementById('showingCount').textContent=`Showing ${shown} of ${filtered.length.toLocaleString()} channels`; }
-function playChannelById(id){ const c=allChannels.find(x=>x.id===id); if(c) playChannel(c); }
-function loadUganda(){ document.getElementById('countryFilter').value='UG'; document.getElementById('searchInput').value=''; applyFilter(); }
-function loadPopular(){
-  document.getElementById('searchInput').value=''; document.getElementById('countryFilter').value=''; document.getElementById('catFilter').value='News';
-  applyFilter();
-}
-
-function playChannel(c){
-  current=c;
-  document.getElementById('nowPlaying').textContent='▶️ Now Playing: '+c.name;
-  document.getElementById('nowMeta').textContent=(c.country||'')+' • '+((c.categories||[]).join(', ')||'TV')+' • Free Stream';
-  updateFavBtn();
-  // highlight
-  document.querySelectorAll('.channel-card').forEach(el=>el.classList.remove('active'));
-  const video=document.getElementById('videoPlayer');
-  // YouTube handling
-  if(c.url.includes('youtube')||c.url.includes('youtu.be')){
-    // YouTube cannot play in <video>, open in iframe fallback: replace video with iframe
-    video.style.display='none';
-    let iframe=document.getElementById('ytFrame');
-    if(!iframe){ iframe=document.createElement('iframe'); iframe.id='ytFrame'; iframe.className='w-full aspect-video bg-black'; iframe.allow='autoplay; encrypted-media; picture-in-picture'; iframe.allowFullscreen=true; video.parentNode.insertBefore(iframe, video); }
-    iframe.style.display='block';
-    // Extract YouTube ID if present, else use embed search
-    let vid=''; const m=c.url.match(/(?:v=|youtu\.be\/|embed\/)([A-Za-z0-9_-]{11})/); if(m) vid=m[1];
-    iframe.src = vid ? `https://www.youtube.com/embed/${vid}?autoplay=1` : c.url;
-    return;
-  }
-  // HLS
-  let yt=document.getElementById('ytFrame'); if(yt) yt.style.display='none';
-  video.style.display='block';
-  if(hls){ hls.destroy(); hls=null; }
-  if(Hls.isSupported()){
-    hls=new Hls(); hls.loadSource(c.url); hls.attachMedia(video);
-    hls.on(Hls.Events.MANIFEST_PARSED, ()=>video.play().catch(()=>{}));
-    hls.on(Hls.Events.ERROR, (e,d)=>{ if(d.fatal){ /* try next stream */ }});
-  } else if(video.canPlayType('application/vnd.apple.mpegurl')){
-    video.src=c.url; video.play().catch(()=>{});
-  } else { video.src=c.url; }
+function playFree(i){
+  const m=FREE_MOVIES[i]; currentMovie={title:m.title, overview:m.desc, release_date:String(m.year), vote_average:m.rating};
+  document.getElementById('playerPlaceholder').style.display='none';
+  document.getElementById('trailerFrame').classList.add('hidden'); document.getElementById('trailerFrame').src='';
+  const v=document.getElementById('mainPlayer'); v.classList.remove('hidden'); v.src=m.video; v.play().catch(()=>{});
+  document.getElementById('nowPlaying').textContent='▶️ Now Playing (FREE FULL MOVIE): '+m.title;
+  document.getElementById('nowMeta').textContent=`${m.year} • ${m.genre} • ⭐ ${m.rating} • Public Domain - Legal • ${m.desc}`;
   window.scrollTo({top:0, behavior:'smooth'});
-  // Re-render active state
-  renderGrid(true);
 }
-
-function toggleFav(){
-  if(!current) return;
-  if(favs.includes(current.id)) favs=favs.filter(x=>x!==current.id);
-  else favs.push(current.id);
-  localStorage.setItem('worldtv_favs', JSON.stringify(favs));
-  updateFavBtn();
+function playTrailerFromModal(){
+  if(!currentTrailerKey) return;
+  closeModal();
+  document.getElementById('playerPlaceholder').style.display='none';
+  const v=document.getElementById('mainPlayer'); v.classList.add('hidden'); v.pause();
+  const f=document.getElementById('trailerFrame'); f.classList.remove('hidden'); f.src=`https://www.youtube.com/embed/${currentTrailerKey}?autoplay=1`;
+  document.getElementById('nowPlaying').textContent='▶️ Trailer: '+currentMovie.title;
+  window.scrollTo({top:0, behavior:'smooth'});
 }
-function updateFavBtn(){ const b=document.getElementById('favBtn'); if(!b) return; b.textContent = current && favs.includes(current.id) ? '♥ Faved' : '♡ Fav'; }
-function shareChannel(){
-  const txt = current ? `Watch ${current.name} FREE on WORLD TV: ${location.href}` : `Watch ALL Free TV Channels FREE on WORLD TV: ${location.href}`;
-  if(navigator.clipboard) navigator.clipboard.writeText(txt).then(()=>alert('Link copied! Share on WhatsApp ✅'));
+function renderGenres(){
+  document.getElementById('genreRow').innerHTML=GENRES.map(g=>`<button onclick="filterGenre('${g.id}','${g.name}')" class="shrink-0 px-3 py-1.5 rounded-xl text-xs font-bold border ${String(currentGenre)===String(g.id)?'bg-red-600 text-white border-red-600':'bg-gray-100 dark:bg-gray-800'}">${g.name}</button>`).join('');
 }
-init();
+function filterGenre(id,name){ currentGenre=id; mode='genre'; page=1; movies=[]; document.getElementById('sectionTitle').textContent=name+' Movies'; renderGenres(); fetchMovies(); }
+async function fetchMovies(){
+  if(API_KEY==='YOUR_TMDB_API_KEY'){ document.getElementById('movieGrid').innerHTML=`<div class="col-span-full p-6 text-center border rounded-xl"><p class="font-black mb-2">⚠️ Add your free TMDB API key for Trending</p><p class="text-sm text-gray-500">Free movies above already work without key.<br>1. themoviedb.org → Sign Up → Settings → API → Copy Key<br>2. Replace YOUR_TMDB_API_KEY in code</p></div>`; return; }
+  let url='';
+  if(mode==='trending') url=`https://api.themoviedb.org/3/trending/movie/week?api_key=${API_KEY}&page=${page}`;
+  else if(mode==='genre') url=`https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_genres=${currentGenre}&sort_by=popularity.desc&page=${page}`;
+  else if(mode==='search') url=`https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(currentQuery)}&page=${page}`;
+  const r=await fetch(url).then(x=>x.json());
+  movies=[...movies, ...(r.results||[])];
+  renderMovies();
+}
+function renderMovies(){
+  document.getElementById('movieGrid').innerHTML=movies.map(m=>`
+  <button onclick="openMovie(${m.id})" class="movie-card text-left bg-white dark:bg-gray-900 border rounded-xl overflow-hidden hover:border-red-500">
+    <div class="overflow-hidden aspect-[2/3] bg-gray-200 dark:bg-gray-800"><img src="${m.poster_path?IMG+m.poster_path:''}" loading="lazy" class="w-full h-full object-cover" onerror="this.style.display='none'"></div>
+    <div class="p-2"><div class="text-[12px] font-bold truncate">${m.title}</div>
+    <div class="flex justify-between items-center mt-1"><span class="text-[10px] font-mono text-gray-500">${(m.release_date||'').slice(0,4)}</span><span class="text-[11px] font-black text-amber-600">⭐ ${Number(m.vote_average||0).toFixed(1)}</span></div>
+    <div class="mt-1.5 text-[10px] bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-center py-1.5 rounded-lg font-black">▶️ TRAILER</div></div>
+  </button>`).join('');
+}
+function loadMore(){ page++; fetchMovies(); }
+function searchMovies(){ const q=document.getElementById('searchInput').value.trim(); if(!q) return; currentQuery=q; mode='search'; page=1; movies=[]; document.getElementById('sectionTitle').textContent=`🔍 Results for "${q}"`; fetchMovies(); }
+async function openMovie(id){
+  if(API_KEY==='YOUR_TMDB_API_KEY'){ alert('Add TMDB key first for trailers. Free movies above work without key.'); return; }
+  const m=await fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=${API_KEY}&append_to_response=videos`).then(x=>x.json());
+  currentMovie=m;
+  document.getElementById('mPoster').src=m.poster_path?IMG+m.poster_path:'';
+  document.getElementById('mTitle').textContent=m.title;
+  document.getElementById('mMeta').textContent=`${(m.release_date||'').slice(0,4)} • ${(m.runtime||'?')} min • ${(m.genres||[]).map(g=>g.name).join(', ')}`;
+  document.getElementById('mRating').textContent=`⭐ ${Number(m.vote_average||0).toFixed(1)} / 10`;
+  document.getElementById('mOverview').textContent=m.overview||'No overview.';
+  const vid=(m.videos?.results||[]).find(v=>v.site==='YouTube'&&v.type==='Trailer')||(m.videos?.results||[]).find(v=>v.site==='YouTube');
+  currentTrailerKey=vid?vid.key:'';
+  document.getElementById('watchNetflix').href=`https://www.netflix.com/search?q=${encodeURIComponent(m.title)}`;
+  document.getElementById('watchYT').href=`https://www.youtube.com/results?search_query=${encodeURIComponent(m.title+' full movie')}`;
+  document.getElementById('modal').classList.remove('hidden');
+  document.body.style.overflow='hidden';
+}
+function closeModal(){ document.getElementById('modal').classList.add('hidden'); document.body.style.overflow=''; }
+function shareMovie(){ if(!currentMovie) return; const t=`🎬 ${currentMovie.title} - Watch FREE on WORLD MOVIES: ${location.href}`; if(navigator.clipboard) navigator.clipboard.writeText(t).then(()=>alert('Copied! Share on WhatsApp ✅')); }
+renderFree(); renderGenres(); fetchMovies();
 </script>
 </body>
 </html>
