@@ -18,6 +18,8 @@
         .ticket-highlight { animation: ticketGlow 1.2s ease-in-out 2; }
         @keyframes ticketGlow { 0% { box-shadow: 0 0 0 0 rgba(245,158,11,0.7); } 50% { box-shadow: 0 0 0 10px rgba(245,158,11,0); } 100% { box-shadow: 0 0 0 0 rgba(245,158,11,0); } }
         .nowrap-badge { white-space: nowrap; flex-shrink: 0; }
+        .wa-pulse { animation: waPulse 2s infinite; }
+        @keyframes waPulse { 0% { box-shadow: 0 0 0 0 rgba(37,211,102,0.5); } 70% { box-shadow: 0 0 0 8px rgba(37,211,102,0); } 100% { box-shadow: 0 0 0 0 rgba(37,211,102,0); } }
     </style>
 </head>
 <body class="bg-white text-gray-900 dark:bg-gray-950 dark:text-gray-100 min-h-screen flex flex-col font-sans transition-colors duration-300">
@@ -25,9 +27,14 @@
     <aside id="drawerMenu" class="fixed top-0 left-0 bottom-0 w-80 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 z-50 transform -translate-x-full transition-transform duration-300 flex flex-col justify-between p-4 overflow-y-auto no-scrollbar">
         <div class="space-y-5">
             <div class="flex items-center justify-between pb-3 border-b border-gray-200 dark:border-gray-800">
-                <div onclick="goToHomepage()" class="flex items-center space-x-3 cursor-pointer group">
-                    <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-amber-500 to-yellow-300 flex items-center justify-center font-black text-gray-950 text-base shadow-lg shadow-amber-500/10 group-hover:scale-105 transition">W1</div>
-                    <span class="font-extrabold text-base text-gray-900 dark:text-white group-hover:text-amber-400 transition">WINS1</span>
+                <div class="flex items-center space-x-2">
+                    <div onclick="goToHomepage()" class="flex items-center space-x-3 cursor-pointer group">
+                        <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-amber-500 to-yellow-300 flex items-center justify-center font-black text-gray-950 text-base shadow-lg shadow-amber-500/10 group-hover:scale-105 transition">W1</div>
+                        <span class="font-extrabold text-base text-gray-900 dark:text-white group-hover:text-amber-400 transition">WINS1</span>
+                    </div>
+                    <a href="https://wa.me/qr/OSDCY2ACDMP5M1" target="_blank" rel="noopener" title="B2B & B2C on WhatsApp" class="w-8 h-8 rounded-full bg-[#25D366] flex items-center justify-center hover:scale-110 transition shadow-md wa-pulse shrink-0">
+                        <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c0-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                    </a>
                 </div>
                 <button id="closeDrawerBtn" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
             </div>
@@ -36,6 +43,10 @@
                 <button onclick="goToTicket()" id="nav_ticket" class="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 font-bold text-xs transition"><span class="flex items-center gap-1.5">🎫</span><span class="flex items-center">daily ticket - 2 games</span><span class="ml-auto text-[9px] bg-amber-500 text-gray-950 px-1.5 py-0.5 rounded-full font-black">HOT</span></button>
                 <button onclick="switchCategory('single_over15')" id="nav_single_over15" class="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl bg-amber-500/20 text-amber-400 font-bold text-xs border border-amber-500/40 transition"><span class="flex items-center gap-1.5">⚽</span><span class="flex items-center">daily over 1.5 VIP</span></button>
                 <button onclick="switchCategory('single_under45')" id="nav_single_under45" class="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 font-medium text-xs transition"><span class="flex items-center gap-1.5">🔒</span><span class="flex items-center">daily under 4.5 VIP</span></button>
+                <a href="https://wa.me/qr/OSDCY2ACDMP5M1" target="_blank" rel="noopener" class="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl bg-[#25D366]/10 text-[#25D366] font-bold text-xs border border-[#25D366]/40 transition hover:bg-[#25D366] hover:text-white">
+                    <span class="w-6 h-6 rounded-full bg-[#25D366] flex items-center justify-center shrink-0"><svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c0-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></span>
+                    <span>B2B & B2C on WhatsApp</span>
+                </a>
             </nav>
             <div class="pt-3 border-t border-gray-200 dark:border-gray-800 space-y-2">
                 <label class="text-[11px] text-gray-500 dark:text-gray-400 font-mono block font-bold">⚙️ SETTINGS</label>
@@ -55,12 +66,15 @@
 
     <header class="sticky top-0 z-40 bg-white/90 dark:bg-gray-900/90 border-b border-gray-200 dark:border-gray-800 px-4 py-3 backdrop-blur-md">
         <div class="max-w-4xl mx-auto flex items-center justify-between">
-            <div class="flex items-center space-x-3">
+            <div class="flex items-center space-x-2">
                 <button id="openDrawerBtn" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg></button>
-                <div onclick="goToHomepage()" class="flex items-center space-x-3 cursor-pointer group">
+                <div onclick="goToHomepage()" class="flex items-center space-x-2 cursor-pointer group">
                     <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-500 to-yellow-300 flex items-center justify-center font-black text-gray-950 text-lg group-hover:scale-105 transition shadow-lg">W1</div>
                     <div><div class="flex items-center space-x-2"><h1 class="font-extrabold text-lg text-gray-900 dark:text-white group-hover:text-amber-400 transition">WINS1</h1><span class="hidden"><span id="headerCategoryBadge">HIGH-SCORING OVER 1.5</span></span></div></div>
                 </div>
+                <a href="https://wa.me/qr/OSDCY2ACDMP5M1" target="_blank" rel="noopener" title="B2B & B2C on WhatsApp - Chat on WhatsApp" class="w-9 h-9 rounded-full bg-[#25D366] flex items-center justify-center hover:scale-110 transition shadow-md wa-pulse shrink-0 ml-1">
+                    <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c0-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                </a>
             </div>
             <div class="flex items-center space-x-2">
                 <button onclick="triggerRefresh()" id="refreshBtn" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition flex items-center gap-1.5 text-xs font-mono"><svg id="refreshIcon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg><span class="hidden sm:inline">Refresh</span></button>
@@ -121,7 +135,6 @@
             <div class="grid grid-cols-1 gap-3" id="matchFeedContainer"></div>
         </section>
 
-        <!-- MAIN HISTORY WITH PROFIT / STREAK / FILTER -->
         <section class="space-y-4 pt-2 border-t border-gray-200 dark:border-gray-800">
             <div class="flex items-center justify-between flex-wrap gap-2 pt-4">
                 <div>
@@ -134,7 +147,6 @@
                 <button onclick="switchHistoryTab('single_over15')" id="histTab_over" class="flex-1 px-3 py-2.5 rounded-xl text-xs font-black bg-amber-500 text-gray-950 transition">⚽ OVER 1.5 HISTORY</button>
                 <button onclick="switchHistoryTab('single_under45')" id="histTab_under" class="flex-1 px-3 py-2.5 rounded-xl text-xs font-black bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 transition">🔒 UNDER 4.5 HISTORY</button>
             </div>
-            <!-- OVER WRAP -->
             <div id="historyOverWrap" class="space-y-2">
                 <div class="grid grid-cols-3 gap-2 text-center">
                     <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-2"><div class="text-lg font-black text-emerald-500" id="histWins">0</div><div class="text-[10px] font-mono text-gray-500">WINS ⬆️</div></div>
@@ -152,7 +164,6 @@
                 </div>
                 <div id="historyList" class="space-y-2"><div class="text-center p-4 text-xs font-mono text-gray-500">Loading history... please wait</div></div>
             </div>
-            <!-- UNDER WRAP -->
             <div id="historyUnderWrap" class="space-y-2 hidden">
                 <div class="grid grid-cols-3 gap-2 text-center">
                     <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-2"><div class="text-lg font-black text-emerald-500" id="histWinsUnder">0</div><div class="text-[10px] font-mono text-gray-500">WINS ⬆️</div></div>
@@ -208,7 +219,6 @@
         let selectedDateObj=new Date();
         let currentCategory='single_over15';
         const categories=['single_over15','single_under45'];
-        // FIX: Ribbon scroll - horizontal only, never moves page up
         function initRibbon(){
             const ribbon=document.getElementById('dateRibbon');
             const calInput=document.getElementById('drawerCalendarInput');
@@ -227,14 +237,12 @@
                 html+=`<button id="ribbon-${isoVal}" type="button" onclick="jumpToDate('${isoVal}')" class="shrink-0 px-3 py-1.5 rounded-lg text-left transition ${isSelected?'bg-amber-500 text-gray-950 font-bold shadow':'bg-gray-100 dark:bg-gray-800/70 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-800 hover:text-black dark:hover:text-white'}"><div class="text-[10px] font-mono leading-tight">${dayLabel}</div><div class="text-xs font-bold leading-tight">${dateLabel}</div></button>`;
             }
             ribbon.innerHTML=html;
-            // FIX: use scrollLeft, NOT scrollIntoView (which jumps page up)
             setTimeout(()=>{ const el=document.getElementById(`ribbon-${toInputDateValue(center)}`); if(el && ribbon){ const targetLeft = el.offsetLeft - (ribbon.clientWidth/2) + (el.clientWidth/2); ribbon.scrollTo({ left: targetLeft, behavior: 'smooth' }); } },50);
         }
         function getLockedPick(dateStr,category){ try{ const store=JSON.parse(localStorage.getItem('wins1_real_locked_picks')||'{}'); return store[`${dateStr}_${category}`]||null; }catch(e){ return null; } }
         function saveLockedPick(dateStr,category,matchIdentifier){ try{ const store=JSON.parse(localStorage.getItem('wins1_real_locked_picks')||'{}'); store[`${dateStr}_${category}`]=matchIdentifier; localStorage.setItem('wins1_real_locked_picks',JSON.stringify(store)); }catch(e){} }
         function goToHomepage(){ toggleDrawer(false); hideTicket(); selectedDateObj=new Date(); switchCategory('single_over15'); initRibbon(); }
         function hideTicket(){ const t=document.getElementById('ticketSection'); if(t) t.classList.add('hidden'); const ticketBtn=document.getElementById('nav_ticket'); if(ticketBtn) ticketBtn.className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 font-bold text-xs transition"; }
-        // FIX: Ticket scroll - no jump to top, keep position, offset for sticky header
         function goToTicket(){
             const scrollYBefore = window.scrollY;
             toggleDrawer(false);
@@ -246,12 +254,10 @@
             if(underBtn) underBtn.className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 font-medium text-xs transition";
             const t=document.getElementById('ticketSection'); if(t) t.classList.remove('hidden');
             loadComboTicket(selectedDateObj);
-            // Wait for render, then scroll gently to ticket top - 80px for header, not to page top
             requestAnimationFrame(()=>{
                 setTimeout(()=>{
                     const el=document.getElementById('ticketSection'); if(!el) return;
                     const top = el.getBoundingClientRect().top + window.scrollY - 80;
-                    // Only scroll if ticket is not already visible, and never jump to 0
                     if(top < scrollYBefore - 20 || top > scrollYBefore + window.innerHeight){
                         window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
                     }
@@ -484,7 +490,6 @@
                 overBtn.className="flex-1 px-3 py-2.5 rounded-xl text-xs font-black bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 transition";
             }
         }
-        // MAIN HISTORY - Profit / Streak / Filter
         let historyLoading=false; let historyLoadedDays=0;
         let mainHistoryDataOver=[]; let mainHistoryDataUnder=[];
         let mainFilterOver='all'; let mainFilterUnder='all';
@@ -512,7 +517,6 @@
             list.innerHTML = filtered.map(x=>x.html).join('');
         }
         function updateMainHistoryStats(){
-            // Over
             let wO=0,lO=0, pO=0, sO=0; mainHistoryDataOver.forEach(t=>{ if(t.won){ wO++; pO+=10000*(t.odd-1); } else { lO++; pO-=10000; } sO+=10000; });
             let streakO=0; for(let i=0;i<mainHistoryDataOver.length;i++){ if(mainHistoryDataOver[i].won) streakO++; else break; }
             document.getElementById('histWins').textContent=wO; document.getElementById('histLosses').textContent=lO;
@@ -520,7 +524,6 @@
             document.getElementById('histStreakOver').textContent = streakO>0 ? `🔥 Streak: ${streakO} WON` : (mainHistoryDataOver.length?`🔥 Streak: 0 — Last Lost`:`🔥 Streak: —`);
             const pElO=document.getElementById('histProfitOver'); if(pElO){ pElO.textContent=`Profit (10k stake): ${pO>=0?'+':''}${Math.round(pO).toLocaleString()} UGX`; pElO.className=`text-[10px] font-mono ${pO>=0?'text-emerald-600 dark:text-emerald-400':'text-red-500'}`; }
             const roiO=document.getElementById('histRoiOver'); if(roiO){ const roi=sO>0?(pO/sO*100):0; roiO.textContent=`ROI ${roi>=0?'+':''}${roi.toFixed(1)}%`; roiO.className=`text-[11px] font-black ${roi>=0?'text-emerald-500':'text-red-500'}`; }
-            // Under
             let wU=0,lU=0, pU=0, sU=0; mainHistoryDataUnder.forEach(t=>{ if(t.won){ wU++; pU+=10000*(t.odd-1); } else { lU++; pU-=10000; } sU+=10000; });
             let streakU=0; for(let i=0;i<mainHistoryDataUnder.length;i++){ if(mainHistoryDataUnder[i].won) streakU++; else break; }
             document.getElementById('histWinsUnder').textContent=wU; document.getElementById('histLossesUnder').textContent=lU;
