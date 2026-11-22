@@ -20,6 +20,7 @@
         .nowrap-badge { white-space: nowrap; flex-shrink: 0; }
         .wa-pulse { animation: waPulse 2s infinite; }
         @keyframes waPulse { 0% { box-shadow: 0 0 0 0 rgba(37,211,102,0.5); } 70% { box-shadow: 0 0 0 8px rgba(37,211,102,0); } 100% { box-shadow: 0 0 0 0 rgba(37,211,102,0); } }
+        .totally-invisible { display: none !important; visibility: hidden !important; opacity: 0 !important; font-size: 0 !important; height: 0 !important; line-height: 0 !important; }
     </style>
 </head>
 <body class="bg-white text-gray-900 dark:bg-gray-950 dark:text-gray-100 min-h-screen flex flex-col font-sans transition-colors duration-300">
@@ -186,27 +187,42 @@
     </main>
 
     <footer class="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 py-6 px-4 text-center mt-auto">
-        <!-- ✅ EXNESS BANNER - NO IMAGE FILE NEEDED - ALWAYS SHOWS -->
-        <a href="https://one.exnessonelink.com/a/m3alh1ljmu?source=app" target="_blank" rel="noopener" class="block max-w-4xl mx-auto mb-3">
-            <div class="w-full max-w-[320px] mx-auto rounded-2xl shadow-lg hover:scale-[1.02] transition cursor-pointer bg-[#FFDD00] py-6 px-4 flex items-center justify-center">
+        <!-- ✅ EXNESS PHOTO OUTSIDE TERMS BOX - AS BUTTON -->
+        <a href="https://one.exnessonelink.com/a/m3alh1ljmu?source=app" target="_blank" rel="noopener" class="block max-w-4xl mx-auto mb-4 rounded-2xl overflow-hidden border-2 border-black shadow-lg">
+            <div class="bg-[#FFDD00] py-5 px-4 flex items-center justify-center">
                 <span class="text-black font-black text-4xl tracking-tight lowercase" style="font-family: Arial, Helvetica, sans-serif;">exness</span>
             </div>
-            <span class="block text-[10px] font-mono text-gray-500 mt-1">Tap to visit Exness • Sponsored</span>
+            <span class="totally-invisible">Tap to visit Exness • Sponsored</span>
         </a>
-        <p class="text-xs text-gray-500 dark:text-gray-400">Sponsored by <a href="https://one.exnessonelink.com/a/m3alh1ljmu?source=app" target="_blank" class="text-amber-500 font-semibold underline">Exness Global Markets</a></p>
-        <div class="max-w-4xl mx-auto mt-5 text-left bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-2xl p-4 space-y-2">
-            <h4 class="text-xs font-black text-gray-900 dark:text-white">📜 TERMS & REGULATIONS</h4>
-            <p class="text-[11px] leading-relaxed text-gray-600 dark:text-gray-400">1. <b class="text-gray-900 dark:text-white">Age 25+ Only:</b> You must be 25 years or older to use betting tips in Uganda. No persons under 25 allowed.</p>
-            <p class="text-[11px] leading-relaxed text-gray-600 dark:text-gray-400">2. <b class="text-gray-900 dark:text-white">Entertainment Only:</b> WINS1 provides analytics and predictions for information only. No win is guaranteed. Past results do not guarantee future results.</p>
-            <p class="text-[11px] leading-relaxed text-gray-600 dark:text-gray-400">3. <b class="text-gray-900 dark:text-white">Bet Responsibly:</b> Only bet what you can afford to lose. Never borrow, never chase losses. If betting affects your life, stop and seek help.</p>
-            <p class="text-[11px] leading-relaxed text-gray-600 dark:text-gray-400">4. <b class="text-gray-900 dark:text-white">Licensed Betting:</b> Only place bets with operators licensed by the National Lotteries and Gaming Regulatory Board (NLGRB) Uganda. Winnings in Uganda are subject to 15% withholding tax.</p>
-            <p class="text-[11px] leading-relaxed text-gray-600 dark:text-gray-400">5. <b class="text-gray-900 dark:text-white">No Guarantee / No Refund:</b> Odds change. Always check your bet slip before confirming. WINS1 is not responsible for losses.</p>
-            <p class="text-[11px] leading-relaxed text-gray-600 dark:text-gray-400">6. <b class="text-gray-900 dark:text-white">Self-Exclusion:</b> You can stop using this site at any time. Set your own daily limit.</p>
-            <p class="text-[10px] text-center text-gray-500 pt-1 font-mono">© WINS1 — Bet Responsibly | 25+ | NLGRB Uganda</p>
+
+        <!-- ✅ CLICKABLE TERMS & REGULATIONS - TAP TO OPEN / CLOSE -->
+        <div class="max-w-4xl mx-auto text-left bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-2xl overflow-hidden">
+            <button onclick="toggleTerms()" id="termsBtn" class="w-full flex items-center justify-between p-4 text-left hover:bg-gray-100 dark:hover:bg-gray-900 transition cursor-pointer">
+                <span class="text-xs font-black text-gray-900 dark:text-white">📜 TERMS & REGULATIONS <span class="text-[10px] font-mono font-normal text-amber-500">— TAP TO OPEN</span></span>
+                <span id="termsArrow" class="text-gray-500 text-sm font-black transition-transform duration-300">▼</span>
+            </button>
+            <div id="termsContent" class="hidden px-4 pb-4 space-y-3">
+                <p class="text-[13px] leading-relaxed text-gray-600 dark:text-gray-300">1. <b class="text-gray-900 dark:text-white">Age 25+ Only:</b> You must be 25 years or older to use betting tips in Uganda. No persons under 25 allowed.</p>
+                <p class="text-[13px] leading-relaxed text-gray-600 dark:text-gray-300">2. <b class="text-gray-900 dark:text-white">Entertainment Only:</b> WINS1 provides analytics and predictions for information only. No win is guaranteed. Past results do not guarantee future results.</p>
+                <p class="text-[13px] leading-relaxed text-gray-600 dark:text-gray-300">3. <b class="text-gray-900 dark:text-white">Bet Responsibly:</b> Only bet what you can afford to lose. Never borrow, never chase losses. If betting affects your life, stop and seek help.</p>
+                <p class="text-[13px] leading-relaxed text-gray-600 dark:text-gray-300">4. <b class="text-gray-900 dark:text-white">Licensed Betting:</b> Only place bets with operators licensed by the National Lotteries and Gaming Regulatory Board (NLGRB) Uganda. Winnings in Uganda are subject to 15% withholding tax.</p>
+                <p class="text-[13px] leading-relaxed text-gray-600 dark:text-gray-300">5. <b class="text-gray-900 dark:text-white">No Guarantee / No Refund:</b> Odds change. Always check your bet slip before confirming. WINS1 is not responsible for losses.</p>
+                <p class="text-[13px] leading-relaxed text-gray-600 dark:text-gray-300">6. <b class="text-gray-900 dark:text-white">Self-Exclusion:</b> You can stop using this site at any time. Set your own daily limit.</p>
+                <p class="text-[10px] text-center text-gray-500 pt-1 font-mono">© WINS1 — Bet Responsibly | 25+ | NLGRB Uganda</p>
+            </div>
         </div>
     </footer>
 
     <script>
+        function toggleTerms(){
+            const c=document.getElementById('termsContent');
+            const a=document.getElementById('termsArrow');
+            const btn=document.getElementById('termsBtn');
+            if(!c) return;
+            const isHidden=c.classList.contains('hidden');
+            if(isHidden){ c.classList.remove('hidden'); if(a) a.style.transform='rotate(180deg)'; }
+            else { c.classList.add('hidden'); if(a) a.style.transform='rotate(0deg)'; }
+        }
         const openDrawerBtn = document.getElementById('openDrawerBtn');
         const closeDrawerBtn = document.getElementById('closeDrawerBtn');
         const drawerMenu = document.getElementById('drawerMenu');
