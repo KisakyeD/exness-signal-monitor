@@ -3,637 +3,271 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WINS1 | Real-Data AI Analytics</title>
+    <title>WINS1 | Daily 1.50+ Singles</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = { darkMode: 'class', theme: { extend: { colors: { vip: { gold: '#f59e0b', darkGold: '#b45309' } } } } }
-    </script>
+    <script>tailwind.config = { darkMode: 'class' }</script>
     <style>
-        html { overflow-anchor: none; }
-        body { overflow-anchor: none; }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        .pulse-live { animation: pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite; }
-        @keyframes pulse-ring { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
-        .ticket-highlight { animation: ticketGlow 1.2s ease-in-out 2; }
-        @keyframes ticketGlow { 0% { box-shadow: 0 0 0 0 rgba(245,158,11,0.7); } 50% { box-shadow: 0 0 0 10px rgba(245,158,11,0); } 100% { box-shadow: 0 0 0 0 rgba(245,158,11,0); } }
-        .nowrap-badge { white-space: nowrap; flex-shrink: 0; }
-        .wa-pulse { animation: waPulse 2s infinite; }
-        @keyframes waPulse { 0% { box-shadow: 0 0 0 0 rgba(37,211,102,0.5); } 70% { box-shadow: 0 0 0 8px rgba(37,211,102,0); } 100% { box-shadow: 0 0 0 0 rgba(37,211,102,0); } }
-        .totally-invisible { display: none !important; visibility: hidden !important; opacity: 0 !important; font-size: 0 !important; height: 0 !important; line-height: 0 !important; }
+        html{overflow-anchor:none} body{overflow-anchor:none}
+        .no-scrollbar::-webkit-scrollbar{display:none} .no-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
+        .pulse-live{animation:pulse-ring 1.5s infinite} @keyframes pulse-ring{0%{box-shadow:0 0 0 0 rgba(16,185,129,.7)}70%{box-shadow:0 0 0 8px rgba(16,185,129,0)}100%{box-shadow:0 0 0 0 rgba(16,185,129,0)}}
+        .nowrap-badge{white-space:nowrap;flex-shrink:0}
+        .wa-pulse{animation:waPulse 2s infinite} @keyframes waPulse{0%{box-shadow:0 0 0 0 rgba(37,211,102,.5)}70%{box-shadow:0 0 0 8px rgba(37,211,102,0)}100%{box-shadow:0 0 0 0 rgba(37,211,102,0)}}
+        .totally-invisible{display:none!important;visibility:hidden!important;opacity:0!important;font-size:0!important;height:0!important;line-height:0!important}
     </style>
 </head>
-<body class="bg-white text-gray-900 dark:bg-gray-950 dark:text-gray-100 min-h-screen flex flex-col font-sans transition-colors duration-300">
-    <div id="drawerBackdrop" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden"></div>
-    <aside id="drawerMenu" class="fixed top-0 left-0 bottom-0 w-80 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 z-50 transform -translate-x-full transition-transform duration-300 flex flex-col justify-between p-4 overflow-y-auto no-scrollbar">
-        <div class="space-y-5">
-            <div class="flex items-center justify-between pb-3 border-b border-gray-200 dark:border-gray-800">
-                <div class="flex items-center space-x-2">
-                    <div onclick="goToHomepage()" class="flex items-center space-x-3 cursor-pointer group">
-                        <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-amber-500 to-yellow-300 flex items-center justify-center font-black text-gray-950 text-base shadow-lg shadow-amber-500/10 group-hover:scale-105 transition">W1</div>
-                        <span class="font-extrabold text-base text-gray-900 dark:text-white group-hover:text-amber-400 transition">WINS1</span>
-                    </div>
-                    <a href="https://wa.me/qr/OSDCY2ACDMP5M1" target="_blank" rel="noopener" title="B2B & B2C on WhatsApp" class="w-8 h-8 rounded-full bg-[#25D366] flex items-center justify-center hover:scale-110 transition shadow-md wa-pulse shrink-0">
-                        <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c0-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-                    </a>
-                </div>
-                <button id="closeDrawerBtn" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
-            </div>
-            <nav class="space-y-1.5" id="drawerNavList">
-                <div class="hidden"><span>🎯 LIVE DATA VIP MARKETS</span></div>
-                <button onclick="goToTicket()" id="nav_ticket" class="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 font-bold text-xs transition"><span class="flex items-center gap-1.5">🎫</span><span class="flex items-center">daily ticket - 2 games</span><span class="ml-auto text-[9px] bg-amber-500 text-gray-950 px-1.5 py-0.5 rounded-full font-black">HOT</span></button>
-                <button onclick="switchCategory('single_over15')" id="nav_single_over15" class="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl bg-amber-500/20 text-amber-400 font-bold text-xs border border-amber-500/40 transition"><span class="flex items-center gap-1.5">⚽</span><span class="flex items-center">daily over 1.5 VIP</span></button>
-                <button onclick="switchCategory('single_under45')" id="nav_single_under45" class="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 font-medium text-xs transition"><span class="flex items-center gap-1.5">🔒</span><span class="flex items-center">daily under 4.5 VIP</span></button>
-                <a href="https://wa.me/qr/OSDCY2ACDMP5M1" target="_blank" rel="noopener" class="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl bg-[#25D366]/10 text-[#25D366] font-bold text-xs border border-[#25D366]/40 transition hover:bg-[#25D366] hover:text-white">
-                    <span class="w-6 h-6 rounded-full bg-[#25D366] flex items-center justify-center shrink-0"><svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c0-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></span>
-                    <span>B2B & B2C on WhatsApp</span>
-                </a>
-            </nav>
-            <div class="pt-3 border-t border-gray-200 dark:border-gray-800 space-y-2">
-                <label class="text-[11px] text-gray-500 dark:text-gray-400 font-mono block font-bold">⚙️ SETTINGS</label>
-                <div class="grid grid-cols-2 gap-2">
-                    <button onclick="setTheme('dark')" id="settingsDarkBtn" class="px-3 py-2.5 rounded-xl text-xs font-bold bg-gray-900 text-white border border-gray-700 transition">🌙 Dark Mode</button>
-                    <button onclick="setTheme('light')" id="settingsLightBtn" class="px-3 py-2.5 rounded-xl text-xs font-bold bg-white text-gray-900 border border-gray-300 transition">☀️ Light Mode</button>
-                </div>
-                <p class="text-[10px] text-gray-500 font-mono">Theme is saved on this device.</p>
-            </div>
-            <div class="pt-3 border-t border-gray-200 dark:border-gray-800 space-y-2">
-                <label class="text-[11px] text-gray-500 dark:text-gray-400 font-mono block">Jump to Calendar Date (Any Date - Continuous):</label>
-                <input type="date" id="drawerCalendarInput" onchange="jumpToDate(this.value)" class="w-full bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-200 text-xs rounded-xl px-3 py-2 focus:outline-none focus:border-amber-500">
-            </div>
-        </div>
-        <div class="pt-4 border-t border-gray-200 dark:border-gray-800 text-center my-2"><span class="hidden text-[10px] text-emerald-500 font-mono block font-bold">Real-Time Standings & Market Odds Engine</span></div>
-    </aside>
+<body class="bg-white text-gray-900 dark:bg-gray-950 dark:text-gray-100 min-h-screen flex flex-col font-sans">
+<div id="drawerBackdrop" class="fixed inset-0 bg-black/60 z-50 hidden"></div>
+<aside id="drawerMenu" class="fixed top-0 left-0 bottom-0 w-80 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 z-50 transform -translate-x-full transition-transform duration-300 flex flex-col justify-between p-4 overflow-y-auto no-scrollbar">
+  <div class="space-y-5">
+    <div class="flex items-center justify-between pb-3 border-b border-gray-200 dark:border-gray-800">
+      <div class="flex items-center space-x-2">
+        <div onclick="goToHomepage()" class="flex items-center space-x-3 cursor-pointer"><div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-amber-500 to-yellow-300 flex items-center justify-center font-black text-gray-950">W1</div><span class="font-extrabold">WINS1</span></div>
+        <a href="https://wa.me/qr/OSDCY2ACDMP5M1" target="_blank" class="w-8 h-8 rounded-full bg-[#25D366] flex items-center justify-center wa-pulse shrink-0"><svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c0-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></a>
+      </div>
+      <button id="closeDrawerBtn" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800">✕</button>
+    </div>
+    <nav class="space-y-1.5">
+      <button onclick="goToHomepage()" class="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl bg-amber-500 text-gray-950 font-black text-xs">🔥 Daily 1.50+ Singles</button>
+      <a href="https://wa.me/qr/OSDCY2ACDMP5M1" target="_blank" class="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl bg-[#25D366]/10 text-[#25D366] font-bold text-xs border border-[#25D366]/40">💬 B2B & B2C on WhatsApp</a>
+    </nav>
+    <div class="pt-3 border-t border-gray-200 dark:border-gray-800 space-y-2">
+      <label class="text-[11px] font-bold">⚙️ SETTINGS</label>
+      <div class="grid grid-cols-2 gap-2">
+        <button onclick="setTheme('dark')" id="settingsDarkBtn" class="px-3 py-2.5 rounded-xl text-xs font-bold bg-gray-900 text-white">🌙 Dark</button>
+        <button onclick="setTheme('light')" id="settingsLightBtn" class="px-3 py-2.5 rounded-xl text-xs font-bold bg-white text-gray-900 border">☀️ Light</button>
+      </div>
+    </div>
+    <div class="pt-3 border-t border-gray-200 dark:border-gray-800 space-y-2">
+      <label class="text-[11px] font-mono block">Jump to Date:</label>
+      <input type="date" id="drawerCalendarInput" onchange="jumpToDate(this.value)" class="w-full bg-gray-100 dark:bg-gray-800 border rounded-xl px-3 py-2 text-xs">
+    </div>
+  </div>
+  <div class="pt-4 border-t text-center text-[10px] text-gray-500">WINS1 • 1.50+ Singles</div>
+</aside>
 
-    <header class="sticky top-0 z-40 bg-white/90 dark:bg-gray-900/90 border-b border-gray-200 dark:border-gray-800 px-4 py-3 backdrop-blur-md">
-        <div class="max-w-4xl mx-auto flex items-center justify-between">
-            <div class="flex items-center space-x-2">
-                <button id="openDrawerBtn" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg></button>
-                <div onclick="goToHomepage()" class="flex items-center space-x-2 cursor-pointer group">
-                    <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-500 to-yellow-300 flex items-center justify-center font-black text-gray-950 text-lg group-hover:scale-105 transition shadow-lg">W1</div>
-                    <div><div class="flex items-center space-x-2"><h1 class="font-extrabold text-lg text-gray-900 dark:text-white group-hover:text-amber-400 transition">WINS1</h1><span class="hidden"><span id="headerCategoryBadge">HIGH-SCORING OVER 1.5</span></span></div></div>
-                </div>
-                <a href="https://wa.me/qr/OSDCY2ACDMP5M1" target="_blank" rel="noopener" title="B2B & B2C on WhatsApp - Chat on WhatsApp" class="w-9 h-9 rounded-full bg-[#25D366] flex items-center justify-center hover:scale-110 transition shadow-md wa-pulse shrink-0 ml-1">
-                    <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c0-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-                </a>
-            </div>
-            <div class="flex items-center space-x-2">
-                <button onclick="triggerRefresh()" id="refreshBtn" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition flex items-center gap-1.5 text-xs font-mono"><svg id="refreshIcon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg><span class="hidden sm:inline">Refresh</span></button>
-                <button id="themeToggleBtn" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white"><span id="themeIcon">☀️</span></button>
-            </div>
-        </div>
-    </header>
+<header class="sticky top-0 z-40 bg-white/90 dark:bg-gray-900/90 border-b px-4 py-3 backdrop-blur-md">
+  <div class="max-w-4xl mx-auto flex items-center justify-between">
+    <div class="flex items-center space-x-2">
+      <button id="openDrawerBtn" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800">☰</button>
+      <div onclick="goToHomepage()" class="flex items-center space-x-2 cursor-pointer"><div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-500 to-yellow-300 flex items-center justify-center font-black text-gray-950 text-lg">W1</div><h1 class="font-extrabold text-lg">WINS1</h1></div>
+      <a href="https://wa.me/qr/OSDCY2ACDMP5M1" target="_blank" class="w-9 h-9 rounded-full bg-[#25D366] flex items-center justify-center wa-pulse shrink-0"><svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c0-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></a>
+    </div>
+    <div class="flex items-center space-x-2">
+      <button onclick="triggerRefresh()" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-xs font-mono">↻ Refresh</button>
+      <button id="themeToggleBtn" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800"><span id="themeIcon">☀️</span></button>
+    </div>
+  </div>
+</header>
 
-    <main class="flex-grow max-w-4xl w-full mx-auto px-4 py-6 space-y-6">
-        <div class="flex items-center justify-between bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-1.5 no-scrollbar overflow-x-auto gap-2" id="dateRibbon"></div>
-        <p class="hidden text-[10px] text-gray-500 dark:text-gray-400 font-mono text-center -mt-3">Calendar is continuous — scroll left/right or pick any date. Picks never stop.</p>
+<main class="flex-grow max-w-4xl w-full mx-auto px-4 py-6 space-y-6">
+  <div class="flex items-center justify-between bg-white dark:bg-gray-900 border rounded-xl p-1.5 no-scrollbar overflow-x-auto gap-2" id="dateRibbon"></div>
 
-        <section class="space-y-3 relative hidden" id="ticketSection">
-            <div class="flex items-center justify-between">
-                <h3 class="font-black text-gray-900 dark:text-white text-base flex items-center gap-2">🎫 DAILY TICKET</h3>
-                <div class="flex items-center gap-2">
-                    <span id="ticketDateLabel" class="text-[11px] font-mono text-gray-500">TODAY</span>
-                    <div class="relative">
-                        <button onclick="toggleTicketMenu(event)" id="ticketMenuBtn" class="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 text-lg font-black leading-none">⋮</button>
-                        <div id="ticketHistoryMenu" class="hidden absolute right-0 top-10 w-[340px] max-w-[calc(100vw-2rem)] bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-2xl z-30 overflow-hidden">
-                            <div class="p-3 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
-                                <div><div class="text-xs font-black text-gray-900 dark:text-white">🎫 Ticket History</div><div class="text-[10px] font-mono text-gray-500">Last 60 Days • Verified Results</div></div>
-                                <button onclick="toggleTicketMenu(event)" class="w-6 h-6 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-xs">✕</button>
-                            </div>
-                            <div class="grid grid-cols-3 gap-2 p-3 pb-2 text-center">
-                                <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-2"><div class="text-base font-black text-emerald-500" id="ticketHistWins">0</div><div class="text-[9px] font-mono text-gray-500">WON ⬆️</div></div>
-                                <div class="bg-red-500/10 border border-red-500/30 rounded-xl p-2"><div class="text-base font-black text-red-500" id="ticketHistLosses">0</div><div class="text-[9px] font-mono text-gray-500">LOST ⬇️</div></div>
-                                <div class="bg-amber-500/10 border border-amber-500/30 rounded-xl p-2"><div class="text-base font-black text-amber-500" id="ticketHistRate">0%</div><div class="text-[9px] font-mono text-gray-500">WIN RATE</div></div>
-                            </div>
-                            <div class="mx-3 mb-2 bg-gray-50 dark:bg-gray-800/70 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 flex items-center justify-between">
-                                <div class="text-[11px]"><span class="font-black text-gray-900 dark:text-white" id="ticketStreakLabel">🔥 Streak: —</span><div class="text-[10px] font-mono text-gray-500" id="ticketProfitLabel">Profit (10k stake): —</div></div>
-                                <div class="text-right"><div class="text-[11px] font-black" id="ticketRoiLabel">ROI —</div><div class="text-[9px] font-mono text-gray-500">Return on stake</div></div>
-                            </div>
-                            <div class="flex gap-1.5 px-3 pb-2">
-                                <button onclick="setTicketHistoryFilter('all')" id="ticketFilterAll" class="flex-1 py-1.5 rounded-lg text-[11px] font-black bg-amber-500 text-gray-950 transition">All</button>
-                                <button onclick="setTicketHistoryFilter('won')" id="ticketFilterWon" class="flex-1 py-1.5 rounded-lg text-[11px] font-black bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 transition">Won ⬆️</button>
-                                <button onclick="setTicketHistoryFilter('lost')" id="ticketFilterLost" class="flex-1 py-1.5 rounded-lg text-[11px] font-black bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 transition">Lost ⬇️</button>
-                            </div>
-                            <div id="ticketHistoryList" class="max-h-[340px] overflow-y-auto p-2 pt-0 space-y-2 no-scrollbar"><div class="text-center p-4 text-xs font-mono text-gray-500">Tap ⋮ to load ticket history...</div></div>
-                            <div class="p-2 border-t border-gray-200 dark:border-gray-700 text-center"><button onclick="loadTicketHistory(true)" class="text-[11px] font-bold text-amber-500">↻ Refresh Ticket History</button></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div id="comboTicketContainer" class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl overflow-hidden shadow-lg">
-                <div class="p-4 space-y-3"><div class="text-center p-4 text-xs font-mono text-gray-500">Loading ticket...</div></div>
-            </div>
-        </section>
+  <!-- DAY PROFIT BOX -->
+  <div class="bg-gray-900 dark:bg-white rounded-2xl p-4 flex items-center justify-between gap-2">
+    <div><div class="text-white dark:text-gray-900 font-black text-sm">💰 TODAY'S SINGLES</div><div class="text-[11px] text-gray-300 dark:text-gray-600 font-mono" id="daySummary">Loading...</div></div>
+    <div class="text-right"><div class="text-white dark:text-gray-900 font-black text-lg" id="dayProfitPreview">—</div><div class="text-[10px] text-gray-300 dark:text-gray-600 font-mono">If all win @ 10k each</div></div>
+  </div>
 
-        <section class="space-y-4">
-            <div class="flex items-center justify-between flex-wrap gap-2">
-                <div>
-                    <h3 class="font-bold text-gray-900 dark:text-white text-base flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-emerald-400 pulse-live" id="sectionHeaderDot"></span> <span id="sectionTitleDate">TODAY'S</span> <span id="sectionTitleCategory" class="hidden">HIGH-SCORING OVER 1.5</span></h3>
-                    <p class="hidden"><span id="strategySubtext">📊 Live API Filter</span></p>
-                </div>
-                <span class="text-xs bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30 px-3 py-1.5 rounded-xl font-mono font-bold" id="totalOddsBadge">ODDS: 0.00</span>
-            </div>
-            <div class="grid grid-cols-1 gap-3" id="matchFeedContainer"></div>
-        </section>
+  <!-- FILTER -->
+  <div class="flex gap-2 overflow-x-auto no-scrollbar">
+    <button onclick="setFilter('all')" id="filter_all" class="shrink-0 px-4 py-2 rounded-xl text-xs font-black bg-amber-500 text-gray-950">All Markets</button>
+    <button onclick="setFilter('over25')" id="filter_over25" class="shrink-0 px-4 py-2 rounded-xl text-xs font-black bg-gray-100 dark:bg-gray-800">⚽ Over 2.5</button>
+    <button onclick="setFilter('btts')" id="filter_btts" class="shrink-0 px-4 py-2 rounded-xl text-xs font-black bg-gray-100 dark:bg-gray-800">🥅 BTTS</button>
+    <button onclick="setFilter('home')" id="filter_home" class="shrink-0 px-4 py-2 rounded-xl text-xs font-black bg-gray-100 dark:bg-gray-800">🏠 Home Win</button>
+    <button onclick="setFilter('away')" id="filter_away" class="shrink-0 px-4 py-2 rounded-xl text-xs font-black bg-gray-100 dark:bg-gray-800">✈️ Away Win</button>
+    <button onclick="setFilter('over15')" id="filter_over15" class="shrink-0 px-4 py-2 rounded-xl text-xs font-black bg-gray-100 dark:bg-gray-800">Over 1.5</button>
+  </div>
 
-        <section class="space-y-4 pt-2 border-t border-gray-200 dark:border-gray-800">
-            <div class="flex items-center justify-between flex-wrap gap-2 pt-4">
-                <div>
-                    <h3 class="font-bold text-gray-900 dark:text-white text-base">📈 history — Last 60 Days</h3>
-                    <p class="text-[11px] text-gray-500 dark:text-gray-400 font-mono">⬆️ = Won &nbsp; ⬇️ = Lost &nbsp; • Profit on 10k stake</p>
-                </div>
-                <button onclick="loadMoreHistory()" id="historyBtn" class="px-4 py-2 rounded-xl bg-amber-500 text-gray-950 text-xs font-black">Load More</button>
-            </div>
-            <div class="flex gap-2">
-                <button onclick="switchHistoryTab('single_over15')" id="histTab_over" class="flex-1 px-3 py-2.5 rounded-xl text-xs font-black bg-amber-500 text-gray-950 transition">⚽ OVER 1.5 HISTORY</button>
-                <button onclick="switchHistoryTab('single_under45')" id="histTab_under" class="flex-1 px-3 py-2.5 rounded-xl text-xs font-black bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 transition">🔒 UNDER 4.5 HISTORY</button>
-            </div>
-            <div id="historyOverWrap" class="space-y-2">
-                <div class="grid grid-cols-3 gap-2 text-center">
-                    <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-2"><div class="text-lg font-black text-emerald-500" id="histWins">0</div><div class="text-[10px] font-mono text-gray-500">WINS ⬆️</div></div>
-                    <div class="bg-red-500/10 border border-red-500/30 rounded-xl p-2"><div class="text-lg font-black text-red-500" id="histLosses">0</div><div class="text-[10px] font-mono text-gray-500">LOSSES ⬇️</div></div>
-                    <div class="bg-amber-500/10 border border-amber-500/30 rounded-xl p-2"><div class="text-lg font-black text-amber-500" id="histRate">0%</div><div class="text-[10px] font-mono text-gray-500">WIN RATE</div></div>
-                </div>
-                <div class="bg-gray-50 dark:bg-gray-800/70 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 flex items-center justify-between">
-                    <div class="text-[11px]"><span class="font-black text-gray-900 dark:text-white" id="histStreakOver">🔥 Streak: —</span><div class="text-[10px] font-mono text-gray-500" id="histProfitOver">Profit (10k stake): —</div></div>
-                    <div class="text-right"><div class="text-[11px] font-black" id="histRoiOver">ROI —</div><div class="text-[9px] font-mono text-gray-500">Return</div></div>
-                </div>
-                <div class="flex gap-1.5">
-                    <button onclick="setMainHistoryFilter('over','all')" id="mainFilterOverAll" class="flex-1 py-1.5 rounded-lg text-[11px] font-black bg-amber-500 text-gray-950 transition">All</button>
-                    <button onclick="setMainHistoryFilter('over','won')" id="mainFilterOverWon" class="flex-1 py-1.5 rounded-lg text-[11px] font-black bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 transition">Won ⬆️</button>
-                    <button onclick="setMainHistoryFilter('over','lost')" id="mainFilterOverLost" class="flex-1 py-1.5 rounded-lg text-[11px] font-black bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 transition">Lost ⬇️</button>
-                </div>
-                <div id="historyList" class="space-y-2"><div class="text-center p-4 text-xs font-mono text-gray-500">Loading history... please wait</div></div>
-            </div>
-            <div id="historyUnderWrap" class="space-y-2 hidden">
-                <div class="grid grid-cols-3 gap-2 text-center">
-                    <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-2"><div class="text-lg font-black text-emerald-500" id="histWinsUnder">0</div><div class="text-[10px] font-mono text-gray-500">WINS ⬆️</div></div>
-                    <div class="bg-red-500/10 border border-red-500/30 rounded-xl p-2"><div class="text-lg font-black text-red-500" id="histLossesUnder">0</div><div class="text-[10px] font-mono text-gray-500">LOSSES ⬇️</div></div>
-                    <div class="bg-amber-500/10 border border-amber-500/30 rounded-xl p-2"><div class="text-lg font-black text-amber-500" id="histRateUnder">0%</div><div class="text-[10px] font-mono text-gray-500">WIN RATE</div></div>
-                </div>
-                <div class="bg-gray-50 dark:bg-gray-800/70 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 flex items-center justify-between">
-                    <div class="text-[11px]"><span class="font-black text-gray-900 dark:text-white" id="histStreakUnder">🔥 Streak: —</span><div class="text-[10px] font-mono text-gray-500" id="histProfitUnder">Profit (10k stake): —</div></div>
-                    <div class="text-right"><div class="text-[11px] font-black" id="histRoiUnder">ROI —</div><div class="text-[9px] font-mono text-gray-500">Return</div></div>
-                </div>
-                <div class="flex gap-1.5">
-                    <button onclick="setMainHistoryFilter('under','all')" id="mainFilterUnderAll" class="flex-1 py-1.5 rounded-lg text-[11px] font-black bg-amber-500 text-gray-950 transition">All</button>
-                    <button onclick="setMainHistoryFilter('under','won')" id="mainFilterUnderWon" class="flex-1 py-1.5 rounded-lg text-[11px] font-black bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 transition">Won ⬆️</button>
-                    <button onclick="setMainHistoryFilter('under','lost')" id="mainFilterUnderLost" class="flex-1 py-1.5 rounded-lg text-[11px] font-black bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 transition">Lost ⬇️</button>
-                </div>
-                <div id="historyListUnder" class="space-y-2"><div class="text-center p-4 text-xs font-mono text-gray-500">Loading history... please wait</div></div>
-            </div>
-            <p id="historyNote" class="hidden text-[10px] text-gray-500 font-mono text-center">History loads fast in small batches. Tap Load More for older days.</p>
-        </section>
-    </main>
+  <section class="space-y-3">
+    <div class="flex items-center justify-between">
+      <h3 class="font-bold text-base flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-emerald-400 pulse-live"></span> <span id="sectionTitleDate">TODAY'S</span> 1.50+ SINGLES</h3>
+      <span class="text-xs bg-amber-500/10 text-amber-600 border border-amber-500/30 px-3 py-1.5 rounded-xl font-mono font-bold" id="totalPicksBadge">0 PICKS</span>
+    </div>
+    <p class="text-[11px] text-gray-500 font-mono">Play SINGLE SINGLE • Same stake on each • Stop when day is in profit if you want</p>
+    <div class="grid grid-cols-1 gap-3" id="matchFeedContainer"></div>
+  </section>
 
-    <footer class="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 py-6 px-4 text-center mt-auto">
-        <p class="text-[11px] font-bold text-gray-900 dark:text-white mb-2">Sponsored by</p>
-        <a href="https://one.exnessonelink.com/a/m3alh1ljmu?source=app" target="_blank" rel="noopener" class="block max-w-4xl mx-auto mb-4 rounded-2xl overflow-hidden border-2 border-black shadow-lg">
-            <div class="bg-[#FFDD00] py-5 px-4 flex items-center justify-center">
-                <span class="text-black font-black text-4xl tracking-tight lowercase" style="font-family: Arial, Helvetica, sans-serif;">exness</span>
-            </div>
-            <span class="totally-invisible">Tap to visit Exness • Sponsored</span>
-        </a>
-        <div class="max-w-4xl mx-auto text-left bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-2xl overflow-hidden">
-            <button onclick="toggleTerms()" id="termsBtn" class="w-full flex items-center justify-between p-4 text-left hover:bg-gray-100 dark:hover:bg-gray-900 transition cursor-pointer">
-                <span class="text-xs font-black text-gray-900 dark:text-white">📜 TERMS & REGULATIONS <span class="totally-invisible">— TAP TO OPEN</span></span>
-                <span id="termsArrow" class="text-gray-500 text-sm font-black transition-transform duration-300">▼</span>
-            </button>
-            <div id="termsContent" class="hidden px-4 pb-4 space-y-3">
-                <p class="text-[13px] leading-relaxed text-gray-600 dark:text-gray-300">1. <b class="text-gray-900 dark:text-white">Age 25+ Only:</b> You must be 25 years or older to use betting tips in Uganda. No persons under 25 allowed.</p>
-                <p class="text-[13px] leading-relaxed text-gray-600 dark:text-gray-300">2. <b class="text-gray-900 dark:text-white">Entertainment Only:</b> WINS1 provides analytics and predictions for information only. No win is guaranteed. Past results do not guarantee future results.</p>
-                <p class="text-[13px] leading-relaxed text-gray-600 dark:text-gray-300">3. <b class="text-gray-900 dark:text-white">Bet Responsibly:</b> Only bet what you can afford to lose. Never borrow, never chase losses. If betting affects your life, stop and seek help.</p>
-                <p class="text-[13px] leading-relaxed text-gray-600 dark:text-gray-300">4. <b class="text-gray-900 dark:text-white">Licensed Betting:</b> Only place bets with operators licensed by the National Lotteries and Gaming Regulatory Board (NLGRB) Uganda. Winnings in Uganda are subject to 15% withholding tax.</p>
-                <p class="text-[13px] leading-relaxed text-gray-600 dark:text-gray-300">5. <b class="text-gray-900 dark:text-white">No Guarantee / No Refund:</b> Odds change. Always check your bet slip before confirming. WINS1 is not responsible for losses.</p>
-                <p class="text-[13px] leading-relaxed text-gray-600 dark:text-gray-300">6. <b class="text-gray-900 dark:text-white">Self-Exclusion:</b> You can stop using this site at any time. Set your own daily limit.</p>
-                <p class="text-[10px] text-center text-gray-500 pt-1 font-mono">© WINS1 — Bet Responsibly | 25+ | NLGRB Uganda</p>
-            </div>
-        </div>
-    </footer>
+  <section class="space-y-4 pt-4 border-t">
+    <div class="flex items-center justify-between">
+      <div><h3 class="font-bold text-base">📈 History — Last 60 Days</h3><p class="text-[11px] text-gray-500 font-mono">All 1.50+ singles • Flat 10k stake</p></div>
+      <button onclick="loadMoreHistory()" id="historyBtn" class="px-4 py-2 rounded-xl bg-amber-500 text-gray-950 text-xs font-black">Load More</button>
+    </div>
+    <div class="grid grid-cols-3 gap-2 text-center">
+      <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-2"><div class="text-lg font-black text-emerald-500" id="histWins">0</div><div class="text-[10px] font-mono text-gray-500">WINS ⬆️</div></div>
+      <div class="bg-red-500/10 border border-red-500/30 rounded-xl p-2"><div class="text-lg font-black text-red-500" id="histLosses">0</div><div class="text-[10px] font-mono text-gray-500">LOSSES ⬇️</div></div>
+      <div class="bg-amber-500/10 border border-amber-500/30 rounded-xl p-2"><div class="text-lg font-black text-amber-500" id="histRate">0%</div><div class="text-[10px] font-mono text-gray-500">WIN RATE</div></div>
+    </div>
+    <div class="bg-gray-50 dark:bg-gray-800/70 border rounded-xl px-3 py-2 flex items-center justify-between">
+      <div class="text-[11px]"><span class="font-black" id="histStreak">🔥 Streak: —</span><div class="text-[10px] font-mono text-gray-500" id="histProfit">Profit (10k each): —</div></div>
+      <div class="text-right"><div class="text-[11px] font-black" id="histRoi">ROI —</div><div class="text-[9px] font-mono text-gray-500">Return</div></div>
+    </div>
+    <div id="historyList" class="space-y-2"><div class="text-center p-4 text-xs text-gray-500">Loading history...</div></div>
+  </section>
+</main>
 
-    <script>
-        function toggleTerms(){
-            const c=document.getElementById('termsContent');
-            const a=document.getElementById('termsArrow');
-            if(!c) return;
-            const isHidden=c.classList.contains('hidden');
-            if(isHidden){ c.classList.remove('hidden'); if(a) a.style.transform='rotate(180deg)'; }
-            else { c.classList.add('hidden'); if(a) a.style.transform='rotate(0deg)'; }
-        }
-        const openDrawerBtn = document.getElementById('openDrawerBtn');
-        const closeDrawerBtn = document.getElementById('closeDrawerBtn');
-        const drawerMenu = document.getElementById('drawerMenu');
-        const drawerBackdrop = document.getElementById('drawerBackdrop');
-        const themeToggleBtn = document.getElementById('themeToggleBtn');
-        const themeIcon = document.getElementById('themeIcon');
-        function setTheme(mode){ if(mode==='dark'){document.documentElement.classList.add('dark'); if(themeIcon) themeIcon.textContent='☀️';} else {document.documentElement.classList.remove('dark'); if(themeIcon) themeIcon.textContent='🌙';} try{localStorage.setItem('wins1_theme',mode);}catch(e){} updateSettingsButtons(mode); }
-        function updateSettingsButtons(mode){ const dBtn=document.getElementById('settingsDarkBtn'); const lBtn=document.getElementById('settingsLightBtn'); if(!dBtn||!lBtn) return; if(mode==='dark'){ dBtn.className="px-3 py-2.5 rounded-xl text-xs font-bold bg-gray-900 text-white border-2 border-amber-500 transition"; lBtn.className="px-3 py-2.5 rounded-xl text-xs font-bold bg-white text-gray-900 border border-gray-300 transition"; } else { dBtn.className="px-3 py-2.5 rounded-xl text-xs font-bold bg-gray-900 text-white border border-gray-700 transition"; lBtn.className="px-3 py-2.5 rounded-xl text-xs font-bold bg-white text-gray-900 border-2 border-amber-500 transition"; } }
-        (function(){ let saved='dark'; try{saved=localStorage.getItem('wins1_theme')||'dark';}catch(e){} setTheme(saved); })();
-        if(themeToggleBtn) themeToggleBtn.addEventListener('click',()=>{ const isDark=document.documentElement.classList.contains('dark'); setTheme(isDark?'light':'dark'); });
-        function toggleDrawer(open){ if(!drawerMenu||!drawerBackdrop) return; if(open){ drawerBackdrop.classList.remove('hidden'); drawerMenu.classList.remove('-translate-x-full'); } else { drawerMenu.classList.add('-translate-x-full'); drawerBackdrop.classList.add('hidden'); } }
-        if(openDrawerBtn) openDrawerBtn.addEventListener('click',()=>toggleDrawer(true));
-        if(closeDrawerBtn) closeDrawerBtn.addEventListener('click',()=>toggleDrawer(false));
-        if(drawerBackdrop) drawerBackdrop.addEventListener('click',()=>toggleDrawer(false));
-        function getYYYYMMDD(d){ return d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0'); }
-        function toInputDateValue(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
-        let selectedDateObj=new Date();
-        let currentCategory='single_over15';
-        const categories=['single_over15','single_under45'];
-        function initRibbon(){
-            const ribbon=document.getElementById('dateRibbon');
-            const calInput=document.getElementById('drawerCalendarInput');
-            if(calInput) calInput.value=toInputDateValue(selectedDateObj);
-            if(!ribbon) return;
-            const center=new Date(selectedDateObj); center.setHours(0,0,0,0);
-            const today=new Date(); today.setHours(0,0,0,0);
-            let html='';
-            for(let offset=-30; offset<=30; offset++){
-                const d=new Date(center); d.setDate(center.getDate()+offset);
-                const isSelected=d.getTime()===center.getTime();
-                const isToday=d.getTime()===today.getTime();
-                const dayLabel=isToday?'TODAY':d.toLocaleDateString('en-US',{weekday:'short'}).toUpperCase();
-                const dateLabel=d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
-                const isoVal=toInputDateValue(d);
-                html+=`<button id="ribbon-${isoVal}" type="button" onclick="jumpToDate('${isoVal}')" class="shrink-0 px-3 py-1.5 rounded-lg text-left transition ${isSelected?'bg-amber-500 text-gray-950 font-bold shadow':'bg-gray-100 dark:bg-gray-800/70 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-800 hover:text-black dark:hover:text-white'}"><div class="text-[10px] font-mono leading-tight">${dayLabel}</div><div class="text-xs font-bold leading-tight">${dateLabel}</div></button>`;
-            }
-            ribbon.innerHTML=html;
-            setTimeout(()=>{ const el=document.getElementById(`ribbon-${toInputDateValue(center)}`); if(el && ribbon){ const targetLeft = el.offsetLeft - (ribbon.clientWidth/2) + (el.clientWidth/2); ribbon.scrollTo({ left: targetLeft, behavior: 'smooth' }); } },50);
-        }
-        function getLockedPick(dateStr,category){ try{ const store=JSON.parse(localStorage.getItem('wins1_real_locked_picks')||'{}'); return store[`${dateStr}_${category}`]||null; }catch(e){ return null; } }
-        function saveLockedPick(dateStr,category,matchIdentifier){ try{ const store=JSON.parse(localStorage.getItem('wins1_real_locked_picks')||'{}'); store[`${dateStr}_${category}`]=matchIdentifier; localStorage.setItem('wins1_real_locked_picks',JSON.stringify(store)); }catch(e){} }
-        function goToHomepage(){ toggleDrawer(false); hideTicket(); selectedDateObj=new Date(); switchCategory('single_over15'); initRibbon(); }
-        function hideTicket(){ const t=document.getElementById('ticketSection'); if(t) t.classList.add('hidden'); const ticketBtn=document.getElementById('nav_ticket'); if(ticketBtn) ticketBtn.className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 font-bold text-xs transition"; }
-        function goToTicket(){
-            const scrollYBefore = window.scrollY;
-            toggleDrawer(false);
-            const ticketBtn=document.getElementById('nav_ticket');
-            const overBtn=document.getElementById('nav_single_over15');
-            const underBtn=document.getElementById('nav_single_under45');
-            if(ticketBtn) ticketBtn.className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl bg-amber-500 text-gray-950 font-black text-xs border border-amber-500 shadow-lg shadow-amber-500/20 transition";
-            if(overBtn) overBtn.className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 font-medium text-xs transition";
-            if(underBtn) underBtn.className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 font-medium text-xs transition";
-            const t=document.getElementById('ticketSection'); if(t) t.classList.remove('hidden');
-            loadComboTicket(selectedDateObj);
-            requestAnimationFrame(()=>{
-                setTimeout(()=>{
-                    const el=document.getElementById('ticketSection'); if(!el) return;
-                    const top = el.getBoundingClientRect().top + window.scrollY - 80;
-                    if(top < scrollYBefore - 20 || top > scrollYBefore + window.innerHeight){
-                        window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
-                    }
-                    el.classList.remove('ticket-highlight'); void el.offsetWidth; el.classList.add('ticket-highlight');
-                }, 180);
-            });
-        }
-        function switchCategory(cat){ currentCategory=cat; toggleDrawer(false); hideTicket();
-            categories.forEach(c=>{ const navBtn=document.getElementById(`nav_${c}`); if(navBtn){ if(c===cat){ navBtn.className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl bg-amber-500/20 text-amber-400 font-bold text-xs border border-amber-500/40 transition"; } else { navBtn.className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 font-medium text-xs transition"; } } }); const badgeText={'single_over15':"HIGH-SCORING OVER 1.5",'single_under45':"SAFE UNDER 4.5"}; document.getElementById('headerCategoryBadge').textContent=badgeText[cat]||"LIVE VIP"; document.getElementById('sectionTitleCategory').textContent=badgeText[cat]||"SELECTION"; fetchMatchData(selectedDateObj,false); }
-        function jumpToDate(dateStr){ if(!dateStr) return; const target=new Date(dateStr+'T00:00:00'); selectedDateObj=target; toggleDrawer(false); initRibbon(); fetchMatchData(target,false); const t=document.getElementById('ticketSection'); if(t && !t.classList.contains('hidden')) loadComboTicket(target); }
-        function triggerRefresh(){ const icon=document.getElementById('refreshIcon'); if(icon) icon.classList.add('animate-spin'); try{ sessionStorage.removeItem('wins1_cache_'+getYYYYMMDD(selectedDateObj)); }catch(e){} fetchMatchData(selectedDateObj,false).then(()=>{ setTimeout(()=>{ if(icon) icon.classList.remove('animate-spin'); },500); }); const t=document.getElementById('ticketSection'); if(t && !t.classList.contains('hidden')) loadComboTicket(selectedDateObj); }
-        function parseRecordStats(recordSummary){ if(!recordSummary||typeof recordSummary!=='string'){ return {wins:0,draws:0,losses:0,played:0,winRate:0.40,lossRate:0.35,summary:"N/A"}; } const parts=recordSummary.split('-').map(n=>parseInt(n,10)).filter(n=>!isNaN(n)); if(parts.length===3){ const [w,d,l]=parts; const played=w+d+l; return {wins:w,draws:d,losses:l,played,winRate:played>0?(w/played):0.40,lossRate:played>0?(l/played):0.35,summary:`${w}W-${d}D-${l}L`}; } else if(parts.length===2){ const [w,l]=parts; const played=w+l; return {wins:w,draws:0,losses:l,played,winRate:played>0?(w/played):0.40,lossRate:played>0?(l/played):0.35,summary:`${w}W-${l}L`}; } return {wins:0,draws:0,losses:0,played:0,winRate:0.40,lossRate:0.35,summary:recordSummary}; }
-        function americanToDecimal(ml){ const num=parseFloat(ml); if(isNaN(num)||num===0) return null; if(num<0) return parseFloat((1+(100/Math.abs(num))).toFixed(2)); return parseFloat((1+(num/100)).toFixed(2)); }
+<footer class="bg-white dark:bg-gray-900 border-t py-6 px-4 text-center mt-auto">
+  <p class="text-[11px] font-bold mb-2">Sponsored by</p>
+  <a href="https://one.exnessonelink.com/a/m3alh1ljmu?source=app" target="_blank" class="block max-w-4xl mx-auto mb-4 rounded-2xl overflow-hidden border-2 border-black"><div class="bg-[#FFDD00] py-5 px-4 flex items-center justify-center"><span class="text-black font-black text-4xl lowercase">exness</span></div><span class="totally-invisible">Tap to visit Exness</span></a>
+  <div class="max-w-4xl mx-auto text-left bg-gray-50 dark:bg-gray-950 border rounded-2xl overflow-hidden">
+    <button onclick="toggleTerms()" class="w-full flex items-center justify-between p-4 text-left"><span class="text-xs font-black">📜 TERMS & REGULATIONS</span><span id="termsArrow">▼</span></button>
+    <div id="termsContent" class="hidden px-4 pb-4 space-y-3">
+      <p class="text-[13px] text-gray-600 dark:text-gray-300">1. <b>Age 25+ Only:</b> You must be 25+ to use betting tips in Uganda.</p>
+      <p class="text-[13px] text-gray-600 dark:text-gray-300">2. <b>Entertainment Only:</b> No win is guaranteed. Past results do not guarantee future results.</p>
+      <p class="text-[13px] text-gray-600 dark:text-gray-300">3. <b>Bet Responsibly:</b> Only bet what you can afford to lose. Never chase losses.</p>
+      <p class="text-[13px] text-gray-600 dark:text-gray-300">4. <b>Licensed Betting:</b> Only with operators licensed by NLGRB Uganda. Winnings subject to 15% tax.</p>
+      <p class="text-[10px] text-center text-gray-500 font-mono">© WINS1 — Bet Responsibly | 25+ | NLGRB Uganda</p>
+    </div>
+  </div>
+</footer>
 
-        /* ✅ 90% WEEKLY MODE - ONLY TIER 1 ULTRA, TIER 2 REMOVED */
-        function evaluatePickWithRealData(match,category){
-            const hRec=parseRecordStats(match.homeRecord); const aRec=parseRecordStats(match.awayRecord);
-            const realOverUnder=parseFloat(match.overUnderLine)||null;
-            const attackingTempo=(hRec.winRate+hRec.lossRate+aRec.winRate+aRec.lossRate)/2;
-            const defensiveWeakness=(hRec.lossRate+aRec.lossRate)/2;
-            const bothScoreTendency=1-Math.abs(hRec.winRate-aRec.winRate);
-            let marketBoost=0; if(realOverUnder){ if(realOverUnder>=3.5) marketBoost=0.18; else if(realOverUnder>=2.5) marketBoost=0.12; else if(realOverUnder>=2.0) marketBoost=0.02; else marketBoost=-0.08; }
-            let over15Prob=0.58 + (attackingTempo*0.18) + (defensiveWeakness*0.28) + (bothScoreTendency*0.08) + marketBoost;
-            over15Prob=Math.min(0.97,Math.max(0.52,over15Prob));
-            let label="Total Goals: Over 1.5 Goals"; let odd=parseFloat(Math.max(1.08,(1/over15Prob)).toFixed(2)); let winProb=over15Prob; let scoreRank=0; let isWon=false;
-            if(category==='single_over15'){
-                let tier=0; let tierBonus=-100;
-                if(odd>=1.10 && odd<=1.18 && over15Prob>=0.88 && defensiveWeakness>=0.35){ tier=1; tierBonus=+40; }
-                else { tier=0; tierBonus=-100; }
-                let ouBonus=0;
-                if(realOverUnder && realOverUnder>=2.5) ouBonus=+12;
-                if(realOverUnder && realOverUnder<2.5) ouBonus=-20;
-                scoreRank=(over15Prob*100) + tierBonus + ouBonus + (bothScoreTendency*8) - (tier*10);
-                if(match.statusState==='post') isWon=(match.homeScore+match.awayScore)>=2;
-                return {label,odd,confidence:`${(winProb*100).toFixed(1)}%`,analysis:``,isWon,isFinished:match.statusState==='post',scoreRank,over15Prob, tier};
-            }
-            if(category==='single_under45'){
-                let under45Prob = 0.88 + ((1 - defensiveWeakness)*0.06) + ((1 - attackingTempo)*0.04);
-                if(realOverUnder && realOverUnder >= 3.5) under45Prob -= 0.08;
-                if(realOverUnder && realOverUnder <= 2.5) under45Prob += 0.04;
-                under45Prob = Math.min(0.97, Math.max(0.75, under45Prob));
-                label="Total Goals: Under 4.5 Goals";
-                odd=parseFloat(Math.max(1.05,(1/under45Prob)).toFixed(2));
-                winProb=under45Prob;
-                let tier=0; let tierBonus=-100;
-                if(odd>=1.08 && odd<=1.12 && under45Prob>=0.94){ tier=1; tierBonus=+40; }
-                else { tier=0; tierBonus=-100; }
-                scoreRank=(under45Prob*100) + tierBonus - (attackingTempo*20) - (defensiveWeakness*15) - (realOverUnder ? (realOverUnder-2.5)*10 : 0) - (tier*10);
-                if(match.statusState==='post') isWon=(match.homeScore+match.awayScore)<=4;
-                return {label,odd,confidence:`${(winProb*100).toFixed(1)}%`,analysis:``,isWon,isFinished:match.statusState==='post',scoreRank,over15Prob:under45Prob, tier};
-            }
-            if(hRec.played===0&&aRec.played===0) scoreRank-=15;
-            const confidencePct=`${(winProb*100).toFixed(1)}%`;
-            return {label,odd,confidence:confidencePct,analysis:``,isWon,isFinished:match.statusState==='post',scoreRank,over15Prob, tier:0};
-        }
-        function pickTier1Only(list, excludeId){
-            const avail=list.filter(x=>x.match.id!==excludeId && x.eval.tier===1);
-            if(avail.length===0) return null;
-            avail.sort((a,b)=>b.eval.scoreRank-a.eval.scoreRank);
-            return {pick:avail[0], tier:1};
-        }
+<script>
+function toggleTerms(){const c=document.getElementById('termsContent');const a=document.getElementById('termsArrow');if(!c)return;const h=c.classList.contains('hidden');if(h){c.classList.remove('hidden');if(a)a.style.transform='rotate(180deg)'}else{c.classList.add('hidden');if(a)a.style.transform='rotate(0deg)'}}
+const drawerMenu=document.getElementById('drawerMenu'),drawerBackdrop=document.getElementById('drawerBackdrop');
+function setTheme(mode){if(mode==='dark'){document.documentElement.classList.add('dark');document.getElementById('themeIcon').textContent='☀️'}else{document.documentElement.classList.remove('dark');document.getElementById('themeIcon').textContent='🌙'}try{localStorage.setItem('wins1_theme',mode)}catch(e){}}
+(function(){let s='dark';try{s=localStorage.getItem('wins1_theme')||'dark'}catch(e){}setTheme(s)})();
+document.getElementById('themeToggleBtn').addEventListener('click',()=>{setTheme(document.documentElement.classList.contains('dark')?'light':'dark')});
+function toggleDrawer(o){if(o){drawerBackdrop.classList.remove('hidden');drawerMenu.classList.remove('-translate-x-full')}else{drawerMenu.classList.add('-translate-x-full');drawerBackdrop.classList.add('hidden')}}
+document.getElementById('openDrawerBtn').addEventListener('click',()=>toggleDrawer(true));
+document.getElementById('closeDrawerBtn').addEventListener('click',()=>toggleDrawer(false));
+drawerBackdrop.addEventListener('click',()=>toggleDrawer(false));
+function getYYYYMMDD(d){return d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0')}
+function toInputDateValue(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+let selectedDateObj=new Date();
+let currentFilter='all';
+let allTodayPicks=[];
+function initRibbon(){
+  const ribbon=document.getElementById('dateRibbon');const cal=document.getElementById('drawerCalendarInput');if(cal)cal.value=toInputDateValue(selectedDateObj);if(!ribbon)return;
+  const center=new Date(selectedDateObj);center.setHours(0,0,0,0);const today=new Date();today.setHours(0,0,0,0);let html='';
+  for(let off=-30;off<=30;off++){const d=new Date(center);d.setDate(center.getDate()+off);const sel=d.getTime()===center.getTime();const isT=d.getTime()===today.getTime();const day=isT?'TODAY':d.toLocaleDateString('en-US',{weekday:'short'}).toUpperCase();const date=d.toLocaleDateString('en-US',{month:'short',day:'numeric'});const iso=toInputDateValue(d);html+=`<button onclick="jumpToDate('${iso}')" class="shrink-0 px-3 py-1.5 rounded-lg text-left ${sel?'bg-amber-500 text-gray-950 font-bold shadow':'bg-gray-100 dark:bg-gray-800/70 text-gray-600 dark:text-gray-300'}"><div class="text-[10px] font-mono">${day}</div><div class="text-xs font-bold">${date}</div></button>`}
+  ribbon.innerHTML=html;setTimeout(()=>{const el=ribbon.querySelector('.bg-amber-500');if(el)ribbon.scrollTo({left:el.offsetLeft-ribbon.clientWidth/2+el.clientWidth/2,behavior:'smooth'})},50);
+}
+function goToHomepage(){toggleDrawer(false);selectedDateObj=new Date();initRibbon();fetchMatchData(selectedDateObj,false)}
+function jumpToDate(s){if(!s)return;selectedDateObj=new Date(s+'T00:00:00');toggleDrawer(false);initRibbon();fetchMatchData(selectedDateObj,false)}
+function triggerRefresh(){try{sessionStorage.removeItem('wins1_cache_'+getYYYYMMDD(selectedDateObj))}catch(e){}fetchMatchData(selectedDateObj,false)}
+function parseRecordStats(s){if(!s||typeof s!=='string')return{winRate:.40,lossRate:.35,played:0,summary:'N/A'};const p=s.split('-').map(n=>parseInt(n,10)).filter(n=>!isNaN(n));if(p.length===3){const[w,d,l]=p;const pl=w+d+l;return{winRate:pl? w/pl:.40,lossRate:pl? l/pl:.35,played:pl,summary:`${w}W-${d}D-${l}L`}}if(p.length===2){const[w,l]=p;const pl=w+l;return{winRate:pl?w/pl:.40,lossRate:pl?l/pl:.35,played:pl,summary:`${w}W-${l}L`}}return{winRate:.40,lossRate:.35,played:0,summary:s}}
+function clamp(v,a,b){return Math.min(b,Math.max(a,v))}
 
-        const fixtureCache = new Map();
-        async function fetchRealFixtures(dateObj){
-            const compactDate=getYYYYMMDD(dateObj);
-            const cacheKey='wins1_cache_'+compactDate;
-            if(fixtureCache.has(compactDate)) return fixtureCache.get(compactDate);
-            try{ const cached=sessionStorage.getItem(cacheKey); if(cached){ const parsed=JSON.parse(cached); if(Date.now()-parsed.time < 10*60*1000){ fixtureCache.set(compactDate, parsed.data); return parsed.data; } } }catch(e){}
-            let fixtures=[];
-            const espnLeagues=['eng.1','eng.2','esp.1','esp.2','ita.1','ita.2','ger.1','ger.2','fra.1','fra.2','uefa.champions','uefa.europa','uefa.conference','usa.1','ned.1','por.1','bel.1','tur.1','sui.1','aut.1','sco.1','bra.1','arg.1','mex.1','chi.1','col.1','jpn.1','kor.1','aus.1','rsa.1','egy.1'];
-            const requests=espnLeagues.map(lg=>fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/${lg}/scoreboard?dates=${compactDate}`).then(r=>r.ok?r.json():null).catch(()=>null)); const results=await Promise.all(requests); results.forEach(data=>{ if(data&&Array.isArray(data.events)){ const leagueName=(data.leagues&&data.leagues[0]&&data.leagues[0].name)||"Official League"; data.events.forEach(ev=>{ const comp=ev.competitions&&ev.competitions[0]; if(comp&&comp.competitors&&comp.competitors.length===2){ const homeObj=comp.competitors.find(c=>c.homeAway==='home')||comp.competitors[0]; const awayObj=comp.competitors.find(c=>c.homeAway==='away')||comp.competitors[1]; const homeName=homeObj.team.displayName; const awayName=awayObj.team.displayName; if(!fixtures.some(f=>f.home===homeName&&f.away===awayName)){ const dt=new Date(ev.date); const timeStr=isNaN(dt)?"19:00":dt.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',hour12:false}); const statusState=(ev.status&&ev.status.type&&ev.status.type.state)||"pre"; const homeRecord=(homeObj.records&&homeObj.records[0]&&homeObj.records[0].summary)||""; const awayRecord=(awayObj.records&&awayObj.records[0]&&awayObj.records[0].summary)||""; const homeForm=homeObj.form||""; const venue=(comp.venue&&comp.venue.fullName)||""; const oddsObj=(comp.odds&&comp.odds[0])||null; const homeMoneyline=oddsObj&&oddsObj.homeTeamOdds?oddsObj.homeTeamOdds.moneyLine:null; const awayMoneyline=oddsObj&&oddsObj.awayTeamOdds?oddsObj.awayTeamOdds.moneyLine:null; const overUnderLine=oddsObj?oddsObj.overUnder:null; const oddsProvider=oddsObj&&oddsObj.provider?oddsObj.provider.name:null; fixtures.push({id:`${homeName}_vs_${awayName}`,home:homeName,away:awayName,league:leagueName,time:timeStr,statusState:statusState,homeScore:parseInt(homeObj.score,10)||0,awayScore:parseInt(awayObj.score,10)||0,homeRecord,awayRecord,homeForm,venue,homeMoneyline,awayMoneyline,overUnderLine,oddsProvider}); } } }); } });
-            fixtureCache.set(compactDate, fixtures);
-            try{ sessionStorage.setItem(cacheKey, JSON.stringify({time:Date.now(), data:fixtures})); }catch(e){}
-            return fixtures;
-        }
-        let ticketMenuOpen=false; let ticketHistoryLoaded=false; let ticketHistoryLoading=false;
-        let ticketHistoryData=[]; let ticketHistoryFilter='all';
-        function toggleTicketMenu(e){ if(e){ e.stopPropagation(); e.preventDefault(); } const menu=document.getElementById('ticketHistoryMenu'); if(!menu) return; ticketMenuOpen=!menu.classList.contains('hidden'); if(ticketMenuOpen){ menu.classList.add('hidden'); ticketMenuOpen=false; } else { menu.classList.remove('hidden'); ticketMenuOpen=true; if(!ticketHistoryLoaded) loadTicketHistory(false); } }
-        document.addEventListener('click', (e)=>{ const menu=document.getElementById('ticketHistoryMenu'); const btn=document.getElementById('ticketMenuBtn'); if(menu && !menu.classList.contains('hidden') && btn && !menu.contains(e.target) && !btn.contains(e.target)){ menu.classList.add('hidden'); ticketMenuOpen=false; } });
-        function setTicketHistoryFilter(f){ ticketHistoryFilter=f; const all=document.getElementById('ticketFilterAll'); const won=document.getElementById('ticketFilterWon'); const lost=document.getElementById('ticketFilterLost'); const active="flex-1 py-1.5 rounded-lg text-[11px] font-black bg-amber-500 text-gray-950 transition"; const inactive="flex-1 py-1.5 rounded-lg text-[11px] font-black bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 transition"; if(all) all.className = f==='all'?active:inactive; if(won) won.className = f==='won'? "flex-1 py-1.5 rounded-lg text-[11px] font-black bg-emerald-500 text-white transition" : inactive; if(lost) lost.className = f==='lost'? "flex-1 py-1.5 rounded-lg text-[11px] font-black bg-red-500 text-white transition" : inactive; renderTicketHistoryList(); }
-        function shortName(n){ return n.replace('Real Salt Lake','RSL').replace('Tottenham Hotspur','Tottenham').replace('Nottingham Forest','Nottm Forest').replace('Wolverhampton Wanderers','Wolves').replace('Brighton & Hove Albion','Brighton').replace('West Ham United','West Ham').replace('Newcastle United','Newcastle').replace('Manchester United','Man United').replace('Manchester City','Man City'); }
-        function renderTicketHistoryList(){
-            const list=document.getElementById('ticketHistoryList'); if(!list) return;
-            let filtered=ticketHistoryData.filter(t=> ticketHistoryFilter==='all' ? true : ticketHistoryFilter==='won' ? t.won : !t.won);
-            if(filtered.length===0){ list.innerHTML=`<div class="text-center p-4 text-xs text-gray-500">${ticketHistoryFilter==='won'?'No won tickets yet.': ticketHistoryFilter==='lost'?'No lost tickets. Great!':'No finished tickets yet.'}</div>`; return; }
-            let html='';
-            filtered.forEach(t=>{
-                const arrow = t.won ? '⬆️' : '⬇️';
-                const badge = t.won ? `<span class="bg-emerald-500 text-white px-2 py-0.5 rounded-full text-[10px] font-black nowrap-badge">⬆️ WON</span>` : `<span class="bg-red-500 text-white px-2 py-0.5 rounded-full text-[10px] font-black nowrap-badge">⬇️ LOST</span>`;
-                const border = t.won ? 'border-emerald-500/30' : 'border-red-500/30';
-                const tierLabel = '🛡️ ULTRA 90%';
-                html+=`<div class="border ${border} bg-gray-50 dark:bg-gray-800/40 rounded-xl p-2.5 space-y-1.5">
-                    <div class="flex items-center justify-between gap-2"><div class="text-[11px] font-black text-gray-900 dark:text-white truncate">${arrow} ${t.day} ${t.date} • @ ${t.combined} • ${tierLabel}</div>${badge}</div>
-                    <div class="flex items-center justify-between gap-2 text-[11px]"><span class="text-gray-700 dark:text-gray-200 truncate">⚽ ${shortName(t.overHome)} vs ${shortName(t.overAway)} <b>${t.overScore}</b> ${t.overWon?'✅':'❌'}</span><span class="text-[10px] font-bold text-amber-600 dark:text-amber-400 bg-amber-500/10 border border-amber-500/30 px-1.5 py-0.5 rounded-full nowrap-badge">Over 1.5</span></div>
-                    <div class="flex items-center justify-between gap-2 text-[11px]"><span class="text-gray-700 dark:text-gray-200 truncate">🔒 ${shortName(t.underHome)} vs ${shortName(t.underAway)} <b>${t.underScore}</b> ${t.underWon?'✅':'❌'}</span><span class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-1.5 py-0.5 rounded-full nowrap-badge">Under 4.5</span></div>
-                </div>`;
-            });
-            list.innerHTML=html;
-        }
-        function updateTicketHistoryStats(){
-            let wins=0, losses=0, profit=0, stakeTotal=0;
-            ticketHistoryData.forEach(t=>{ if(t.won){ wins++; profit += 10000*(parseFloat(t.combined)-1); } else { losses++; profit -= 10000; } stakeTotal += 10000; });
-            document.getElementById('ticketHistWins').textContent=wins;
-            document.getElementById('ticketHistLosses').textContent=losses;
-            const total=wins+losses;
-            document.getElementById('ticketHistRate').textContent= total>0 ? Math.round((wins/total)*100)+'%' : '0%';
-            let streak=0; for(let i=0;i<ticketHistoryData.length;i++){ if(ticketHistoryData[i].won) streak++; else break; }
-            const streakEl=document.getElementById('ticketStreakLabel');
-            if(streakEl) streakEl.textContent = streak>0 ? `🔥 Streak: ${streak} WON` : (ticketHistoryData.length>0 ? `🔥 Streak: 0 — Last Lost` : `🔥 Streak: —`);
-            const profitEl=document.getElementById('ticketProfitLabel');
-            if(profitEl) profitEl.textContent = `Profit (10k stake): ${profit>=0?'+':''}${Math.round(profit).toLocaleString()} UGX`;
-            if(profitEl) profitEl.className = `text-[10px] font-mono ${profit>=0?'text-emerald-600 dark:text-emerald-400':'text-red-500'}`;
-            const roiEl=document.getElementById('ticketRoiLabel');
-            if(roiEl){ const roi = stakeTotal>0 ? (profit/stakeTotal*100) : 0; roiEl.textContent = `ROI ${roi>=0?'+':''}${roi.toFixed(1)}%`; roiEl.className = `text-[11px] font-black ${roi>=0?'text-emerald-500':'text-red-500'}`; }
-        }
-        async function loadTicketHistory(force){
-            if(ticketHistoryLoading) return; if(ticketHistoryLoaded && !force) return;
-            if(force){ ticketHistoryData=[]; }
-            ticketHistoryLoading=true; ticketHistoryLoaded=true;
-            const list=document.getElementById('ticketHistoryList');
-            if(list) list.innerHTML=`<div class="text-center p-4 text-xs font-mono text-gray-500">Loading 60 days ticket history...</div>`;
-            for(let back=1; back<=60; back++){
-                const d=new Date(); d.setDate(d.getDate()-back);
-                try{
-                    const matches=await fetchRealFixtures(d);
-                    if(matches.length===0) continue;
-                    const dateKey=getYYYYMMDD(d);
-                    const dateLabel=d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
-                    const dayLabel=d.toLocaleDateString('en-US',{weekday:'short'});
-                    const overEv=matches.map(m=>({match:m, eval:evaluatePickWithRealData(m,'single_over15')}));
-                    let overRes=pickTier1Only(overEv, null); if(!overRes) continue; let overPick=overRes.pick;
-                    const underEv=matches.map(m=>({match:m, eval:evaluatePickWithRealData(m,'single_under45')}));
-                    const safeUnder=underEv.filter(x=>x.match.id!==overPick.match.id && x.eval.tier===1).sort((a,b)=>b.eval.scoreRank-a.eval.scoreRank);
-                    if(safeUnder.length===0) continue;
-                    let underPick=null;
-                    for(let cand of safeUnder){ const comb=cand.eval.odd*overPick.eval.odd; if(comb>=1.18 && comb<=1.32){ underPick=cand; break; } }
-                    if(!underPick) continue;
-                    if(!overPick || !underPick) continue;
-                    if(overPick.match.statusState!=='post' || underPick.match.statusState!=='post') continue;
-                    const ticketWon = overPick.eval.isWon && underPick.eval.isWon;
-                    const combined=(overPick.eval.odd * underPick.eval.odd).toFixed(2);
-                    ticketHistoryData.push({ day: dayLabel, date: dateLabel, won: ticketWon, combined, tier: 1, isEmpty:false, overHome: overPick.match.home, overAway: overPick.match.away, overScore: `${overPick.match.homeScore}-${overPick.match.awayScore}`, overWon: overPick.eval.isWon, underHome: underPick.match.home, underAway: underPick.match.away, underScore: `${underPick.match.homeScore}-${underPick.match.awayScore}`, underWon: underPick.eval.isWon });
-                }catch(e){}
-                if(back % 10 === 0){ updateTicketHistoryStats(); renderTicketHistoryList(); }
-            }
-            updateTicketHistoryStats(); renderTicketHistoryList();
-            ticketHistoryLoading=false;
-        }
-        let currentTicketText='';
-        function copyTicket(){
-            if(!currentTicketText) return;
-            const btn=document.getElementById('copyTicketBtn');
-            if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(currentTicketText).then(()=>{ if(btn){ btn.textContent='✅ Copied!'; setTimeout(()=>{ btn.textContent='📋 Copy Ticket'; }, 2000); } }).catch(()=>{ fallbackCopy(); }); } else fallbackCopy();
-            function fallbackCopy(){ const ta=document.createElement('textarea'); ta.value=currentTicketText; document.body.appendChild(ta); ta.select(); try{document.execCommand('copy'); if(btn){ btn.textContent='✅ Copied!'; setTimeout(()=>{ btn.textContent='📋 Copy Ticket'; }, 2000); } }catch(e){} ta.remove(); }
-        }
-        async function loadComboTicket(dateObj){
-            const wrap=document.getElementById('comboTicketContainer');
-            const dateLabel=document.getElementById('ticketDateLabel');
-            if(!wrap) return;
-            const today=new Date(); const isToday=dateObj.toDateString()===today.toDateString();
-            if(dateLabel) dateLabel.textContent = isToday ? "TODAY" : dateObj.toLocaleDateString('en-US',{month:'short',day:'numeric'}).toUpperCase();
-            const matches=await fetchRealFixtures(dateObj);
-            if(matches.length===0){ wrap.innerHTML=`<div class="p-4 text-center text-xs font-mono text-gray-500">No matches for this date.</div>`; return; }
-            const dateKey=getYYYYMMDD(dateObj);
-            const ticketId='#WINS1-'+dateKey.slice(4);
-            const dateStr=dateObj.toLocaleDateString('en-US',{weekday:'short', month:'short', day:'numeric'});
-            const overEv=matches.map(m=>({match:m, eval:evaluatePickWithRealData(m,'single_over15')}));
-            let overRes=pickTier1Only(overEv, null);
-            if(!overRes){
-                wrap.innerHTML=`<div class="p-6 text-center space-y-2"><div class="text-3xl">🛡️</div><div class="text-sm font-black text-gray-900 dark:text-white">NO SAFE TICKET TODAY</div><div class="text-xs text-gray-500">No Tier 1 90% game today.<br>No pick = No loss. Protects 90% weekly.</div></div>`;
-                currentTicketText=''; return;
-            }
-            let overPick=overRes.pick;
-            if(overPick) saveLockedPick(dateKey,'single_over15', overPick.match.id);
-            const underEv=matches.map(m=>({match:m, eval:evaluatePickWithRealData(m,'single_under45')}));
-            const safeUnder=underEv.filter(x=>x.match.id!==overPick.match.id && x.eval.tier===1).sort((a,b)=>b.eval.scoreRank-a.eval.scoreRank);
-            let underPick=null;
-            for(let cand of safeUnder){ const comb=cand.eval.odd*overPick.eval.odd; if(comb>=1.18 && comb<=1.32){ underPick=cand; break; } }
-            if(!underPick){
-                wrap.innerHTML=`<div class="p-6 text-center space-y-2"><div class="text-3xl">🛡️</div><div class="text-sm font-black text-gray-900 dark:text-white">NO SAFE TICKET TODAY</div><div class="text-xs text-gray-500">Over 1.5 is 90%, but no safe Under 4.5 to combine.<br>Play Over 1.5 single only.</div></div>`;
-                currentTicketText=''; return;
-            }
-            if(underPick) saveLockedPick(dateKey,'single_under45', underPick.match.id);
-            const combined=(overPick.eval.odd * underPick.eval.odd).toFixed(2);
-            const tierLabel = '🛡️ ULTRA SAFE 90%';
-            const bothFinished = overPick.eval.isFinished && underPick.eval.isFinished;
-            const bothWon = bothFinished && overPick.eval.isWon && underPick.eval.isWon;
-            const anyLost = bothFinished && (!overPick.eval.isWon || !underPick.eval.isWon);
-            let statusHtml=`<span class="bg-emerald-500 text-white px-3 py-1.5 rounded-xl text-xs font-black nowrap-badge">${tierLabel} @ ${combined}</span>`;
-            if(bothWon) statusHtml=`<span class="bg-emerald-500 text-white px-3 py-1.5 rounded-xl text-xs font-black nowrap-badge">✅ TICKET WON @ ${combined}</span>`;
-            else if(anyLost) statusHtml=`<span class="bg-red-500 text-white px-3 py-1.5 rounded-xl text-xs font-black nowrap-badge">❌ TICKET LOST</span>`;
-            else if(overPick.match.statusState==='in' || underPick.match.statusState==='in') statusHtml=`<span class="bg-emerald-500/20 text-emerald-500 border border-emerald-500/30 px-3 py-1.5 rounded-xl text-xs font-bold nowrap-badge">● LIVE • @ ${combined}</span>`;
-            currentTicketText=`🎫 WINS1 SAFE TICKET ${ticketId} • ${dateStr} • ${tierLabel}\n1. ${overPick.match.home} vs ${overPick.match.away} - Over 1.5 Goals @ ${overPick.eval.odd.toFixed(2)} (${overPick.eval.confidence})\n2. ${underPick.match.home} vs ${underPick.match.away} - Under 4.5 Goals @ ${underPick.eval.odd.toFixed(2)} (${underPick.eval.confidence})\nCOMBINED @ ${combined} • WINS1 • 25+ Bet Responsibly`;
-            function ticketRow(num, emoji, pick, market){
-                let statusBadge=`<span class="text-[11px] font-mono text-gray-500 nowrap-badge">⏰ ${pick.match.time}</span>`;
-                if(pick.eval.isFinished) statusBadge = pick.eval.isWon ? `<span class="bg-emerald-500 text-white px-2.5 py-1 rounded-lg text-xs font-black nowrap-badge">✅ ${pick.match.homeScore}-${pick.match.awayScore}</span>` : `<span class="bg-red-500 text-white px-2.5 py-1 rounded-lg text-xs font-black nowrap-badge">❌ ${pick.match.homeScore}-${pick.match.awayScore}</span>`;
-                else if(pick.match.statusState==='in') statusBadge=`<span class="bg-emerald-500/20 text-emerald-500 border border-emerald-500/30 px-2.5 py-1 rounded-lg text-xs font-bold nowrap-badge">● LIVE ${pick.match.homeScore}-${pick.match.awayScore}</span>`;
-                return `<div class="flex items-center justify-between gap-3 bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-xl p-3">
-                    <div class="flex items-center gap-3 min-w-0">
-                        <span class="w-8 h-8 rounded-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 flex items-center justify-center text-xs font-black shrink-0">${num}</span>
-                        <div class="min-w-0">
-                            <div class="text-sm font-bold text-gray-900 dark:text-white truncate">${emoji} ${pick.match.home} vs ${pick.match.away}</div>
-                            <div class="text-[11px] font-mono text-gray-500 truncate">${pick.match.league} • ${market}</div>
-                            <div class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400">Confidence ${pick.eval.confidence} • ${tierLabel}</div>
-                        </div>
-                    </div>
-                    <div class="flex flex-col items-end gap-1 shrink-0">
-                        <span class="bg-gray-900 dark:bg-white text-white dark:text-gray-900 px-2.5 py-1 rounded-lg text-xs font-black nowrap-badge">@ ${pick.eval.odd.toFixed(2)}</span>
-                        ${statusBadge}
-                    </div>
-                </div>`;
-            }
-            wrap.innerHTML=`
-                <div class="flex items-center justify-between px-4 pt-4 pb-3 border-b border-gray-100 dark:border-gray-800">
-                    <div><div class="text-xs font-black text-gray-900 dark:text-white">🎫 ${ticketId} • ${tierLabel}</div><div class="text-[11px] font-mono text-gray-500">${dateStr} • 2 Games • 90% Weekly</div></div>
-                    <span class="text-[11px] font-black px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 nowrap-badge">✓ 90% ONLY</span>
-                </div>
-                <div class="p-4 space-y-3">
-                    ${ticketRow(1,'⚽',overPick,'Over 1.5 Goals')}
-                    ${ticketRow(2,'🔒',underPick,'Under 4.5 Goals')}
-                    <div class="flex items-center justify-between bg-gray-900 dark:bg-white rounded-xl px-4 py-3 gap-2"><span class="text-white dark:text-gray-900 text-xs font-black tracking-wide">SAFE TICKET TOTAL</span>${statusHtml}</div>
-                    <button onclick="copyTicket()" id="copyTicketBtn" class="w-full py-2.5 rounded-xl bg-amber-500 text-gray-950 text-xs font-black hover:bg-amber-400 transition">📋 Copy Ticket</button>
-                    <p class="text-[10px] text-center text-gray-500 font-mono">✅ 90% Only • Stake Responsibly • 25+ • NLGRB Uganda</p>
-                </div>`;
-        }
-        async function fetchMatchData(dateObj,isBackground=false){ selectedDateObj=dateObj; const container=document.getElementById('matchFeedContainer'); if(!container) return; const today=new Date(); const isToday=dateObj.toDateString()===today.toDateString(); document.getElementById('sectionTitleDate').textContent=isToday?"TODAY'S":dateObj.toLocaleDateString('en-US',{month:'short',day:'numeric'}).toUpperCase(); if(!isBackground){ container.innerHTML=`<div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-8 text-center space-y-3"><div class="inline-block w-8 h-8 border-4 border-emerald-400 border-t-transparent rounded-full animate-spin"></div><p class="text-xs text-gray-500 dark:text-gray-400 font-mono">Loading...</p></div>`; } const matches=await fetchRealFixtures(dateObj); if(matches.length===0){ container.innerHTML=`<div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-8 text-center space-y-3"><p class="text-xs text-gray-600 dark:text-gray-300 font-mono">No matches found for this date. Please select another date.</p></div>`; document.getElementById('totalOddsBadge').textContent=`ODDS: 0.00`; return; } const compactDateStr=getYYYYMMDD(dateObj);
-        const otherCategory = currentCategory==='single_over15' ? 'single_under45' : 'single_over15';
-        const otherLockedId = getLockedPick(compactDateStr, otherCategory);
-        let excludeId = otherLockedId;
-        if(!excludeId && currentCategory==='single_under45'){
-            const overEvaluated = matches.map(m=>({match:m, eval:evaluatePickWithRealData(m,'single_over15')}));
-            const res=pickTier1Only(overEvaluated, null);
-            if(res) excludeId = res.pick.match.id;
-            if(!getLockedPick(compactDateStr,'single_over15') && excludeId) saveLockedPick(compactDateStr,'single_over15', excludeId);
-        }
-        const evaluatedList=matches.map(m=>({match:m,eval:evaluatePickWithRealData(m,currentCategory)}));
-        const lockedMatchId=getLockedPick(compactDateStr,currentCategory); let bestPick=null; let bestTier=1;
-        if(lockedMatchId){ bestPick=evaluatedList.find(item=>item.match.id===lockedMatchId); 
-            if(bestPick && (bestPick.eval.tier!==1 || bestPick.match.id===excludeId)){ bestPick=null; }
-            else if(bestPick) bestTier=bestPick.eval.tier;
-        }
-        if(!bestPick){
-            const res=pickTier1Only(evaluatedList, excludeId);
-            if(!res){
-                document.getElementById('totalOddsBadge').textContent=`ODDS: —`;
-                container.innerHTML=`<div class="bg-white dark:bg-gray-900 border-2 border-amber-500/50 rounded-2xl p-6 text-center space-y-2"><div class="text-3xl">🛡️</div><div class="font-black text-gray-900 dark:text-white">NO 90% PICK TODAY</div><p class="text-xs text-gray-500">No Tier 1 90% game today.<br>No pick = No loss. This protects your 90% weekly.</p><div class="text-[11px] font-mono text-amber-500">90% ONLY: Over 1.5 @ 1.10-1.18 • Under 4.5 @ 1.08-1.12</div></div>`;
-                return;
-            }
-            bestPick=res.pick; bestTier=res.tier;
-            saveLockedPick(compactDateStr,currentCategory,bestPick.match.id);
-        }
-        const m=bestPick.match; const evaluation=bestPick.eval; const tierLabel = '🛡️ ULTRA SAFE 90%'; document.getElementById('totalOddsBadge').textContent=`ODDS: ${evaluation.odd.toFixed(2)} • ${tierLabel}`; let badgeHtml=`<span class="bg-emerald-500 text-white px-3 py-1 rounded-xl text-sm font-mono font-black shadow-lg">${tierLabel} @ ${evaluation.odd.toFixed(2)}</span>`; if(evaluation.isFinished){ if(evaluation.isWon){ badgeHtml=`<span class="bg-emerald-500 text-white px-3 py-1 rounded-xl text-xs font-mono font-black shadow-lg flex items-center gap-1">✅ WON (${m.homeScore}-${m.awayScore})</span>`; } else { badgeHtml=`<span class="bg-red-500 text-white px-3 py-1 rounded-xl text-xs font-mono font-black shadow-lg flex items-center gap-1">❌ LOST (${m.homeScore}-${m.awayScore})</span>`; } } else if(m.statusState==='in'){ badgeHtml=`<span class="bg-emerald-500/20 text-emerald-500 dark:text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-xl text-xs font-mono font-bold flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-400 pulse-live"></span> LIVE (${m.homeScore}-${m.awayScore})</span>`; } container.innerHTML=`<div class="bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-900/90 border-2 border-emerald-500/50 rounded-2xl p-5 space-y-4 shadow-xl"><div class="flex items-center justify-between text-xs text-amber-500 font-mono font-bold"><span>🏆 ${m.league}</span><span>⏰ ${m.time}</span></div><div class="flex items-center justify-between font-extrabold text-lg text-gray-900 dark:text-white"><span>${m.home} vs ${m.away}</span>${badgeHtml}</div><div class="bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-xl p-4 space-y-2.5 text-xs"><div class="text-gray-900 dark:text-white font-bold text-sm bg-white dark:bg-gray-900 p-2.5 rounded-lg border border-gray-200 dark:border-gray-800/80">${evaluation.label} • ${tierLabel} ${evaluation.confidence}</div></div></div>`; }
-        let currentHistoryTab='single_over15';
-        function switchHistoryTab(cat){
-            currentHistoryTab=cat;
-            const overWrap=document.getElementById('historyOverWrap');
-            const underWrap=document.getElementById('historyUnderWrap');
-            const overBtn=document.getElementById('histTab_over');
-            const underBtn=document.getElementById('histTab_under');
-            if(cat==='single_over15'){
-                overWrap.classList.remove('hidden'); underWrap.classList.add('hidden');
-                overBtn.className="flex-1 px-3 py-2.5 rounded-xl text-xs font-black bg-amber-500 text-gray-950 transition";
-                underBtn.className="flex-1 px-3 py-2.5 rounded-xl text-xs font-black bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 transition";
-            } else {
-                overWrap.classList.add('hidden'); underWrap.classList.remove('hidden');
-                underBtn.className="flex-1 px-3 py-2.5 rounded-xl text-xs font-black bg-amber-500 text-gray-950 transition";
-                overBtn.className="flex-1 px-3 py-2.5 rounded-xl text-xs font-black bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 transition";
-            }
-        }
-        let historyLoading=false; let historyLoadedDays=0;
-        let mainHistoryDataOver=[]; let mainHistoryDataUnder=[];
-        let mainFilterOver='all'; let mainFilterUnder='all';
-        function setMainHistoryFilter(which, f){
-            if(which==='over'){ mainFilterOver=f; } else { mainFilterUnder=f; }
-            const prefix = which==='over' ? 'Over' : 'Under';
-            const ids = { all: `mainFilter${prefix}All`, won: `mainFilter${prefix}Won`, lost: `mainFilter${prefix}Lost` };
-            const activeAll="flex-1 py-1.5 rounded-lg text-[11px] font-black bg-amber-500 text-gray-950 transition";
-            const activeWon="flex-1 py-1.5 rounded-lg text-[11px] font-black bg-emerald-500 text-white transition";
-            const activeLost="flex-1 py-1.5 rounded-lg text-[11px] font-black bg-red-500 text-white transition";
-            const inactive="flex-1 py-1.5 rounded-lg text-[11px] font-black bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 transition";
-            document.getElementById(ids.all).className = f==='all'?activeAll:inactive;
-            document.getElementById(ids.won).className = f==='won'?activeWon:inactive;
-            document.getElementById(ids.lost).className = f==='lost'?activeLost:inactive;
-            renderMainHistory(which);
-        }
-        function renderMainHistory(which){
-            const isOver = which==='over';
-            const data = isOver ? mainHistoryDataOver : mainHistoryDataUnder;
-            const list = document.getElementById(isOver ? 'historyList' : 'historyListUnder');
-            const filter = isOver ? mainFilterOver : mainFilterUnder;
-            if(!list) return;
-            const filtered = data.filter(x=> filter==='all' ? true : filter==='won' ? x.won : !x.won);
-            if(filtered.length===0){ list.innerHTML=`<div class="text-center p-4 text-xs text-gray-500">${filter==='won'?'No wins yet.':filter==='lost'?'No losses. Great!':'No finished history yet. - 90% only.'}</div>`; return; }
-            list.innerHTML = filtered.map(x=>x.html).join('');
-        }
-        function updateMainHistoryStats(){
-            let wO=0,lO=0, pO=0, sO=0; mainHistoryDataOver.forEach(t=>{ if(t.won){ wO++; pO+=10000*(t.odd-1); } else { lO++; pO-=10000; } sO+=10000; });
-            let streakO=0; for(let i=0;i<mainHistoryDataOver.length;i++){ if(mainHistoryDataOver[i].won) streakO++; else break; }
-            document.getElementById('histWins').textContent=wO; document.getElementById('histLosses').textContent=lO;
-            document.getElementById('histRate').textContent = (wO+lO)>0 ? Math.round(wO/(wO+lO)*100)+'%' : '0%';
-            document.getElementById('histStreakOver').textContent = streakO>0 ? `🔥 Streak: ${streakO} WON` : (mainHistoryDataOver.length?`🔥 Streak: 0 — Last Lost`:`🔥 Streak: —`);
-            const pElO=document.getElementById('histProfitOver'); if(pElO){ pElO.textContent=`Profit (10k stake): ${pO>=0?'+':''}${Math.round(pO).toLocaleString()} UGX`; pElO.className=`text-[10px] font-mono ${pO>=0?'text-emerald-600 dark:text-emerald-400':'text-red-500'}`; }
-            const roiO=document.getElementById('histRoiOver'); if(roiO){ const roi=sO>0?(pO/sO*100):0; roiO.textContent=`ROI ${roi>=0?'+':''}${roi.toFixed(1)}%`; roiO.className=`text-[11px] font-black ${roi>=0?'text-emerald-500':'text-red-500'}`; }
-            let wU=0,lU=0, pU=0, sU=0; mainHistoryDataUnder.forEach(t=>{ if(t.won){ wU++; pU+=10000*(t.odd-1); } else { lU++; pU-=10000; } sU+=10000; });
-            let streakU=0; for(let i=0;i<mainHistoryDataUnder.length;i++){ if(mainHistoryDataUnder[i].won) streakU++; else break; }
-            document.getElementById('histWinsUnder').textContent=wU; document.getElementById('histLossesUnder').textContent=lU;
-            document.getElementById('histRateUnder').textContent = (wU+lU)>0 ? Math.round(wU/(wU+lU)*100)+'%' : '0%';
-            document.getElementById('histStreakUnder').textContent = streakU>0 ? `🔥 Streak: ${streakU} WON` : (mainHistoryDataUnder.length?`🔥 Streak: 0 — Last Lost`:`🔥 Streak: —`);
-            const pElU=document.getElementById('histProfitUnder'); if(pElU){ pElU.textContent=`Profit (10k stake): ${pU>=0?'+':''}${Math.round(pU).toLocaleString()} UGX`; pElU.className=`text-[10px] font-mono ${pU>=0?'text-emerald-600 dark:text-emerald-400':'text-red-500'}`; }
-            const roiU=document.getElementById('histRoiUnder'); if(roiU){ const roi=sU>0?(pU/sU*100):0; roiU.textContent=`ROI ${roi>=0?'+':''}${roi.toFixed(1)}%`; roiU.className=`text-[11px] font-black ${roi>=0?'text-emerald-500':'text-red-500'}`; }
-            renderMainHistory('over'); renderMainHistory('under');
-        }
-        function historyCard(pick, d, dateLabel){
-            const isWon=pick.eval.isWon;
-            const total=pick.match.homeScore+pick.match.awayScore;
-            const matchTime=pick.match.time || '';
-            const marketLabel = pick.eval.label.includes('Under') ? 'Under 4.5' : 'Over 1.5';
-            const tierLabel = '🛡️';
-            return `<div class="flex items-center justify-between bg-white dark:bg-gray-900 border ${isWon?'border-emerald-500/40':'border-red-500/40'} rounded-xl px-3 py-2.5"><div class="flex items-center gap-2.5"><span class="min-w-[52px] h-8 px-1.5 rounded-full ${isWon?'bg-emerald-500 text-white':'bg-red-500 text-white'} flex items-center justify-center text-[11px] font-black font-mono shrink-0">${matchTime}</span><div><div class="text-xs font-bold text-gray-900 dark:text-white">${pick.match.home} vs ${pick.match.away}</div><div class="text-[10px] font-mono text-gray-500">${dateLabel} • ${pick.match.league} • ${total} Goals • ${marketLabel} • ${tierLabel}</div></div></div><div class="text-right shrink-0"><div class="text-xs font-black ${isWon?'text-emerald-500':'text-red-500'}">${isWon?'WON':'LOST'} ${pick.match.homeScore}-${pick.match.awayScore}</div><div class="text-[10px] font-mono text-gray-500">@ ${pick.eval.odd.toFixed(2)}</div></div></div>`;
-        }
-        async function loadHistoryBatch(){
-            if(historyLoading) return; historyLoading=true;
-            const btn=document.getElementById('historyBtn');
-            if(btn) btn.textContent='Loading...';
-            const start=historyLoadedDays+1; const end=Math.min(60, historyLoadedDays+7);
-            for(let back=start; back<=end; back++){
-                const d=new Date(); d.setDate(d.getDate()-back);
-                try{
-                    const matches=await fetchRealFixtures(d);
-                    if(matches.length===0) continue;
-                    const dateKey=getYYYYMMDD(d);
-                    const dateLabel=d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
-                    const overEvaluated=matches.map(m=>({match:m,eval:evaluatePickWithRealData(m,'single_over15')}));
-                    const overLocked=getLockedPick(dateKey,'single_over15');
-                    let overPick=overEvaluated.find(x=>x.match.id===overLocked);
-                    if(overPick && overPick.eval.tier!==1) overPick=null;
-                    if(!overPick){ const r=pickTier1Only(overEvaluated, null); overPick=r?r.pick:null; }
-                    const underEvaluated=matches.map(m=>({match:m,eval:evaluatePickWithRealData(m,'single_under45')}));
-                    const underLocked=getLockedPick(dateKey,'single_under45');
-                    let underPick=underEvaluated.find(x=>x.match.id===underLocked);
-                    if(underPick && (underPick.eval.tier!==1 || (overPick && underPick.match.id===overPick.match.id))) underPick=null;
-                    if(!underPick){ const r=pickTier1Only(underEvaluated, overPick?overPick.match.id:null); underPick=r?r.pick:null; }
-                    if(overPick && overPick.match.statusState==='post'){ mainHistoryDataOver.push({ won: overPick.eval.isWon, odd: overPick.eval.odd, html: historyCard(overPick, d, dateLabel) }); }
-                    if(underPick && underPick.match.statusState==='post'){ mainHistoryDataUnder.push({ won: underPick.eval.isWon, odd: underPick.eval.odd, html: historyCard(underPick, d, dateLabel) }); }
-                }catch(e){}
-            }
-            historyLoadedDays=end;
-            updateMainHistoryStats();
-            if(btn) btn.textContent = historyLoadedDays>=60 ? 'All 60 Days Loaded' : 'Load More ('+historyLoadedDays+'/60)';
-            historyLoading=false;
-            if(historyLoadedDays<60){ setTimeout(()=>{ loadHistoryBatch(); }, 600); }
-        }
-        function loadMoreHistory(){ loadHistoryBatch(); }
-        function loadHistory(){ if(historyLoadedDays===0) loadHistoryBatch(); }
-        initRibbon(); fetchMatchData(selectedDateObj,false);
-        setTimeout(()=>{ loadHistoryBatch(); }, 800);
-    </script>
+/* ✅ OPTION A: ALL SINGLES 1.50+ - ANY MARKET */
+function evaluateAllMarkets(match){
+  const h=parseRecordStats(match.homeRecord),a=parseRecordStats(match.awayRecord);
+  const ou=parseFloat(match.overUnderLine)||null;
+  const tempo=(h.winRate+h.lossRate+a.winRate+a.lossRate)/2;
+  const weak=(h.lossRate+a.lossRate)/2;
+  const gap=Math.abs(h.winRate-a.winRate);
+  const both=1-gap;
+  let marketBoost=0; if(ou){if(ou>=3.5)marketBoost=.18;else if(ou>=2.5)marketBoost=.12;else if(ou>=2.0)marketBoost=.02;else marketBoost=-.08}
+  const over15=clamp(.58+tempo*.18+weak*.28+both*.08+marketBoost,.52,.97);
+  const over25=clamp(over15-.28+ (ou&&ou>=2.5? .08:0) + weak*.10, .35,.78);
+  const btts=clamp(.42+weak*.30+both*.18+tempo*.10+(ou&&ou>=2.5?.06:0),.35,.78);
+  const homeWin=clamp(.38 + (h.winRate-a.winRate)*.55 + (a.lossRate*.15) + (h.winRate*.10), .25,.75);
+  const awayWin=clamp(.32 + (a.winRate-h.winRate)*.55 + (h.lossRate*.15) + (a.winRate*.10), .22,.72);
+  const under45=clamp(.88+(1-weak)*.06+(1-tempo)*.04-(ou&&ou>=3.5?.08:0),.75,.97);
+  const cands=[
+    {key:'over25',label:'Over 2.5 Goals',emoji:'⚽',prob:over25},
+    {key:'btts',label:'BTTS - Both Teams To Score',emoji:'🥅',prob:btts},
+    {key:'home',label:'Home Win - '+match.home,emoji:'🏠',prob:homeWin},
+    {key:'away',label:'Away Win - '+match.away,emoji:'✈️',prob:awayWin},
+    {key:'over15',label:'Over 1.5 Goals',emoji:'⚽',prob:over15},
+  ];
+  const picks=[];
+  cands.forEach(c=>{
+    const odd=parseFloat((1/c.prob).toFixed(2));
+    // ONLY 1.50+ AND HIGH WIN RATE: prob >=60% (break-even 67% at 1.50, so we need 60%+ with value) + best picks first
+    if(odd>=1.50 && odd<=2.10 && c.prob>=0.60){
+      let isWon=false; let isFinished=match.statusState==='post';
+      const total=match.homeScore+match.awayScore;
+      if(isFinished){
+        if(c.key==='over25') isWon=total>=3;
+        if(c.key==='btts') isWon=match.homeScore>=1 && match.awayScore>=1;
+        if(c.key==='home') isWon=match.homeScore>match.awayScore;
+        if(c.key==='away') isWon=match.awayScore>match.homeScore;
+        if(c.key==='over15') isWon=total>=2;
+      }
+      picks.push({key:c.key,label:c.label,emoji:c.emoji,prob:c.prob,odd,confidence:(c.prob*100).toFixed(1)+'%',isWon,isFinished,score:c.prob*100});
+    }
+  });
+  // Max 2 best picks per match - avoid over-betting same game
+  picks.sort((a,b)=>b.score-a.score);
+  return picks.slice(0,2);
+}
+
+const fixtureCache=new Map();
+async function fetchRealFixtures(dateObj){
+  const cd=getYYYYMMDD(dateObj);const ck='wins1_cache_'+cd;
+  if(fixtureCache.has(cd))return fixtureCache.get(cd);
+  try{const cached=sessionStorage.getItem(ck);if(cached){const p=JSON.parse(cached);if(Date.now()-p.time<10*60*1000){fixtureCache.set(cd,p.data);return p.data}}}catch(e){}
+  let fixtures=[];
+  const leagues=['eng.1','eng.2','esp.1','esp.2','ita.1','ita.2','ger.1','ger.2','fra.1','fra.2','uefa.champions','uefa.europa','uefa.conference','usa.1','ned.1','por.1','bel.1','tur.1','sui.1','aut.1','sco.1','bra.1','arg.1','mex.1','chi.1','col.1','jpn.1','kor.1','aus.1','rsa.1','egy.1'];
+  const reqs=leagues.map(lg=>fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/${lg}/scoreboard?dates=${cd}`).then(r=>r.ok?r.json():null).catch(()=>null));
+  const results=await Promise.all(reqs);
+  results.forEach(data=>{if(data&&Array.isArray(data.events)){const ln=(data.leagues&&data.leagues[0]&&data.leagues[0].name)||"League";data.events.forEach(ev=>{const comp=ev.competitions&&ev.competitions[0];if(comp&&comp.competitors&&comp.competitors.length===2){const ho=comp.competitors.find(c=>c.homeAway==='home')||comp.competitors[0];const ao=comp.competitors.find(c=>c.homeAway==='away')||comp.competitors[1];const hn=ho.team.displayName,an=ao.team.displayName;if(!fixtures.some(f=>f.home===hn&&f.away===an)){const dt=new Date(ev.date);const ts=isNaN(dt)?"19:00":dt.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',hour12:false});const st=(ev.status&&ev.status.type&&ev.status.type.state)||"pre";const hr=(ho.records&&ho.records[0]&&ho.records[0].summary)||"";const ar=(ao.records&&ao.records[0]&&ao.records[0].summary)||"";const oddsObj=(comp.odds&&comp.odds[0])||null;fixtures.push({id:`${hn}_vs_${an}`,home:hn,away:an,league:ln,time:ts,statusState:st,homeScore:parseInt(ho.score,10)||0,awayScore:parseInt(ao.score,10)||0,homeRecord:hr,awayRecord:ar,overUnderLine:oddsObj?oddsObj.overUnder:null})}}})}});
+  fixtureCache.set(cd,fixtures);try{sessionStorage.setItem(ck,JSON.stringify({time:Date.now(),data:fixtures}))}catch(e){}return fixtures;
+}
+function setFilter(f){
+  currentFilter=f;
+  const map={all:'filter_all',over25:'filter_over25',btts:'filter_btts',home:'filter_home',away:'filter_away',over15:'filter_over15'};
+  Object.keys(map).forEach(k=>{const el=document.getElementById(map[k]);if(el)el.className=k===f?"shrink-0 px-4 py-2 rounded-xl text-xs font-black bg-amber-500 text-gray-950":"shrink-0 px-4 py-2 rounded-xl text-xs font-black bg-gray-100 dark:bg-gray-800"});
+  renderPicks();
+}
+function renderPicks(){
+  const container=document.getElementById('matchFeedContainer');
+  let list=allTodayPicks.filter(p=> currentFilter==='all' ? true : p.key===currentFilter);
+  list.sort((a,b)=>b.prob-a.prob);
+  document.getElementById('totalPicksBadge').textContent=list.length+' PICKS';
+  if(list.length===0){container.innerHTML=`<div class="bg-white dark:bg-gray-900 border rounded-2xl p-6 text-center space-y-2"><div class="text-3xl">🛡️</div><div class="font-black">NO 1.50+ PICK TODAY</div><p class="text-xs text-gray-500">No market at 1.50+ with 60%+ prob today.<br>No pick = No loss.</p></div>`;document.getElementById('daySummary').textContent='0 picks • No bet today';document.getElementById('dayProfitPreview').textContent='—';return}
+  let totalStake=list.length*10000;let ifAllWin=list.reduce((s,p)=>s+10000*p.odd,0);let profitIfAll=ifAllWin-totalStake;
+  document.getElementById('daySummary').textContent=`${list.length} singles • 10k each = ${totalStake.toLocaleString()} UGX total • Avg @ ${(list.reduce((s,p)=>s+p.odd,0)/list.length).toFixed(2)}`;
+  document.getElementById('dayProfitPreview').textContent=`+${Math.round(profitIfAll).toLocaleString()} UGX`;
+  container.innerHTML=list.map((p,i)=>{
+    let badge=`<span class="text-[11px] font-mono text-gray-500 nowrap-badge">⏰ ${p.match.time}</span>`;
+    if(p.isFinished) badge=p.isWon?`<span class="bg-emerald-500 text-white px-2.5 py-1 rounded-lg text-xs font-black nowrap-badge">✅ ${p.match.homeScore}-${p.match.awayScore}</span>`:`<span class="bg-red-500 text-white px-2.5 py-1 rounded-lg text-xs font-black nowrap-badge">❌ ${p.match.homeScore}-${p.match.awayScore}</span>`;
+    else if(p.match.statusState==='in') badge=`<span class="bg-emerald-500/20 text-emerald-500 border border-emerald-500/30 px-2.5 py-1 rounded-lg text-xs font-bold nowrap-badge">● LIVE ${p.match.homeScore}-${p.match.awayScore}</span>`;
+    return `<div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-4 flex items-center justify-between gap-3">
+      <div class="flex items-center gap-3 min-w-0"><span class="w-9 h-9 rounded-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 flex items-center justify-center text-xs font-black shrink-0">${i+1}</span>
+      <div class="min-w-0"><div class="text-sm font-bold truncate">${p.match.home} vs ${p.match.away}</div><div class="text-[11px] font-mono text-gray-500 truncate">${p.match.league} • ${p.emoji} ${p.label}</div><div class="text-[11px] font-bold text-emerald-600">Confidence ${p.confidence} • Prob ${(p.prob*100).toFixed(0)}%</div></div></div>
+      <div class="flex flex-col items-end gap-1 shrink-0"><span class="bg-gray-900 dark:bg-white text-white dark:text-gray-900 px-3 py-1.5 rounded-lg text-sm font-black nowrap-badge">@ ${p.odd.toFixed(2)}</span>${badge}<button onclick="copySingle(${i})" class="text-[10px] font-bold text-amber-500">📋 Copy</button></div></div>`;
+  }).join('');
+}
+function copySingle(idx){
+  let list=allTodayPicks.filter(p=> currentFilter==='all' ? true : p.key===currentFilter);list.sort((a,b)=>b.prob-a.prob);
+  const p=list[idx];if(!p)return;const txt=`WINS1 • ${p.match.home} vs ${p.match.away} • ${p.label} @ ${p.odd.toFixed(2)} • ${p.confidence} • 25+ Bet Responsibly`;
+  if(navigator.clipboard)navigator.clipboard.writeText(txt);
+}
+async function fetchMatchData(dateObj){
+  selectedDateObj=dateObj;const container=document.getElementById('matchFeedContainer');const today=new Date();const isT=dateObj.toDateString()===today.toDateString();document.getElementById('sectionTitleDate').textContent=isT?"TODAY'S":dateObj.toLocaleDateString('en-US',{month:'short',day:'numeric'}).toUpperCase();
+  container.innerHTML=`<div class="p-8 text-center text-xs text-gray-500">Loading 1.50+ singles...</div>`;
+  const matches=await fetchRealFixtures(dateObj);
+  allTodayPicks=[];
+  matches.forEach(m=>{const picks=evaluateAllMarkets(m);picks.forEach(pk=>allTodayPicks.push({...pk,match:m}))});
+  renderPicks();
+}
+let historyLoading=false,historyLoadedDays=0,mainHistory=[];
+function updateHistoryStats(){
+  let w=0,l=0,profit=0,stake=0;mainHistory.forEach(t=>{if(t.won){w++;profit+=10000*(t.odd-1)}else{l++;profit-=10000}stake+=10000});
+  document.getElementById('histWins').textContent=w;document.getElementById('histLosses').textContent=l;document.getElementById('histRate').textContent=(w+l)>0?Math.round(w/(w+l)*100)+'%':'0%';
+  let streak=0;for(let i=0;i<mainHistory.length;i++){if(mainHistory[i].won)streak++;else break}
+  document.getElementById('histStreak').textContent=streak>0?`🔥 Streak: ${streak} WON`:(mainHistory.length?`🔥 Streak: 0 — Last Lost`:`🔥 Streak: —`);
+  const pe=document.getElementById('histProfit');pe.textContent=`Profit (10k each): ${profit>=0?'+':''}${Math.round(profit).toLocaleString()} UGX`;pe.className=`text-[10px] font-mono ${profit>=0?'text-emerald-600':'text-red-500'}`;
+  const roi=document.getElementById('histRoi');const r=stake>0?profit/stake*100:0;roi.textContent=`ROI ${r>=0?'+':''}${r.toFixed(1)}%`;roi.className=`text-[11px] font-black ${r>=0?'text-emerald-500':'text-red-500'}`;
+  const list=document.getElementById('historyList');
+  if(mainHistory.length===0){list.innerHTML=`<div class="text-center p-4 text-xs text-gray-500">No finished history yet.</div>`;return}
+  list.innerHTML=mainHistory.map(x=>x.html).join('');
+}
+async function loadHistoryBatch(){
+  if(historyLoading)return;historyLoading=true;const btn=document.getElementById('historyBtn');if(btn)btn.textContent='Loading...';
+  const start=historyLoadedDays+1,end=Math.min(60,historyLoadedDays+7);
+  for(let back=start;back<=end;back++){
+    const d=new Date();d.setDate(d.getDate()-back);
+    try{
+      const matches=await fetchRealFixtures(d);const dateLabel=d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+      matches.forEach(m=>{const picks=evaluateAllMarkets(m);picks.forEach(pk=>{if(m.statusState==='post'){const total=m.homeScore+m.awayScore;mainHistory.push({won:pk.isWon,odd:pk.odd,html:`<div class="flex items-center justify-between bg-white dark:bg-gray-900 border ${pk.isWon?'border-emerald-500/40':'border-red-500/40'} rounded-xl px-3 py-2.5"><div class="flex items-center gap-2.5"><span class="min-w-[52px] h-8 px-1.5 rounded-full ${pk.isWon?'bg-emerald-500 text-white':'bg-red-500 text-white'} flex items-center justify-center text-[11px] font-black">${m.time}</span><div><div class="text-xs font-bold">${m.home} vs ${m.away}</div><div class="text-[10px] font-mono text-gray-500">${dateLabel} • ${pk.emoji} ${pk.label} • ${total} Goals</div></div></div><div class="text-right shrink-0"><div class="text-xs font-black ${pk.isWon?'text-emerald-500':'text-red-500'}">${pk.isWon?'WON':'LOST'} ${m.homeScore}-${m.awayScore}</div><div class="text-[10px] font-mono text-gray-500">@ ${pk.odd.toFixed(2)}</div></div></div>`})}})});
+    }catch(e){}
+  }
+  historyLoadedDays=end;updateHistoryStats();if(btn)btn.textContent=historyLoadedDays>=60?'All 60 Days Loaded':'Load More ('+historyLoadedDays+'/60)';historyLoading=false;if(historyLoadedDays<60)setTimeout(()=>loadHistoryBatch(),600);
+}
+function loadMoreHistory(){loadHistoryBatch()}
+initRibbon();fetchMatchData(selectedDateObj);
+setTimeout(()=>loadHistoryBatch(),800);
+</script>
 </body>
 </html>
