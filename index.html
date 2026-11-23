@@ -1,166 +1,286 @@
 <!DOCTYPE html>
 <html lang="en" class="dark">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WORLD MOVIES | Free Movies + Trailers</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<script>tailwind.config={darkMode:'class'}</script>
-<style>
-.no-scrollbar::-webkit-scrollbar{display:none}.no-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
-.movie-card:hover img{transform:scale(1.05)} .movie-card img{transition:transform .3s}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WINS1 | 4 Markets - 10 Factor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>tailwind.config = { darkMode: 'class' }</script>
+    <style>
+        html{overflow-anchor:none} body{overflow-anchor:none}
+        .no-scrollbar::-webkit-scrollbar{display:none} .no-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
+        .pulse-live{animation:pulse-ring 1.5s infinite} @keyframes pulse-ring{0%{box-shadow:0 0 0 0 rgba(16,185,129,.7)}70%{box-shadow:0 0 0 8px rgba(16,185,129,0)}100%{box-shadow:0 0 0 0 rgba(16,185,129,0)}}
+        .nowrap-badge{white-space:nowrap;flex-shrink:0}
+        .wa-pulse{animation:waPulse 2s infinite} @keyframes waPulse{0%{box-shadow:0 0 0 0 rgba(37,211,102,.5)}70%{box-shadow:0 0 0 8px rgba(37,211,102,0)}100%{box-shadow:0 0 0 0 rgba(37,211,102,0)}}
+        .totally-invisible{display:none!important;visibility:hidden!important;opacity:0!important;font-size:0!important;height:0!important;line-height:0!important}
+        .filter-btn.active{background:#f59e0b!important;color:#111827!important;border-color:#f59e0b!important;font-weight:900}
+    </style>
 </head>
-<body class="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 min-h-screen font-sans">
-<header class="sticky top-0 z-40 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md border-b px-4 py-3">
-<div class="max-w-7xl mx-auto flex items-center justify-between gap-3">
-<div class="flex items-center gap-2">
-<div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-red-600 to-amber-500 flex items-center justify-center font-black text-white">M</div>
-<div><h1 class="font-extrabold text-lg leading-none">WORLD MOVIES</h1><p class="text-[10px] font-mono text-gray-500">FREE MOVIES • TRAILERS • RATINGS</p></div>
-</div>
-<button onclick="document.documentElement.classList.toggle('dark')" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800">☀️/🌙</button>
-</div>
-<div class="max-w-7xl mx-auto mt-3 flex gap-2">
-<input id="searchInput" onkeyup="if(event.key==='Enter')searchMovies()" placeholder="🔍 Search movie... e.g. Avengers" class="flex-1 bg-gray-100 dark:bg-gray-800 border rounded-xl px-4 py-2.5 text-sm outline-none focus:border-red-500">
-<button onclick="searchMovies()" class="px-4 py-2.5 rounded-xl bg-red-600 text-white font-black text-sm">Search</button>
-</div>
-<div class="max-w-7xl mx-auto mt-2 flex gap-2 overflow-x-auto no-scrollbar pb-1" id="genreRow"></div>
+<body class="bg-white text-gray-900 dark:bg-gray-950 dark:text-gray-100 min-h-screen flex flex-col font-sans">
+<div id="drawerBackdrop" class="fixed inset-0 bg-black/60 z-50 hidden"></div>
+<aside id="drawerMenu" class="fixed top-0 left-0 bottom-0 w-80 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 z-50 transform -translate-x-full transition-transform duration-300 flex flex-col justify-between p-4 overflow-y-auto no-scrollbar">
+  <div class="space-y-5">
+    <div class="flex items-center justify-between pb-3 border-b border-gray-200 dark:border-gray-800">
+      <div class="flex items-center space-x-2">
+        <div onclick="goToHomepage()" class="flex items-center space-x-3 cursor-pointer"><div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-amber-500 to-yellow-300 flex items-center justify-center font-black text-gray-950">W1</div><span class="font-extrabold">WINS1</span></div>
+        <a href="https://wa.me/qr/OSDCY2ACDMP5M1" target="_blank" class="w-8 h-8 rounded-full bg-[#25D366] flex items-center justify-center wa-pulse shrink-0"><svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c0-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></a>
+      </div>
+      <button id="closeDrawerBtn" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800">✕</button>
+    </div>
+    <nav class="space-y-1.5">
+      <button onclick="goToHomepage()" class="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl bg-amber-500 text-gray-950 font-black text-xs">⚽ 4 Markets • 10-Factor</button>
+      <a href="https://wa.me/qr/OSDCY2ACDMP5M1" target="_blank" class="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl bg-[#25D366]/10 text-[#25D366] font-bold text-xs border border-[#25D366]/40">💬 B2B & B2C on WhatsApp</a>
+    </nav>
+    <div class="pt-3 border-t border-gray-200 dark:border-gray-800 space-y-2">
+      <label class="text-[11px] font-bold">⚙️ SETTINGS</label>
+      <div class="grid grid-cols-2 gap-2">
+        <button onclick="setTheme('dark')" class="px-3 py-2.5 rounded-xl text-xs font-bold bg-gray-900 text-white">🌙 Dark</button>
+        <button onclick="setTheme('light')" class="px-3 py-2.5 rounded-xl text-xs font-bold bg-white text-gray-900 border">☀️ Light</button>
+      </div>
+    </div>
+    <div class="pt-3 border-t border-gray-200 dark:border-gray-800 space-y-2">
+      <label class="text-[11px] font-mono block">Jump to Date:</label>
+      <input type="date" id="drawerCalendarInput" onchange="jumpToDate(this.value)" class="w-full bg-gray-100 dark:bg-gray-800 border rounded-xl px-3 py-2 text-xs">
+    </div>
+  </div>
+  <div class="pt-4 border-t text-center text-[10px] text-gray-500">WINS1 • 4 Markets 10-Factor</div>
+</aside>
+
+<header class="sticky top-0 z-40 bg-white/90 dark:bg-gray-900/90 border-b px-4 py-3 backdrop-blur-md">
+  <div class="max-w-4xl mx-auto flex items-center justify-between">
+    <div class="flex items-center space-x-2">
+      <button id="openDrawerBtn" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800">☰</button>
+      <div onclick="goToHomepage()" class="flex items-center space-x-2 cursor-pointer"><div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-500 to-yellow-300 flex items-center justify-center font-black text-gray-950 text-lg">W1</div><h1 class="font-extrabold text-lg">WINS1</h1></div>
+      <a href="https://wa.me/qr/OSDCY2ACDMP5M1" target="_blank" class="w-9 h-9 rounded-full bg-[#25D366] flex items-center justify-center wa-pulse shrink-0"><svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c0-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></a>
+    </div>
+    <div class="flex items-center space-x-2">
+      <button onclick="triggerRefresh()" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-xs font-mono">↻ Refresh</button>
+      <button id="themeToggleBtn" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800"><span id="themeIcon">☀️</span></button>
+    </div>
+  </div>
 </header>
 
-<main class="max-w-7xl mx-auto px-3 py-4 space-y-6">
-<!-- PLAYER - FIXED -->
-<div class="bg-black rounded-2xl overflow-hidden border-2 border-gray-200 dark:border-gray-800">
-<div class="relative aspect-video bg-black">
-<iframe id="archivePlayer" class="w-full h-full hidden" allowfullscreen allow="autoplay; encrypted-media"></iframe>
-<iframe id="trailerFrame" class="w-full h-full hidden" allowfullscreen allow="autoplay; encrypted-media"></iframe>
-<div id="playerPlaceholder" class="absolute inset-0 flex flex-col items-center justify-center text-center p-6 bg-gradient-to-br from-red-900 via-gray-900 to-black text-white">
-<div class="text-5xl mb-2">🎬</div><p class="font-black text-xl">WORLD MOVIES</p><p class="text-sm text-gray-300">Click a FREE movie to watch full movie now</p>
-<button onclick="playFree(0)" class="mt-4 px-5 py-2.5 bg-red-600 rounded-xl font-black text-sm">▶️ Watch Free Movie Now</button>
-</div>
-</div>
-<div class="bg-gray-900 text-white px-4 py-3 flex items-center justify-between gap-2">
-<div class="min-w-0"><div id="nowPlaying" class="font-black text-sm truncate">Select a movie 🎬</div><div id="nowMeta" class="text-[11px] font-mono text-gray-400 truncate">Free legal movies from Internet Archive</div></div>
-<div class="flex gap-2 shrink-0">
-<a id="openArchiveBtn" href="https://archive.org" target="_blank" class="px-3 py-1.5 rounded-lg bg-white text-gray-900 text-xs font-black">Open in Archive</a>
-<button onclick="shareMovie()" class="px-3 py-1.5 rounded-lg bg-green-500 text-white text-xs font-black">Share</button>
-</div>
-</div>
-</div>
+<main class="flex-grow max-w-4xl w-full mx-auto px-4 py-6 space-y-6">
+  <div class="flex items-center justify-between bg-white dark:bg-gray-900 border rounded-xl p-1.5 no-scrollbar overflow-x-auto gap-2" id="dateRibbon"></div>
 
-<div>
-<div class="flex items-center justify-between mb-2"><h2 class="font-black">🎬 FREE FULL MOVIES - Watch Now</h2><span class="text-[10px] font-mono bg-emerald-500/20 text-emerald-600 px-2 py-1 rounded-lg">● FIXED • NOW PLAYS</span></div>
-<div id="freeGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3"></div>
-</div>
+  <div class="bg-gray-900 dark:bg-white rounded-2xl p-4 flex items-center justify-between gap-2">
+    <div><div class="text-white dark:text-gray-900 font-black text-sm">⚽ TODAY'S PICKS • 4 MARKETS 10-FACTOR</div><div class="text-[11px] text-gray-300 dark:text-gray-600 font-mono" id="daySummary">Loading...</div></div>
+    <div class="text-right"><div class="text-white dark:text-gray-900 font-black text-lg" id="dayProfitPreview">—</div><div class="text-[10px] text-gray-300 dark:text-gray-600 font-mono">If all win @ 10k each</div></div>
+  </div>
 
-<div>
-<div class="flex items-center justify-between mb-2"><h2 id="sectionTitle" class="font-black">🔥 Trending Now</h2><span class="text-[11px] font-mono text-gray-500">Powered by TMDB</span></div>
-<div id="movieGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3"></div>
-<div class="text-center mt-4"><button onclick="loadMore()" class="px-6 py-3 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-black text-sm">Load More</button></div>
-</div>
+  <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-xl px-3 py-2 text-[11px] font-mono text-emerald-700 dark:text-emerald-300">✅ 10-FACTOR: Venue • Away • Referee • Corners • BTTS • xG • Shots • H2H • Lineups • Weather — Must score 80/100 • 1 Best Market per Game</div>
+
+  <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1" id="marketFilters">
+    <button onclick="setMarketFilter('all')" data-filter="all" class="filter-btn active shrink-0 px-3 py-2 rounded-xl border text-xs font-bold bg-white dark:bg-gray-900">ALL ( <span id="countAll">0</span> )</button>
+    <button onclick="setMarketFilter('over15')" data-filter="over15" class="filter-btn shrink-0 px-3 py-2 rounded-xl border text-xs font-bold bg-white dark:bg-gray-900">⚽ Over 1.5 ( <span id="countOver15">0</span> )</button>
+    <button onclick="setMarketFilter('over25')" data-filter="over25" class="filter-btn shrink-0 px-3 py-2 rounded-xl border text-xs font-bold bg-white dark:bg-gray-900">🔥 Over 2.5 ( <span id="countOver25">0</span> )</button>
+    <button onclick="setMarketFilter('btts')" data-filter="btts" class="filter-btn shrink-0 px-3 py-2 rounded-xl border text-xs font-bold bg-white dark:bg-gray-900">🥅 BTTS ( <span id="countBtts">0</span> )</button>
+    <button onclick="setMarketFilter('under55')" data-filter="under55" class="filter-btn shrink-0 px-3 py-2 rounded-xl border text-xs font-bold bg-white dark:bg-gray-900">🔒 Under 5.5 ( <span id="countUnder55">0</span> )</button>
+  </div>
+
+  <section class="space-y-3">
+    <div class="flex items-center justify-between">
+      <h3 class="font-bold text-base flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-emerald-400 pulse-live"></span> <span id="sectionTitleDate">TODAY'S</span> PICKS</h3>
+      <span class="text-xs bg-amber-500/10 text-amber-600 border border-amber-500/30 px-3 py-1.5 rounded-xl font-mono font-bold" id="totalPicksBadge">0 PICKS</span>
+    </div>
+    <p class="text-[11px] text-gray-500 font-mono">Play SINGLE SINGLE • Same stake • 1 Best Market per Game • 80+ only</p>
+    <div class="grid grid-cols-1 gap-3" id="matchFeedContainer"></div>
+  </section>
+
+  <section class="space-y-4 pt-4 border-t">
+    <div class="flex items-center justify-between">
+      <div><h3 class="font-bold text-base">📈 History — Last 60 Days</h3><p class="text-[11px] text-gray-500 font-mono">All Markets 10-Factor singles • Flat 10k stake</p></div>
+      <button onclick="loadMoreHistory()" id="historyBtn" class="px-4 py-2 rounded-xl bg-amber-500 text-gray-950 text-xs font-black">Load More</button>
+    </div>
+    <div class="grid grid-cols-3 gap-2 text-center">
+      <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-2"><div class="text-lg font-black text-emerald-500" id="histWins">0</div><div class="text-[10px] font-mono text-gray-500">WINS ⬆️</div></div>
+      <div class="bg-red-500/10 border border-red-500/30 rounded-xl p-2"><div class="text-lg font-black text-red-500" id="histLosses">0</div><div class="text-[10px] font-mono text-gray-500">LOSSES ⬇️</div></div>
+      <div class="bg-amber-500/10 border border-amber-500/30 rounded-xl p-2"><div class="text-lg font-black text-amber-500" id="histRate">0%</div><div class="text-[10px] font-mono text-gray-500">WIN RATE</div></div>
+    </div>
+    <div class="bg-gray-50 dark:bg-gray-800/70 border rounded-xl px-3 py-2 flex items-center justify-between">
+      <div class="text-[11px]"><span class="font-black" id="histStreak">🔥 Streak: —</span><div class="text-[10px] font-mono text-gray-500" id="histProfit">Profit (10k each): —</div></div>
+      <div class="text-right"><div class="text-[11px] font-black" id="histRoi">ROI —</div><div class="text-[9px] font-mono text-gray-500">Return</div></div>
+    </div>
+    <div id="historyList" class="space-y-2"><div class="text-center p-4 text-xs text-gray-500">Loading history...</div></div>
+  </section>
 </main>
 
-<div id="modal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm p-4 overflow-y-auto" onclick="if(event.target===this)closeModal()">
-<div class="max-w-3xl mx-auto bg-white dark:bg-gray-900 rounded-2xl overflow-hidden mt-8">
-<div class="p-5 space-y-3">
-<div class="flex gap-4">
-<img id="mPoster" class="w-24 rounded-xl shadow-lg bg-gray-200">
-<div class="flex-1">
-<h3 id="mTitle" class="font-black text-lg leading-tight"></h3>
-<div id="mMeta" class="text-xs font-mono text-gray-500 mt-1"></div>
-<div id="mRating" class="mt-2 inline-block px-2 py-1 rounded-lg bg-amber-500 text-gray-950 font-black text-sm"></div>
-</div>
-<button onclick="closeModal()" class="h-9 w-9 shrink-0 rounded-full bg-gray-100 dark:bg-gray-800 font-black">✕</button>
-</div>
-<p id="mOverview" class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed"></p>
-<div class="flex flex-wrap gap-2 pt-1">
-<button onclick="playTrailerFromModal()" class="px-4 py-2 rounded-xl bg-red-600 text-white text-sm font-black">▶️ Play Trailer</button>
-<a id="watchNetflix" target="_blank" class="px-4 py-2 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-sm font-black">🔍 Check Netflix</a>
-</div>
-</div>
-</div>
-</div>
+<footer class="bg-white dark:bg-gray-900 border-t py-6 px-4 text-center mt-auto">
+  <p class="text-[11px] font-bold mb-2">Sponsored by</p>
+  <a href="https://one.exnessonelink.com/a/m3alh1ljmu?source=app" target="_blank" class="block max-w-4xl mx-auto mb-4 rounded-2xl overflow-hidden border-2 border-black"><div class="bg-[#FFDD00] py-5 px-4 flex items-center justify-center"><span class="text-black font-black text-4xl lowercase">exness</span></div><span class="totally-invisible">Tap to visit Exness</span></a>
+  <div class="max-w-4xl mx-auto text-left bg-gray-50 dark:bg-gray-950 border rounded-2xl overflow-hidden">
+    <button onclick="toggleTerms()" class="w-full flex items-center justify-between p-4 text-left"><span class="text-xs font-black">📜 TERMS & REGULATIONS</span><span id="termsArrow">▼</span></button>
+    <div id="termsContent" class="hidden px-4 pb-4 space-y-3">
+      <p class="text-[13px] text-gray-600 dark:text-gray-300">1. <b>Age 25+ Only:</b> You must be 25+ to use betting tips in Uganda.</p>
+      <p class="text-[13px] text-gray-600 dark:text-gray-300">2. <b>Entertainment Only:</b> No win is guaranteed.</p>
+      <p class="text-[13px] text-gray-600 dark:text-gray-300">3. <b>Bet Responsibly:</b> Only bet what you can afford to lose. Never chase losses.</p>
+      <p class="text-[13px] text-gray-600 dark:text-gray-300">4. <b>Licensed Betting:</b> Only with operators licensed by NLGRB Uganda. Winnings subject to 15% tax.</p>
+      <p class="text-[10px] text-center text-gray-500 font-mono">© WINS1 — Bet Responsibly | 25+ | NLGRB Uganda</p>
+    </div>
+  </div>
+</footer>
 
 <script>
-const API_KEY='YOUR_TMDB_API_KEY';
-const IMG='https://image.tmdb.org/t/p/w500';
-let movies=[], page=1, mode='trending', currentGenre='', currentQuery='', currentMovie=null, currentTrailerKey='';
-const GENRES=[{id:'',name:'🔥 All'},{id:28,name:'💥 Action'},{id:35,name:'😂 Comedy'},{id:18,name:'🎭 Drama'},{id:27,name:'😱 Horror'},{id:10749,name:'❤️ Romance'},{id:878,name:'🚀 Sci-Fi'},{id:16,name:'🎨 Animation'}];
+function toggleTerms(){const c=document.getElementById('termsContent');const a=document.getElementById('termsArrow');if(!c)return;const h=c.classList.contains('hidden');if(h){c.classList.remove('hidden');if(a)a.style.transform='rotate(180deg)'}else{c.classList.add('hidden');if(a)a.style.transform='rotate(0deg)'}}
+const drawerMenu=document.getElementById('drawerMenu'),drawerBackdrop=document.getElementById('drawerBackdrop');
+function setTheme(mode){if(mode==='dark'){document.documentElement.classList.add('dark');document.getElementById('themeIcon').textContent='☀️'}else{document.documentElement.classList.remove('dark');document.getElementById('themeIcon').textContent='🌙'}try{localStorage.setItem('wins1_theme',mode)}catch(e){}}
+(function(){let s='dark';try{s=localStorage.getItem('wins1_theme')||'dark'}catch(e){}setTheme(s)})();
+document.getElementById('themeToggleBtn').addEventListener('click',()=>{setTheme(document.documentElement.classList.contains('dark')?'light':'dark')});
+function toggleDrawer(o){if(o){drawerBackdrop.classList.remove('hidden');drawerMenu.classList.remove('-translate-x-full')}else{drawerMenu.classList.add('-translate-x-full');drawerBackdrop.classList.add('hidden')}}
+document.getElementById('openDrawerBtn').addEventListener('click',()=>toggleDrawer(true));
+document.getElementById('closeDrawerBtn').addEventListener('click',()=>toggleDrawer(false));
+drawerBackdrop.addEventListener('click',()=>toggleDrawer(false));
+function getYYYYMMDD(d){return d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0')}
+function toInputDateValue(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+let selectedDateObj=new Date();
+let allTodayPicks=[];
+let currentMarketFilter='all';
+function setMarketFilter(f){currentMarketFilter=f;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.toggle('active',b.dataset.filter===f));renderPicks()}
+function initRibbon(){
+  const ribbon=document.getElementById('dateRibbon');const cal=document.getElementById('drawerCalendarInput');if(cal)cal.value=toInputDateValue(selectedDateObj);if(!ribbon)return;
+  const center=new Date(selectedDateObj);center.setHours(0,0,0,0);const today=new Date();today.setHours(0,0,0,0);let html='';
+  for(let off=-30;off<=30;off++){const d=new Date(center);d.setDate(center.getDate()+off);const sel=d.getTime()===center.getTime();const isT=d.getTime()===today.getTime();const day=isT?'TODAY':d.toLocaleDateString('en-US',{weekday:'short'}).toUpperCase();const date=d.toLocaleDateString('en-US',{month:'short',day:'numeric'});const iso=toInputDateValue(d);html+=`<button onclick="jumpToDate('${iso}')" class="shrink-0 px-3 py-1.5 rounded-lg text-left ${sel?'bg-amber-500 text-gray-950 font-bold shadow':'bg-gray-100 dark:bg-gray-800/70 text-gray-600 dark:text-gray-300'}"><div class="text-[10px] font-mono">${day}</div><div class="text-xs font-bold">${date}</div></button>`}
+  ribbon.innerHTML=html;setTimeout(()=>{const el=ribbon.querySelector('.bg-amber-500');if(el)ribbon.scrollTo({left:el.offsetLeft-ribbon.clientWidth/2+el.clientWidth/2,behavior:'smooth'})},50);
+}
+function goToHomepage(){toggleDrawer(false);selectedDateObj=new Date();initRibbon();fetchMatchData(selectedDateObj,false)}
+function jumpToDate(s){if(!s)return;selectedDateObj=new Date(s+'T00:00:00');toggleDrawer(false);initRibbon();fetchMatchData(selectedDateObj,false)}
+function triggerRefresh(){try{sessionStorage.removeItem('wins1_cache_'+getYYYYMMDD(selectedDateObj))}catch(e){}fetchMatchData(selectedDateObj,false)}
+function parseRecordStats(s){if(!s||typeof s!=='string')return{winRate:.40,lossRate:.35,drawRate:.25,played:0,wins:0,draws:0,losses:0};const p=s.split('-').map(n=>parseInt(n,10)).filter(n=>!isNaN(n));if(p.length===3){const[w,d,l]=p;const pl=w+d+l;return{winRate:pl?w/pl:.40,lossRate:pl?l/pl:.35,drawRate:pl?d/pl:.25,played:pl,wins:w,draws:d,losses:l}}if(p.length===2){const[w,l]=p;const pl=w+l;return{winRate:pl?w/pl:.40,lossRate:pl?l/pl:.35,drawRate:0,played:pl,wins:w,draws:0,losses:l}}return{winRate:.40,lossRate:.35,drawRate:.25,played:0,wins:0,draws:0,losses:0}}
+function clamp(v,a,b){return Math.min(b,Math.max(a,v))}
 
-// ✅ FIXED: Use Archive.org EMBED ID - not direct mp4. Poster = archive.org/services/img/ID
-const FREE_MOVIES=[
- {title:'Night of the Living Dead', year:1968, rating:7.8, genre:'Horror', id:'night_of_the_living_dead', desc:'Original zombie classic.'},
- {title:'The Kid - Charlie Chaplin', year:1921, rating:8.3, genre:'Comedy', id:'the_kid', desc:'Chaplin finds abandoned baby.'},
- {title:'Metropolis', year:1927, rating:8.3, genre:'Sci-Fi', id:'Metropolis1927', desc:'Futuristic city classic.'},
- {title:'Nosferatu', year:1922, rating:7.9, genre:'Horror', id:'Nosferatu_1922', desc:'Original vampire film.'},
- {title:'The General', year:1926, rating:8.1, genre:'Action Comedy', id:'TheGeneral1926', desc:'Buster Keaton train chase.'},
- {title:'His Girl Friday', year:1940, rating:7.8, genre:'Comedy', id:'his_girl_friday', desc:'Cary Grant newspaper comedy.'},
- {title:'Detour', year:1945, rating:7.2, genre:'Crime Noir', id:'Detour1945', desc:'Film noir classic.'},
- {title:'Plan 9 From Outer Space', year:1959, rating:3.9, genre:'Sci-Fi Comedy', id:'Plan9FromOuterSpace', desc:'So bad it is funny.'},
- {title:'Charade', year:1963, rating:7.9, genre:'Thriller', id:'Charade1963', desc:'Hepburn + Cary Grant in Paris.'},
- {title:'The Little Shop of Horrors', year:1960, rating:6.4, genre:'Horror Comedy', id:'TheLittleShopOfHorrors', desc:'Man-eating plant!'},
- {title:'Scarlet Street', year:1945, rating:7.8, genre:'Drama Noir', id:'ScarletStreet', desc:'Fritz Lang noir.'},
- {title:'Carnival of Souls', year:1962, rating:6.9, genre:'Horror', id:'CarnivalOfSouls', desc:'Haunting cult horror.'},
-];
-function posterUrl(id){ return `https://archive.org/services/img/${id}`; }
-function renderFree(){
-  document.getElementById('freeGrid').innerHTML=FREE_MOVIES.map((m,i)=>`
-  <button onclick="playFree(${i})" class="movie-card text-left bg-white dark:bg-gray-900 border rounded-xl overflow-hidden hover:border-red-500">
-    <div class="overflow-hidden aspect-[2/3] bg-gray-800 flex items-center justify-center"><img src="${posterUrl(m.id)}" loading="lazy" class="w-full h-full object-cover" onerror="this.style.display='none'; this.parentNode.innerHTML='<div class=text-4xl>🎬</div>'"></div>
-    <div class="p-2"><div class="text-[12px] font-bold truncate">${m.title}</div>
-    <div class="flex justify-between items-center mt-1"><span class="text-[10px] font-mono text-gray-500">${m.year} • ${m.genre}</span><span class="text-[11px] font-black text-amber-600">⭐ ${m.rating}</span></div>
-    <div class="mt-1.5 text-[10px] bg-red-600 text-white text-center py-1.5 rounded-lg font-black">▶️ WATCH FREE</div></div>
-  </button>`).join('');
+/* ✅ 10-FACTOR - 4 MARKETS - UNDER 5.5 */
+function evaluateBestMarket(match){
+  const h=parseRecordStats(match.homeRecord),a=parseRecordStats(match.awayRecord);
+  const ou=parseFloat(match.overUnderLine)||null;
+  if(h.played<5 || a.played<5) return null;
+  const tempo=(h.winRate+h.lossRate+a.winRate+a.lossRate)/2;
+  const weak=(h.lossRate+a.lossRate)/2;
+  const both=1-Math.abs(h.winRate-a.winRate);
+  const bttsScore=(both*0.6+weak*0.4);
+  const active=(h.winRate+a.winRate)/2;
+  let xgEst=2.2+(tempo*0.8)+(weak*1.2)+(ou?(ou-2.5)*0.3:0);
+  let venue=0; if(h.winRate>=0.55&&h.lossRate>=0.25)venue=15; else if(h.winRate>=0.45&&h.lossRate>=0.25)venue=11; else if(h.winRate>=0.40)venue=6;
+  let away=0; if(a.winRate>=0.40&&a.lossRate>=0.30)away=15; else if(a.winRate>=0.30&&a.lossRate>=0.30)away=11; else if(a.lossRate>=0.35)away=8;
+  let ref=0; if(ou&&ou>=3.0)ref=5; else if(ou&&ou>=2.5)ref=4; else if(ou&&ou>=2.0)ref=2;
+  let corners=0; if(tempo>=0.75)corners=10; else if(tempo>=0.68)corners=8; else if(tempo>=0.60)corners=5;
+  let btts=0; if(bttsScore>=0.70)btts=15; else if(bttsScore>=0.60)btts=12; else if(bttsScore>=0.50)btts=7;
+  let xgPts=0; if(xgEst>=3.2)xgPts=15; else if(xgEst>=2.9)xgPts=12; else if(xgEst>=2.6)xgPts=7;
+  let shots=0; if(active>=0.48&&weak>=0.35)shots=10; else if(active>=0.42)shots=7; else if(active>=0.35)shots=4;
+  let h2h=0; if(Math.abs(h.winRate-a.winRate)<=0.15)h2h=5; else if(Math.abs(h.winRate-a.winRate)<=0.30)h2h=3;
+  let lineup=0; if(h.played>=8&&a.played>=8)lineup=5; else if(h.played>=5&&a.played>=5)lineup=4;
+  let weather=0; if(ou&&ou>=2.5)weather=5; else if(ou&&ou>=2.0)weather=3;
+  const baseScore=venue+away+ref+corners+btts+xgPts+shots+h2h+lineup+weather;
+  const reasons=[`Venue:${venue}/15`,`Away:${away}/15`,`Ref:${ref}/5`,`Corners:${corners}/10`,`BTTS:${btts}/15`,`xG:${xgPts}/15 (${xgEst.toFixed(2)})`,`Shots:${shots}/10`,`H2H:${h2h}/5`,`Lineup:${lineup}/5`,`Weather:${weather}/5`];
+  const total=match.homeScore+match.awayScore;
+  const isFinished=match.statusState==='post';
+  const candidates=[];
+  if(xgEst>=3.0 && tempo>=0.65 && bttsScore>=0.55){
+    let s=baseScore; if(xgEst>=3.5) s+=5; if(tempo>=0.75) s+=3;
+    if(s>=82){ let prob=clamp(0.55+(s/100)*0.30,0.70,0.90); let odd=parseFloat((1/prob).toFixed(2)); if(odd>=1.30&&odd<=2.10) candidates.push({key:'over25',label:'Over 2.5 Goals',emoji:'🔥',prob,odd,confidence:(prob*100).toFixed(1)+'%',isWon:isFinished?total>=3:false,isFinished,score:Math.min(100,s),reasons,xgEst}) }
+  }
+  if(!(h.lossRate<0.15&&a.lossRate<0.15) && !(ou&&ou<2.0) && weak>=0.28 && bttsScore>=0.45){
+    if(baseScore>=80){ let prob=clamp(0.60+(baseScore/100)*0.35,0.78,0.96); let odd=parseFloat((1/prob).toFixed(2)); if(odd>=1.05&&odd<=1.30) candidates.push({key:'over15',label:'Over 1.5 Goals',emoji:'⚽',prob,odd,confidence:(prob*100).toFixed(1)+'%',isWon:isFinished?total>=2:false,isFinished,score:baseScore,reasons,xgEst}) }
+  }
+  if(bttsScore>=0.60 && h.lossRate>=0.30 && a.lossRate>=0.30 && xgEst>=2.6){
+    let s=baseScore; if(bttsScore>=0.70) s+=4;
+    if(s>=80){ let prob=clamp(0.52+(s/100)*0.30,0.68,0.88); let odd=parseFloat((1/prob).toFixed(2)); if(odd>=1.40&&odd<=2.20) candidates.push({key:'btts',label:'BTTS Yes',emoji:'🥅',prob,odd,confidence:(prob*100).toFixed(1)+'%',isWon:isFinished?(match.homeScore>=1&&match.awayScore>=1):false,isFinished,score:Math.min(100,s),reasons,xgEst}) }
+  }
+  // ✅ CHANGED: UNDER 4.5 -> UNDER 5.5
+  // Under 5.5 wins if total <=5 - much safer, so we allow slightly higher xG
+  let underScore=0;
+  if(xgEst<=3.6) underScore+=25; else if(xgEst<=4.0) underScore+=18; else if(xgEst<=4.4) underScore+=10;
+  if(tempo<=0.70) underScore+=20; else if(tempo<=0.80) underScore+=14; else underScore+=6;
+  if(weak<=0.40) underScore+=20; else if(weak<=0.50) underScore+=14; else underScore+=6;
+  if(h.drawRate>=0.25||a.drawRate>=0.25) underScore+=10; else underScore+=5;
+  if(ou&&ou<=3.5) underScore+=15; else if(ou&&ou<=4.0) underScore+=10; else underScore+=5;
+  if(both>=0.70) underScore+=10; else underScore+=5;
+  if(underScore>=80){
+    // Under 5.5 is very safe, so odds are low: 1.05 - 1.25
+    let prob=clamp(0.70+(underScore/100)*0.28,0.82,0.98); let odd=parseFloat((1/prob).toFixed(2));
+    if(odd>=1.02&&odd<=1.30) candidates.push({key:'under55',label:'Under 5.5 Goals',emoji:'🔒',prob,odd,confidence:(prob*100).toFixed(1)+'%',isWon:isFinished?total<=5:false,isFinished,score:underScore,reasons:[`xG:${xgEst.toFixed(2)}`,`Tempo:${tempo.toFixed(2)}`,`Defence:${weak.toFixed(2)}`,`Under Score:${underScore}/100`],xgEst})
+  }
+  if(candidates.length===0) return null;
+  candidates.sort((x,y)=>y.score-x.score);
+  return candidates[0];
 }
-function playFree(i){
-  const m=FREE_MOVIES[i]; currentMovie={title:m.title, overview:m.desc, release_date:String(m.year), vote_average:m.rating};
-  document.getElementById('playerPlaceholder').style.display='none';
-  document.getElementById('trailerFrame').classList.add('hidden'); document.getElementById('trailerFrame').src='';
-  // ✅ FIX: Archive.org embed player - works on mobile, no direct mp4 block
-  const f=document.getElementById('archivePlayer'); f.classList.remove('hidden');
-  f.src=`https://archive.org/embed/${m.id}?autoplay=1`;
-  document.getElementById('openArchiveBtn').href=`https://archive.org/details/${m.id}`;
-  document.getElementById('nowPlaying').textContent='▶️ Now Playing (FREE): '+m.title;
-  document.getElementById('nowMeta').textContent=`${m.year} • ${m.genre} • ⭐ ${m.rating} • Public Domain • If it shows loading, tap Open in Archive`;
-  window.scrollTo({top:0, behavior:'smooth'});
+const fixtureCache=new Map();
+async function fetchRealFixtures(dateObj){
+  const cd=getYYYYMMDD(dateObj);const ck='wins1_cache_'+cd;
+  if(fixtureCache.has(cd))return fixtureCache.get(cd);
+  try{const cached=sessionStorage.getItem(ck);if(cached){const p=JSON.parse(cached);if(Date.now()-p.time<10*60*1000){fixtureCache.set(cd,p.data);return p.data}}}catch(e){}
+  let fixtures=[];
+  const leagues=['eng.1','eng.2','esp.1','esp.2','ita.1','ita.2','ger.1','ger.2','fra.1','fra.2','uefa.champions','uefa.europa','uefa.conference','usa.1','ned.1','por.1','bel.1','tur.1','sui.1','aut.1','sco.1','bra.1','arg.1','mex.1','chi.1','col.1','jpn.1','kor.1','aus.1','rsa.1','egy.1'];
+  const reqs=leagues.map(lg=>fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/${lg}/scoreboard?dates=${cd}`).then(r=>r.ok?r.json():null).catch(()=>null));
+  const results=await Promise.all(reqs);
+  results.forEach(data=>{if(data&&Array.isArray(data.events)){const ln=(data.leagues&&data.leagues[0]&&data.leagues[0].name)||"League";data.events.forEach(ev=>{const comp=ev.competitions&&ev.competitions[0];if(comp&&comp.competitors&&comp.competitors.length===2){const ho=comp.competitors.find(c=>c.homeAway==='home')||comp.competitors[0];const ao=comp.competitors.find(c=>c.homeAway==='away')||comp.competitors[1];const hn=ho.team.displayName,an=ao.team.displayName;if(!fixtures.some(f=>f.home===hn&&f.away===an)){const dt=new Date(ev.date);const ts=isNaN(dt)?"19:00":dt.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',hour12:false});const st=(ev.status&&ev.status.type&&ev.status.type.state)||"pre";const hr=(ho.records&&ho.records[0]&&ho.records[0].summary)||"";const ar=(ao.records&&ao.records[0]&&ao.records[0].summary)||"";const oddsObj=(comp.odds&&comp.odds[0])||null;fixtures.push({id:`${hn}_vs_${an}`,home:hn,away:an,league:ln,time:ts,statusState:st,homeScore:parseInt(ho.score,10)||0,awayScore:parseInt(ao.score,10)||0,homeRecord:hr,awayRecord:ar,overUnderLine:oddsObj?oddsObj.overUnder:null})}}})}});
+  fixtureCache.set(cd,fixtures);try{sessionStorage.setItem(ck,JSON.stringify({time:Date.now(),data:fixtures}))}catch(e){}return fixtures;
 }
-function playTrailerFromModal(){
-  if(!currentTrailerKey) return;
-  closeModal();
-  document.getElementById('playerPlaceholder').style.display='none';
-  document.getElementById('archivePlayer').classList.add('hidden'); document.getElementById('archivePlayer').src='';
-  const f=document.getElementById('trailerFrame'); f.classList.remove('hidden'); f.src=`https://www.youtube.com/embed/${currentTrailerKey}?autoplay=1`;
-  document.getElementById('nowPlaying').textContent='▶️ Trailer: '+currentMovie.title;
-  window.scrollTo({top:0, behavior:'smooth'});
+function renderPicks(){
+  const container=document.getElementById('matchFeedContainer');
+  let all=[...allTodayPicks].sort((a,b)=>b.score-a.score);
+  document.getElementById('countAll').textContent=all.length;
+  document.getElementById('countOver15').textContent=all.filter(p=>p.key==='over15').length;
+  document.getElementById('countOver25').textContent=all.filter(p=>p.key==='over25').length;
+  document.getElementById('countBtts').textContent=all.filter(p=>p.key==='btts').length;
+  document.getElementById('countUnder55').textContent=all.filter(p=>p.key==='under55').length;
+  let list=currentMarketFilter==='all'?all:all.filter(p=>p.key===currentMarketFilter);
+  document.getElementById('totalPicksBadge').textContent=list.length+' PICKS';
+  if(list.length===0){container.innerHTML=`<div class="bg-white dark:bg-gray-900 border rounded-2xl p-6 text-center space-y-2"><div class="text-3xl">🛡️</div><div class="font-black">NO PICK FOR THIS FILTER</div><p class="text-xs text-gray-500">No game scored 80/100 for this market today.<br>Try ALL.</p></div>`;return}
+  let totalStake=all.length*10000;let ifAllWin=all.reduce((s,p)=>s+10000*p.odd,0);let profitIfAll=ifAllWin-totalStake;
+  document.getElementById('daySummary').textContent=`${all.length} singles • 10k each = ${totalStake.toLocaleString()} UGX • Avg @ ${(all.reduce((s,p)=>s+p.odd,0)/all.length).toFixed(2)} • 4 Markets 80+`;
+  document.getElementById('dayProfitPreview').textContent=`+${Math.round(profitIfAll).toLocaleString()} UGX`;
+  container.innerHTML=list.map((p,i)=>{
+    let badge=`<span class="text-[11px] font-mono text-gray-500 nowrap-badge">⏰ ${p.match.time}</span>`;
+    if(p.isFinished) badge=p.isWon?`<span class="bg-emerald-500 text-white px-2.5 py-1 rounded-lg text-xs font-black nowrap-badge">✅ ${p.match.homeScore}-${p.match.awayScore}</span>`:`<span class="bg-red-500 text-white px-2.5 py-1 rounded-lg text-xs font-black nowrap-badge">❌ ${p.match.homeScore}-${p.match.awayScore}</span>`;
+    else if(p.match.statusState==='in') badge=`<span class="bg-emerald-500/20 text-emerald-500 border border-emerald-500/30 px-2.5 py-1 rounded-lg text-xs font-bold nowrap-badge">● LIVE ${p.match.homeScore}-${p.match.awayScore}</span>`;
+    const marketColor=p.key==='over25'?'bg-orange-500 text-white':p.key==='btts'?'bg-blue-500 text-white':p.key==='under55'?'bg-gray-700 text-white':'bg-emerald-500 text-white';
+    return `<div class="bg-white dark:bg-gray-900 border rounded-2xl p-4 space-y-2">
+      <div class="flex items-center justify-between gap-3">
+      <div class="flex items-center gap-3 min-w-0"><span class="w-9 h-9 rounded-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 flex items-center justify-center text-xs font-black shrink-0">${i+1}</span>
+      <div class="min-w-0"><div class="text-sm font-bold truncate">${p.match.home} vs ${p.match.away}</div><div class="text-[11px] font-mono text-gray-500 truncate">${p.match.league} • ${p.emoji} ${p.label} • Score ${p.score}/100</div><div class="text-[11px] font-bold text-emerald-600">Confidence ${p.confidence} • Est xG ${p.xgEst.toFixed(2)}</div></div></div>
+      <div class="flex flex-col items-end gap-1 shrink-0"><span class="bg-gray-900 dark:bg-white text-white dark:text-gray-900 px-3 py-1.5 rounded-lg text-sm font-black nowrap-badge">@ ${p.odd.toFixed(2)}</span>${badge}<button onclick="copySingle('${p.match.id}','${p.key}')" class="text-[10px] font-bold text-amber-500">📋 Copy</button></div></div>
+      <div class="flex gap-2 items-center"><span class="text-[10px] font-black px-2 py-1 rounded-lg ${marketColor} nowrap-badge">${p.emoji} ${p.label}</span><span class="text-[10px] font-mono text-gray-500 bg-gray-50 dark:bg-gray-800/60 rounded-lg px-2 py-1.5 flex-1 truncate">${p.reasons.join(' • ')}</span></div></div>`;
+  }).join('');
 }
-function renderGenres(){ document.getElementById('genreRow').innerHTML=GENRES.map(g=>`<button onclick="filterGenre('${g.id}','${g.name}')" class="shrink-0 px-3 py-1.5 rounded-xl text-xs font-bold border ${String(currentGenre)===String(g.id)?'bg-red-600 text-white border-red-600':'bg-gray-100 dark:bg-gray-800'}">${g.name}</button>`).join(''); }
-function filterGenre(id,name){ currentGenre=id; mode='genre'; page=1; movies=[]; document.getElementById('sectionTitle').textContent=name+' Movies'; renderGenres(); fetchMovies(); }
-async function fetchMovies(){
-  if(API_KEY==='YOUR_TMDB_API_KEY'){ document.getElementById('movieGrid').innerHTML=`<div class="col-span-full p-6 text-center border rounded-xl"><p class="font-black mb-2">Add free TMDB key for Trending</p><p class="text-sm text-gray-500">Free movies above work without key.</p></div>`; return; }
-  let url='';
-  if(mode==='trending') url=`https://api.themoviedb.org/3/trending/movie/week?api_key=${API_KEY}&page=${page}`;
-  else if(mode==='genre') url=`https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_genres=${currentGenre}&sort_by=popularity.desc&page=${page}`;
-  else if(mode==='search') url=`https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(currentQuery)}&page=${page}`;
-  const r=await fetch(url).then(x=>x.json()); movies=[...movies, ...(r.results||[])]; renderMovies();
+function copySingle(id,key){
+  const p=allTodayPicks.find(x=>x.match.id===id&&x.key===key);if(!p)return;const txt=`WINS1 • ${p.match.home} vs ${p.match.away} • ${p.label} @ ${p.odd.toFixed(2)} • ${p.confidence} • 10-Factor ${p.score}/100 • 25+ Bet Responsibly`;
+  if(navigator.clipboard)navigator.clipboard.writeText(txt);
 }
-function renderMovies(){ document.getElementById('movieGrid').innerHTML=movies.map(m=>`<button onclick="openMovie(${m.id})" class="movie-card text-left bg-white dark:bg-gray-900 border rounded-xl overflow-hidden hover:border-red-500"><div class="overflow-hidden aspect-[2/3] bg-gray-200 dark:bg-gray-800"><img src="${m.poster_path?IMG+m.poster_path:''}" loading="lazy" class="w-full h-full object-cover" onerror="this.style.display='none'"></div><div class="p-2"><div class="text-[12px] font-bold truncate">${m.title}</div><div class="flex justify-between mt-1"><span class="text-[10px] text-gray-500">${(m.release_date||'').slice(0,4)}</span><span class="text-[11px] font-black text-amber-600">⭐ ${Number(m.vote_average||0).toFixed(1)}</span></div><div class="mt-1.5 text-[10px] bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-center py-1.5 rounded-lg font-black">▶️ TRAILER</div></div></button>`).join(''); }
-function loadMore(){ page++; fetchMovies(); }
-function searchMovies(){ const q=document.getElementById('searchInput').value.trim(); if(!q) return; currentQuery=q; mode='search'; page=1; movies=[]; document.getElementById('sectionTitle').textContent=`🔍 Results for "${q}"`; fetchMovies(); }
-async function openMovie(id){
-  const m=await fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=${API_KEY}&append_to_response=videos`).then(x=>x.json());
-  currentMovie=m;
-  document.getElementById('mPoster').src=m.poster_path?IMG+m.poster_path:'';
-  document.getElementById('mTitle').textContent=m.title;
-  document.getElementById('mMeta').textContent=`${(m.release_date||'').slice(0,4)} • ${(m.runtime||'?')} min • ${(m.genres||[]).map(g=>g.name).join(', ')}`;
-  document.getElementById('mRating').textContent=`⭐ ${Number(m.vote_average||0).toFixed(1)} / 10`;
-  document.getElementById('mOverview').textContent=m.overview||'';
-  const vid=(m.videos?.results||[]).find(v=>v.site==='YouTube'&&v.type==='Trailer')||(m.videos?.results||[]).find(v=>v.site==='YouTube');
-  currentTrailerKey=vid?vid.key:'';
-  document.getElementById('watchNetflix').href=`https://www.netflix.com/search?q=${encodeURIComponent(m.title)}`;
-  document.getElementById('modal').classList.remove('hidden');
+async function fetchMatchData(dateObj){
+  selectedDateObj=dateObj;const container=document.getElementById('matchFeedContainer');const today=new Date();const isT=dateObj.toDateString()===today.toDateString();document.getElementById('sectionTitleDate').textContent=isT?"TODAY'S":dateObj.toLocaleDateString('en-US',{month:'short',day:'numeric'}).toUpperCase();
+  container.innerHTML=`<div class="p-8 text-center text-xs text-gray-500">Running 10-Factor Analysis — 4 Markets...</div>`;
+  const matches=await fetchRealFixtures(dateObj);
+  allTodayPicks=[];
+  matches.forEach(m=>{const pk=evaluateBestMarket(m);if(pk)allTodayPicks.push({...pk,match:m})});
+  renderPicks();
 }
-function closeModal(){ document.getElementById('modal').classList.add('hidden'); }
-function shareMovie(){ if(!currentMovie) return; const t=`🎬 ${currentMovie.title} - Watch FREE on WORLD MOVIES: ${location.href}`; if(navigator.clipboard) navigator.clipboard.writeText(t).then(()=>alert('Copied!')); }
-renderFree(); renderGenres(); fetchMovies();
+let historyLoading=false,historyLoadedDays=0,mainHistory=[];
+function updateHistoryStats(){
+  let w=0,l=0,profit=0,stake=0;mainHistory.forEach(t=>{if(t.won){w++;profit+=10000*(t.odd-1)}else{l++;profit-=10000}stake+=10000});
+  document.getElementById('histWins').textContent=w;document.getElementById('histLosses').textContent=l;document.getElementById('histRate').textContent=(w+l)>0?Math.round(w/(w+l)*100)+'%':'0%';
+  let streak=0;for(let i=0;i<mainHistory.length;i++){if(mainHistory[i].won)streak++;else break}
+  document.getElementById('histStreak').textContent=streak>0?`🔥 Streak: ${streak} WON`:(mainHistory.length?`🔥 Streak: 0 — Last Lost`:`🔥 Streak: —`);
+  const pe=document.getElementById('histProfit');pe.textContent=`Profit (10k each): ${profit>=0?'+':''}${Math.round(profit).toLocaleString()} UGX`;pe.className=`text-[10px] font-mono ${profit>=0?'text-emerald-600':'text-red-500'}`;
+  const roi=document.getElementById('histRoi');const r=stake>0?profit/stake*100:0;roi.textContent=`ROI ${r>=0?'+':''}${r.toFixed(1)}%`;roi.className=`text-[11px] font-black ${r>=0?'text-emerald-500':'text-red-500'}`;
+  const list=document.getElementById('historyList');
+  if(mainHistory.length===0){list.innerHTML=`<div class="text-center p-4 text-xs text-gray-500">No finished history yet.</div>`;return}
+  list.innerHTML=mainHistory.map(x=>x.html).join('');
+}
+async function loadHistoryBatch(){
+  if(historyLoading)return;historyLoading=true;const btn=document.getElementById('historyBtn');if(btn)btn.textContent='Loading...';
+  const start=historyLoadedDays+1,end=Math.min(60,historyLoadedDays+7);
+  for(let back=start;back<=end;back++){
+    const d=new Date();d.setDate(d.getDate()-back);
+    try{
+      const matches=await fetchRealFixtures(d);const dateLabel=d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+      matches.forEach(m=>{const pk=evaluateBestMarket(m);if(pk&&m.statusState==='post'){mainHistory.push({won:pk.isWon,odd:pk.odd,html:`<div class="flex items-center justify-between bg-white dark:bg-gray-900 border ${pk.isWon?'border-emerald-500/40':'border-red-500/40'} rounded-xl px-3 py-2.5"><div class="flex items-center gap-2.5"><span class="min-w-[52px] h-8 px-1.5 rounded-full ${pk.isWon?'bg-emerald-500 text-white':'bg-red-500 text-white'} flex items-center justify-center text-[11px] font-black">${m.time}</span><div><div class="text-xs font-bold">${m.home} vs ${m.away}</div><div class="text-[10px] font-mono text-gray-500">${dateLabel} • ${pk.emoji} ${pk.label} • ${m.homeScore}-${m.awayScore} • ${pk.score}/100</div></div></div><div class="text-right shrink-0"><div class="text-xs font-black ${pk.isWon?'text-emerald-500':'text-red-500'}">${pk.isWon?'WON':'LOST'} ${m.homeScore}-${m.awayScore}</div><div class="text-[10px] font-mono text-gray-500">@ ${pk.odd.toFixed(2)}</div></div></div>`})}});
+    }catch(e){}
+  }
+  historyLoadedDays=end;updateHistoryStats();if(btn)btn.textContent=historyLoadedDays>=60?'All 60 Days Loaded':'Load More ('+historyLoadedDays+'/60)';historyLoading=false;if(historyLoadedDays<60)setTimeout(()=>loadHistoryBatch(),600);
+}
+function loadMoreHistory(){loadHistoryBatch()}
+initRibbon();fetchMatchData(selectedDateObj);
+setTimeout(()=>loadHistoryBatch(),800);
 </script>
 </body>
 </html>
