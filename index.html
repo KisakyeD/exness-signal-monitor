@@ -75,7 +75,7 @@
     <div class="grid grid-cols-1 gap-3" id="matchFeedContainer"></div>
   </section>
 
-  <section class="space-y-4 pt-4 border-t">
+  <section class="space-y-4 pt-4 border-t" id="historySection">
     <div class="flex items-center justify-between">
       <div><h3 class="font-bold text-base">📈 History — Last 60 Days</h3></div>
       <button onclick="loadMoreHistory()" id="historyBtn" class="px-4 py-2 rounded-xl bg-amber-500 text-gray-950 text-xs font-black">Load More</button>
@@ -85,7 +85,7 @@
       <div class="bg-red-500/10 border border-red-500/30 rounded-xl p-2"><div class="text-lg font-black text-red-500" id="histLosses">0</div><div class="text-[10px] font-mono text-gray-500">LOSSES ⬇️</div></div>
       <div class="bg-amber-500/10 border border-amber-500/30 rounded-xl p-2"><div class="text-lg font-black text-amber-500" id="histRate">0%</div><div class="text-[10px] font-mono text-gray-500">WIN RATE</div></div>
     </div>
-    <div id="historyList" class="space-y-2"><div class="text-center p-4 text-xs text-gray-500">Loading history...</div></div>
+    <div id="historyList" class="space-y-2"><div class="text-center p-4 text-xs text-gray-500">Scroll here to load history...</div></div>
   </section>
 </main>
 
@@ -261,7 +261,15 @@ async function loadHistoryBatch(){
 }
 function loadMoreHistory(){loadHistoryBatch()}
 initRibbon();fetchMatchData(selectedDateObj);
-setTimeout(()=>loadHistoryBatch(),800);
+// ✅ OPTION 2: History loads ONLY when user scrolls to History - Page stays fast
+const _histObs = new IntersectionObserver((entries)=>{
+  if(entries[0].isIntersecting && historyLoadedDays===0){
+    loadHistoryBatch();
+    _histObs.disconnect();
+  }
+},{rootMargin:'200px'});
+const _histEl = document.getElementById('historySection');
+if(_histEl) _histObs.observe(_histEl);
 </script>
 </body>
 </html>
