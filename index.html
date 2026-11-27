@@ -30,11 +30,11 @@
     <nav class="space-y-1.5">
       <button onclick="goToHomepage()" class="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl bg-amber-500 text-gray-950 font-black text-xs">⚽ TODAY'S PICKS</button>
     </nav>
-    <div class="pt-3 border-t border-gray-200 dark:border-gray-800 space-y-2">
-      <label class="text-[11px] font-bold">⚙️ SETTINGS</label>
-      <div class="grid grid-cols-2 gap-2">
-        <button onclick="setTheme('dark')" class="px-3 py-2.5 rounded-xl text-xs font-bold bg-gray-900 text-white">🌙 Dark</button>
-        <button onclick="setTheme('light')" class="px-3 py-2.5 rounded-xl text-xs font-bold bg-white text-gray-900 border">☀️ Light</button>
+        <div class="pt-3 border-t border-gray-200 dark:border-gray-800 relative">
+      <button onclick="toggleSettingsDropdown()" id="settingsDropdownBtn" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold bg-gray-100 dark:bg-gray-800">⚙️ SETTINGS <span id="settingsArrow">▼</span></button>
+      <div id="settingsDropdown" class="hidden mt-2 space-y-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-2 shadow-lg">
+        <button onclick="setTheme('dark');toggleSettingsDropdown(false)" class="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold bg-gray-900 text-white">🌙 Dark <span class="ml-auto" id="checkDark">✓</span></button>
+        <button onclick="setTheme('light');toggleSettingsDropdown(false)" class="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold bg-white text-gray-900 border">☀️ Light <span class="ml-auto" id="checkLight">✓</span></button>
       </div>
     </div>
     <div class="pt-3 border-t border-gray-200 dark:border-gray-800 space-y-2">
@@ -112,6 +112,19 @@ const drawerMenu=document.getElementById('drawerMenu'),drawerBackdrop=document.g
 function setTheme(mode){if(mode==='dark'){document.documentElement.classList.add('dark');document.getElementById('themeIcon').textContent='☀️'}else{document.documentElement.classList.remove('dark');document.getElementById('themeIcon').textContent='🌙'}try{localStorage.setItem('wins1_theme',mode)}catch(e){}}
 (function(){let s='dark';try{s=localStorage.getItem('wins1_theme')||'dark'}catch(e){}setTheme(s)})();
 document.getElementById('themeToggleBtn').addEventListener('click',()=>{setTheme(document.documentElement.classList.contains('dark')?'light':'dark')});
+function toggleSettingsDropdown(force){
+  const d=document.getElementById('settingsDropdown');
+  const a=document.getElementById('settingsArrow');
+  if(!d) return;
+  const show = force !== undefined ? force : d.classList.contains('hidden');
+  if(show){ d.classList.remove('hidden'); if(a) a.style.transform='rotate(180deg)'; }
+  else { d.classList.add('hidden'); if(a) a.style.transform='rotate(0deg)'; }
+  // show tick on current theme
+  const isDark=document.documentElement.classList.contains('dark');
+  const cd=document.getElementById('checkDark'), cl=document.getElementById('checkLight');
+  if(cd) cd.style.opacity = isDark ? '1' : '0';
+  if(cl) cl.style.opacity = isDark ? '0' : '1';
+}
 function toggleDrawer(o){if(o){drawerBackdrop.classList.remove('hidden');drawerMenu.classList.remove('-translate-x-full')}else{drawerMenu.classList.add('-translate-x-full');drawerBackdrop.classList.add('hidden')}}
 document.getElementById('openDrawerBtn').addEventListener('click',()=>toggleDrawer(true));
 document.getElementById('closeDrawerBtn').addEventListener('click',()=>toggleDrawer(false));
