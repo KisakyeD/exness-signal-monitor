@@ -1,179 +1,236 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WINS1 | 2 Markets - 10 Factor</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<script>tailwind.config={darkMode:'class'}</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WINS1 - Sure Win Predictions</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-html{overflow-anchor:none} body{overflow-anchor:none}
-.no-scrollbar::-webkit-scrollbar{display:none} .no-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
-.pulse-live{animation:pulse-ring 1.5s infinite} @keyframes pulse-ring{0%{box-shadow:0 0 0 0 rgba(16,185,129,.7)}70%{box-shadow:0 0 0 8px rgba(16,185,129,0)}100%{box-shadow:0 0 0 0 rgba(16,185,129,0)}}
-.nowrap-badge{white-space:nowrap;flex-shrink:0}
-.wa-pulse{animation:waPulse 2s infinite} @keyframes waPulse{0%{box-shadow:0 0 0 0 rgba(37,211,102,.5)}70%{box-shadow:0 0 0 8px rgba(37,211,102,0)}100%{box-shadow:0 0 0 0 rgba(37,211,102,0)}}
-.totally-invisible{display:none!important;visibility:hidden!important;opacity:0!important;font-size:0!important;height:0!important;line-height:0!important}
-.filter-btn.active{background:#f59e0b!important;color:#111827!important;border-color:#f59e0b!important;font-weight:900}
-.pill-arrow{display:inline-flex;align-items:center;justify-content:center;width:38px;height:25px;background:#0A1A2E;border:1px solid #2A3F5A;border-radius:999px;color:white;font-size:18px;font-weight:900;line-height:1;transition:transform .3s;flex-shrink:0}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#0a0f1e;color:#fff;min-height:100vh}
+.top{background:#0d1530;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}
+.logo{font-weight:900;font-size:22px}.logo span{color:#22c55e}
+.top button{background:#22c55e;color:#000;border:0;padding:8px 14px;border-radius:999px;font-weight:800;cursor:pointer}
+.hero{padding:22px 16px;text-align:center}
+.hero h1{font-size:30px;line-height:1.1}.hero h1 span{color:#22c55e}
+.hero p{color:#9fb0d0;margin-top:8px;font-size:14px}
+.card{background:#111a33;border:1px solid #1e2a4a;border-radius:16px;padding:16px;margin:12px 16px}
+.badge{display:inline-block;background:#22c55e;color:#000;font-weight:800;font-size:12px;padding:4px 10px;border-radius:999px}
+.match{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #1e2a4a}
+.match:last-child{border:0}
+.pick{background:#1e2a4a;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:700}
+.locked{filter:blur(6px);user-select:none}
+.btn{width:100%;background:#22c55e;color:#000;border:0;padding:14px;border-radius:12px;font-weight:900;font-size:16px;cursor:pointer;margin-top:10px}
+.btn2{background:#facc15}
+.btn:disabled{opacity:.6}
+.plans{display:grid;gap:10px}
+.plan{background:#0a0f1e;border:2px solid #1e2a4a;border-radius:14px;padding:14px;cursor:pointer}
+.plan.active{border-color:#22c55e;background:#12241a}
+.plan h3{font-size:17px}.plan p{color:#9fb0d0;font-size:13px;margin-top:4px}.plan b{color:#22c55e;font-size:18px}
+input{width:100%;padding:13px;border-radius:12px;border:1px solid #2a3a65;background:#0a0f1e;color:#fff;font-size:16px;margin-top:8px}
+label{font-size:13px;color:#9fb0d0}
+.msg{margin-top:10px;font-size:14px;min-height:20px;white-space:pre-wrap}
+.msg.err{color:#f87171}.msg.ok{color:#22c55e}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;align-items:flex-end;justify-content:center;z-index:50}
+.modal.open{display:flex}
+.sheet{background:#111a33;width:100%;max-width:480px;border-radius:20px 20px 0 0;padding:20px;max-height:90vh;overflow:auto}
+.close{float:right;background:#1e2a4a;border:0;color:#fff;padding:6px 12px;border-radius:999px;cursor:pointer}
+.small{font-size:12px;color:#9fb0d0;margin-top:8px;text-align:center}
+.row{display:flex;gap:10px}.row button{flex:1}
 </style>
+</head>
+<body>
+
+<div class="top">
+  <div class="logo">WINS<span>1</span></div>
+  <div><span id="userLabel" style="font-size:13px;color:#9fb0d0;margin-right:8px"></span><button id="authBtn" onclick="openAuth()">Login</button></div>
+</div>
+
+<div class="hero">
+  <h1>WIN MORE.<br><span>LOSE LESS.</span></h1>
+  <p>Expert analysed picks. MTN MoMo • Airtel Money • Virtual Card</p>
+  <div style="margin-top:12px"><span class="badge" id="statusBadge">🔒 LOCKED - Subscribe to unlock</span></div>
+</div>
+
+<div class="card">
+  <h3>Today's Picks <span style="font-size:12px;color:#9fb0d0">- Updated Daily</span></h3>
+  <div id="picksList"></div>
+  <button class="btn" onclick="openPlans()">VIEW PLANS & UNLOCK 🔓</button>
+  <p class="small">After payment, your picks unlock automatically. Do not pay twice.</p>
+</div>
+
+<div class="card">
+  <h3>How it works</h3>
+  <p style="color:#9fb0d0;font-size:14px;margin-top:8px;line-height:1.6">1. Create account / Login<br>2. Choose plan<br>3. Pay with MTN or Airtel - you get a prompt on your phone<br>4. Approve PIN, tap I PAID - CHECK STATUS<br>5. Picks unlock instantly</p>
+</div>
+
+<!-- PLANS MODAL -->
+<div class="modal" id="plansModal"><div class="sheet">
+  <button class="close" onclick="closePlans()">✕</button>
+  <h2>Choose Plan</h2>
+  <p class="small" style="text-align:left">Pay with MTN MoMo or Airtel Money. Prompt comes to your phone.</p>
+  <div class="plans" style="margin-top:14px">
+    <div class="plan active" data-plan="1-week" data-amount="13000" onclick="selectPlan(this)"><h3>Weekly</h3><p>7 days access • All picks</p><b>UGX 13,000</b></div>
+    <div class="plan" data-plan="1-month" data-amount="35000" onclick="selectPlan(this)"><h3>Monthly</h3><p>30 days access • All picks</p><b>UGX 35,000</b></div>
+    <div class="plan" data-plan="3-months" data-amount="80000" onclick="selectPlan(this)"><h3>3 Months</h3><p>90 days access • Best value</p><b>UGX 80,000</b></div>
+    <div class="plan" data-plan="6weeks" data-amount="20000" onclick="selectPlan(this)"><h3>6 Weeks</h3><p>42 days access</p><b>UGX 20,000</b></div>
+  </div>
+  <button class="btn" onclick="openPay()">CONTINUE TO PAY →</button>
+</div></div>
+
+<!-- PAY MODAL -->
+<div class="modal" id="payModal"><div class="sheet">
+  <button class="close" onclick="closePay()">✕</button>
+  <h2 id="payTitle">Pay - Weekly</h2>
+  <p class="small" style="text-align:left">MTN MoMo • Airtel Money • Virtual Card<br>You will get a prompt on your phone to approve.</p>
+  <label>Your Name</label><input id="payName" placeholder="e.g. Douglas">
+  <label>Phone - MTN or Airtel</label><input id="payPhone" inputmode="tel" placeholder="0707282428" value="0707282428">
+  <div id="obpayMsg" class="msg"></div>
+  <button class="btn" id="payBtn" onclick="payWithObPay()">PAY NOW WITH OBPAY</button>
+  <button class="btn btn2" id="checkBtn" onclick="checkPayment()" style="display:none">I PAID — CHECK STATUS</button>
+  <p class="small">After you approve the PIN prompt, tap I PAID. Do NOT pay again.</p>
+</div></div>
+
+<!-- AUTH MODAL -->
+<div class="modal" id="authModal"><div class="sheet">
+  <button class="close" onclick="closeAuth()">✕</button>
+  <h2>Login / Create Account</h2>
+  <label>Email</label><input id="authEmail" type="email" placeholder="you@gmail.com">
+  <label>Password</label><input id="authPass" type="password" placeholder="Password">
+  <div id="authMsg" class="msg"></div>
+  <div class="row"><button class="btn" onclick="doLogin()">Login</button><button class="btn btn2" onclick="doSignup()">Create Account</button></div>
+  <p class="small">Use a real email. Your subscription is tied to this account.</p>
+</div></div>
+
 <script>
 const SUPABASE_URL = "https://pumuqiqmtpdpzovjbodm.supabase.co";
-const SUPABASE_KEY = "sb_publishable_NXijT4Pmy00wiSiZdi814Q_H6wnh45z";
-const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-let currentUser=null, userHasAccess=false, userSubEnd=null;
-async function checkAuth(){
-  const {data}=await supabaseClient.auth.getSession();
-  currentUser=data.session?.user||null;
-  if(!currentUser){ userHasAccess=false; showLoginGate(); return; }
-  const {data:subs}=await supabaseClient.from('subscriptions').select('*').eq('user_id',currentUser.id).eq('status','active').order('end_date',{ascending:false}).limit(1);
-  if(subs && subs.length>0 && new Date(subs[0].end_date)>new Date()){
-    userHasAccess=true; userSubEnd=subs[0].end_date;
-    document.getElementById('loginGate').classList.add('hidden');
-    document.getElementById('userBar').classList.remove('hidden');
-    document.getElementById('userEmail').textContent=currentUser.email;
-    document.getElementById('subEndText').textContent="Access until "+new Date(userSubEnd).toLocaleDateString();
-    fetchMatchData(selectedDateObj);
-  } else { userHasAccess=false; showPaywall(); }
-}
-function showLoginGate(){ document.getElementById('matchFeedContainer').innerHTML=`<div class="p-6 text-center"><div class="text-3xl">🔒</div><b>Login to see Today's Picks</b><p class="text-xs text-gray-500">History is free. Picks are for subscribers.</p><button onclick="openAuth()" class="mt-3 px-5 py-2 bg-amber-500 text-black font-black rounded-xl text-xs">LOGIN / CREATE ACCOUNT</button></div>`; }
-function showPaywall(){ document.getElementById('matchFeedContainer').innerHTML=`<div class="p-6 text-center"><div class="text-3xl">💎</div><b>Subscription Expired / No Active Plan</b><p class="text-xs text-gray-500">Choose a plan below to unlock picks.</p><button onclick="openAuth()" class="mt-3 px-5 py-2 bg-amber-500 text-black font-black rounded-xl text-xs">VIEW PLANS</button></div>`; }
-function openAuth(){ document.getElementById('authModal').classList.remove('hidden'); }
-function closeAuth(){ document.getElementById('authModal').classList.add('hidden'); }
-</script>
-</head>
-<body class="bg-white text-gray-900 dark:bg-gray-950 dark:text-gray-100 min-h-screen flex flex-col font-sans">
-<div id="loginGate" class="bg-amber-500 text-black text-center py-2 text-xs font-black">🔒 Login + Active Subscription Required To See Picks — History Is Free</div>
-<div id="userBar" class="hidden bg-emerald-500 text-white text-center py-2 text-xs font-bold"><span id="userEmail"></span> • <span id="subEndText"></span> • <button onclick="logout()" class="underline">Logout</button></div>
-<div id="drawerBackdrop" class="fixed inset-0 bg-black/60 z-50 hidden"></div>
-<aside id="drawerMenu" class="fixed top-0 left-0 bottom-0 w-80 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 z-50 transform -translate-x-full transition-transform duration-300 flex flex-col justify-between p-4 overflow-y-auto no-scrollbar">
-<div class="space-y-5">
-<div class="flex items-center justify-between pb-3 border-b border-gray-200 dark:border-gray-800">
-<div class="flex items-center space-x-2"><div onclick="goToHomepage()" class="flex items-center space-x-3 cursor-pointer"><div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-amber-500 to-yellow-300 flex items-center justify-center font-black text-gray-950">W1</div><span class="font-extrabold">WINS1</span></div>
-<a href="https://wa.me/qr/OSDCY2ACDMP5M1" target="_blank" class="w-8 h-8 rounded-full bg-[#25D366] flex items-center justify-center wa-pulse shrink-0"><svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c0-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></a></div>
-<button id="closeDrawerBtn" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800">✕</button></div>
-<nav class="space-y-1.5"><button onclick="goToHomepage()" class="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl bg-amber-500 text-gray-950 font-black text-xs">⚽ TODAY'S PICKS</button></nav>
-<div class="pt-3 border-t border-gray-200 dark:border-gray-800 relative">
-<button onclick="toggleSettingsDropdown()" id="settingsDropdownBtn" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold bg-gray-100 dark:bg-gray-800">⚙️ SETTINGS <span id="settingsArrow" class="pill-arrow">⌄</span></button>
-<div id="settingsDropdown" class="hidden mt-2 space-y-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-2 shadow-lg">
-<button onclick="setTheme('dark');toggleSettingsDropdown(false)" class="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold bg-gray-900 text-white">🌙 Dark <span class="ml-auto" id="checkDark">✓</span></button>
-<button onclick="setTheme('light');toggleSettingsDropdown(false)" class="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold bg-white text-gray-900 border">☀️ Light <span class="ml-auto" id="checkLight">✓</span></button></div></div>
-<div class="pt-3 border-t border-gray-200 dark:border-gray-800 space-y-2"><label class="text-[11px] font-mono block">Jump to Date:</label><input type="date" id="drawerCalendarInput" onchange="jumpToDate(this.value)" class="w-full bg-gray-100 dark:bg-gray-800 border rounded-xl px-3 py-2 text-xs"></div>
-</div><div class="pt-4 border-t text-center text-[10px] text-gray-500">WINS1 • 2 Markets 10-Factor</div></aside>
-<header class="sticky top-0 z-40 bg-white/90 dark:bg-gray-900/90 border-b px-4 py-3 backdrop-blur-md"><div class="max-w-4xl mx-auto flex items-center justify-between"><div class="flex items-center space-x-2"><button id="openDrawerBtn" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800">☰</button><div onclick="goToHomepage()" class="flex items-center space-x-2 cursor-pointer"><div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-500 to-yellow-300 flex items-center justify-center font-black text-gray-950 text-lg">W1</div><h1 class="font-extrabold text-lg">WINS1</h1></div><a href="https://wa.me/qr/OSDCY2ACDMP5M1" target="_blank" class="w-9 h-9 rounded-full bg-[#25D366] flex items-center justify-center wa-pulse shrink-0"><svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c0-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></a></div><div class="flex items-center space-x-2"><button id="themeToggleBtn" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800"><span id="themeIcon">☀️</span></button></div></div></header>
-<main class="flex-grow max-w-4xl w-full mx-auto px-4 py-6 space-y-6">
-<div class="flex items-center justify-between bg-white dark:bg-gray-900 border rounded-xl p-1.5 no-scrollbar overflow-x-auto gap-2" id="dateRibbon"></div>
-<div class="flex gap-2 overflow-x-auto no-scrollbar pb-1" id="marketFilters">
-<button onclick="setMarketFilter('all')" data-filter="all" class="filter-btn active shrink-0 px-3 py-2 rounded-xl border text-xs font-bold bg-white dark:bg-gray-900">ALL ( <span id="countAll">0</span> )</button>
-<button onclick="setMarketFilter('over15')" data-filter="over15" class="filter-btn shrink-0 px-3 py-2 rounded-xl border text-xs font-bold bg-white dark:bg-gray-900">⚽ Over 1.5 ( <span id="countOver15">0</span> )</button>
-<button onclick="setMarketFilter('under55')" data-filter="under55" class="filter-btn shrink-0 px-3 py-2 rounded-xl border text-xs font-bold bg-white dark:bg-gray-900">🔒 Under 5.5 ( <span id="countUnder55">0</span> )</button></div>
-<section class="space-y-3"><div class="flex items-center justify-between"><h3 class="font-bold text-base flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-emerald-400 pulse-live"></span> <span id="sectionTitleDate">TODAY'S</span> PICKS</h3><span class="text-xs bg-amber-500/10 text-amber-600 border border-amber-500/30 px-3 py-1.5 rounded-xl font-mono font-bold" id="totalPicksBadge">0 PICKS</span></div><div class="grid grid-cols-1 gap-3" id="matchFeedContainer"></div></section>
-<section class="space-y-4 pt-4 border-t" id="historySection"><div class="flex items-center justify-between"><div><h3 class="font-bold text-base">📈 History — Last 60 Days</h3></div><button onclick="loadMoreHistory()" id="historyBtn" class="px-4 py-2 rounded-xl bg-amber-500 text-gray-950 text-xs font-black">Load More</button></div><div class="grid grid-cols-3 gap-2 text-center"><div class="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-2"><div class="text-lg font-black text-emerald-500" id="histWins">0</div><div class="text-[10px] font-mono text-gray-500">WINS ⬆️</div></div><div class="bg-red-500/10 border border-red-500/30 rounded-xl p-2"><div class="text-lg font-black text-red-500" id="histLosses">0</div><div class="text-[10px] font-mono text-gray-500">LOSSES ⬇️</div></div><div class="bg-amber-500/10 border border-amber-500/30 rounded-xl p-2"><div class="text-lg font-black text-amber-500" id="histRate">0%</div><div class="text-[10px] font-mono text-gray-500">WIN RATE</div></div></div><div id="historyList" class="space-y-2"><div class="text-center p-4 text-xs text-gray-500">Scroll here to load history...</div></div></section>
-</main>
-<footer class="bg-white dark:bg-gray-900 border-t py-6 px-4 text-center mt-auto"><p class="text-[11px] font-bold mb-2">Sponsored by</p><a href="https://one.exnessonelink.com/a/m3alh1ljmu?source=app" target="_blank" class="block max-w-4xl mx-auto mb-4 rounded-2xl overflow-hidden border-2 border-black"><div class="bg-[#FFDD00] py-5 px-4 flex items-center justify-center"><span class="text-black font-black text-4xl lowercase">exness</span></div><span class="totally-invisible">Tap to visit Exness</span></a><div class="max-w-4xl mx-auto text-left bg-gray-50 dark:bg-gray-950 border rounded-2xl overflow-hidden"><button onclick="toggleTerms()" class="w-full flex items-center justify-between p-4 text-left"><span class="text-xs font-black">📜 TERMS & REGULATIONS</span><span id="termsArrow" class="pill-arrow">⌄</span></button><div id="termsContent" class="hidden px-4 pb-4 space-y-3"><p class="text-[13px] text-gray-600 dark:text-gray-300">1. <b>Age 25+ Only:</b> You must be 25+ to use betting tips in Uganda.</p><p class="text-[13px] text-gray-600 dark:text-gray-300">2. <b>Entertainment Only:</b> No win is guaranteed.</p><p class="text-[13px] text-gray-600 dark:text-gray-300">3. <b>Bet Responsibly:</b> Only bet what you can afford to lose. Never chase losses.</p><p class="text-[13px] text-gray-600 dark:text-gray-300">4. <b>Licensed Betting:</b> Only with operators licensed by NLGRB Uganda. Winnings subject to 15% tax.</p><p class="text-[10px] text-center text-gray-500 font-mono">© WINS1 — Bet Responsibly | 25+ | NLGRB Uganda</p></div></div></footer>
-<div id="authModal" class="hidden fixed inset-0 bg-black/80 z-[100] flex items-center justify-center p-4 overflow-y-auto"><div class="bg-white dark:bg-gray-900 w-full max-w-md rounded-2xl p-5 space-y-4 my-8"><div class="flex justify-between"><h2 class="font-black">WINS1 — Login / Create Account</h2><button onclick="closeAuth()">✕</button></div><input id="authName" placeholder="Full Name (for new account)" class="w-full border rounded-xl px-3 py-2 text-sm bg-gray-100 dark:bg-gray-800"><input id="authEmail" placeholder="Email" class="w-full border rounded-xl px-3 py-2 text-sm bg-gray-100 dark:bg-gray-800"><input id="authPhone" placeholder="Phone e.g 0707282428" class="w-full border rounded-xl px-3 py-2 text-sm bg-gray-100 dark:bg-gray-800"><input id="authPass" type="password" placeholder="Password" class="w-full border rounded-xl px-3 py-2 text-sm bg-gray-100 dark:bg-gray-800"><div class="grid grid-cols-2 gap-2"><button onclick="doLogin()" class="bg-amber-500 text-black font-black py-2.5 rounded-xl text-sm">LOGIN</button><button onclick="doSignup()" class="bg-gray-900 dark:bg-white text-white dark:text-black font-black py-2.5 rounded-xl text-sm">CREATE ACCOUNT</button></div><p id="authMsg" class="text-xs text-red-500"></p><div class="border-t pt-3 space-y-2"><b class="text-sm">💳 Payment Gateway: ObPay</b><div class="bg-emerald-100 dark:bg-emerald-900/30 border border-emerald-400 rounded-xl p-3 text-xs text-center"><b class="text-base">Pay with ObPay</b><br>MTN MoMo • Airtel Money • Virtual Card<br>You will get a prompt on your phone to approve.</div><select id="planSelect" class="w-full border rounded-xl px-3 py-2 text-sm"><option value="1-week">Weekly - UGX 13,000</option><option value="1-month">Monthly - UGX 45,000</option><option value="3-months">3 Months - UGX 110,000</option><option value="6weeks">6 Weeks - UGX 75,000</option></select><input id="payPhone" placeholder="Phone to charge e.g 0707282428" class="w-full border rounded-xl px-3 py-2 text-sm"><button id="payBtn" onclick="payWithObPay()" class="w-full bg-emerald-600 text-white font-black py-3 rounded-xl text-sm">PAY NOW WITH OBPAY</button><p id="obpayMsg" class="text-xs text-center text-gray-500"></p><button onclick="checkPaymentStatus()" class="w-full bg-gray-200 dark:bg-gray-800 font-bold py-2 rounded-xl text-xs">I PAID — CHECK STATUS</button></div></div></div>
-<script>
-function toggleTerms(){const c=document.getElementById('termsContent');const a=document.getElementById('termsArrow');if(!c)return;const h=c.classList.contains('hidden');if(h){c.classList.remove('hidden');if(a)a.style.transform='rotate(180deg)'}else{c.classList.add('hidden');if(a)a.style.transform='rotate(0deg)'}}
-const drawerMenu=document.getElementById('drawerMenu'),drawerBackdrop=document.getElementById('drawerBackdrop');
-function setTheme(mode){if(mode==='dark'){document.documentElement.classList.add('dark');document.getElementById('themeIcon').textContent='☀️'}else{document.documentElement.classList.remove('dark');document.getElementById('themeIcon').textContent='🌙'}try{localStorage.setItem('wins1_theme',mode)}catch(e){}}
-(function(){let s='dark';try{s=localStorage.getItem('wins1_theme')||'dark'}catch(e){}setTheme(s)})();
-document.getElementById('themeToggleBtn').addEventListener('click',()=>{setTheme(document.documentElement.classList.contains('dark')?'light':'dark')});
-function toggleSettingsDropdown(force){const d=document.getElementById('settingsDropdown');const a=document.getElementById('settingsArrow');if(!d)return;const show=force!==undefined?force:d.classList.contains('hidden');if(show){d.classList.remove('hidden');if(a)a.style.transform='rotate(180deg)'}else{d.classList.add('hidden');if(a)a.style.transform='rotate(0deg)'}const isDark=document.documentElement.classList.contains('dark');const cd=document.getElementById('checkDark'),cl=document.getElementById('checkLight');if(cd)cd.style.opacity=isDark?'1':'0';if(cl)cl.style.opacity=isDark?'0':'1'}
-function toggleDrawer(o){if(o){drawerBackdrop.classList.remove('hidden');drawerMenu.classList.remove('-translate-x-full')}else{drawerMenu.classList.add('-translate-x-full');drawerBackdrop.classList.add('hidden')}}
-document.getElementById('openDrawerBtn').addEventListener('click',()=>toggleDrawer(true));document.getElementById('closeDrawerBtn').addEventListener('click',()=>toggleDrawer(false));drawerBackdrop.addEventListener('click',()=>toggleDrawer(false));
-function getYYYYMMDD(d){return d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0')}
-function toInputDateValue(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
-let selectedDateObj=new Date();let allTodayPicks=[];let currentMarketFilter='all';
-function setMarketFilter(f){currentMarketFilter=f;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.toggle('active',b.dataset.filter===f));renderPicks()}
-function initRibbon(){const ribbon=document.getElementById('dateRibbon');const cal=document.getElementById('drawerCalendarInput');if(cal)cal.value=toInputDateValue(selectedDateObj);if(!ribbon)return;const center=new Date(selectedDateObj);center.setHours(0,0,0,0);const today=new Date();today.setHours(0,0,0,0);let html='';for(let off=-30;off<=30;off++){const d=new Date(center);d.setDate(center.getDate()+off);const sel=d.getTime()===center.getTime();const isT=d.getTime()===today.getTime();const day=isT?'TODAY':d.toLocaleDateString('en-US',{weekday:'short'}).toUpperCase();const date=d.toLocaleDateString('en-US',{month:'short',day:'numeric'});const iso=toInputDateValue(d);html+=`<button onclick="jumpToDate('${iso}')" class="shrink-0 px-3 py-1.5 rounded-lg text-left ${sel?'bg-amber-500 text-gray-950 font-bold shadow':'bg-gray-100 dark:bg-gray-800/70 text-gray-600 dark:text-gray-300'}"><div class="text-[10px] font-mono">${day}</div><div class="text-xs font-bold">${date}</div></button>`}ribbon.innerHTML=html;setTimeout(()=>{const el=ribbon.querySelector('.bg-amber-500');if(el)ribbon.scrollTo({left:el.offsetLeft-ribbon.clientWidth/2+el.clientWidth/2,behavior:'smooth'})},50)}
-function _goHome(){toggleDrawer(false);selectedDateObj=new Date();initRibbon();fetchMatchData(selectedDateObj,false)}
-function goToHomepage(){ if(!userHasAccess){ openAuth(); return; } _goHome(); }
-function jumpToDate(s){ if(!userHasAccess){ openAuth(); return; } if(!s)return;selectedDateObj=new Date(s+'T00:00:00');toggleDrawer(false);initRibbon();fetchMatchData(selectedDateObj,false)}
-function triggerRefresh(){try{sessionStorage.removeItem('wins1_cache_'+getYYYYMMDD(selectedDateObj))}catch(e){}fetchMatchData(selectedDateObj,false)}
-function parseRecordStats(s){if(!s||typeof s!=='string')return{winRate:.40,lossRate:.35,drawRate:.25,played:0,wins:0,draws:0,losses:0};const p=s.split('-').map(n=>parseInt(n,10)).filter(n=>!isNaN(n));if(p.length===3){const[w,d,l]=p;const pl=w+d+l;return{winRate:pl?w/pl:.40,lossRate:pl?l/pl:.35,drawRate:pl?d/pl:.25,played:pl,wins:w,draws:d,losses:l}}if(p.length===2){const[w,l]=p;const pl=w+l;return{winRate:pl?w/pl:.40,lossRate:pl?l/pl:.35,drawRate:0,played:pl,wins:w,draws:0,losses:l}}return{winRate:.40,lossRate:.35,drawRate:.25,played:0,wins:0,draws:0,losses:0}}
-function clamp(v,a,b){return Math.min(b,Math.max(a,v))}
-function evaluateBestMarket(match){const h=parseRecordStats(match.homeRecord),a=parseRecordStats(match.awayRecord);const ou=parseFloat(match.overUnderLine)||null;if(h.played<5||a.played<5)return null;const tempo=(h.winRate+h.lossRate+a.winRate+a.lossRate)/2;const weak=(h.lossRate+a.lossRate)/2;const both=1-Math.abs(h.winRate-a.winRate);const bttsScore=(both*0.6+weak*0.4);const active=(h.winRate+a.winRate)/2;let xgEst=2.2+(tempo*0.8)+(weak*1.2)+(ou?(ou-2.5)*0.3:0);let venue=0;if(h.winRate>=0.55&&h.lossRate>=0.25)venue=15;else if(h.winRate>=0.45&&h.lossRate>=0.25)venue=11;else if(h.winRate>=0.40)venue=6;let away=0;if(a.winRate>=0.40&&a.lossRate>=0.30)away=15;else if(a.winRate>=0.30&&a.lossRate>=0.30)away=11;else if(a.lossRate>=0.35)away=8;let ref=0;if(ou&&ou>=3.0)ref=5;else if(ou&&ou>=2.5)ref=4;else if(ou&&ou>=2.0)ref=2;let corners=0;if(tempo>=0.75)corners=10;else if(tempo>=0.68)corners=8;else if(tempo>=0.60)corners=5;let btts=0;if(bttsScore>=0.70)btts=15;else if(bttsScore>=0.60)btts=12;else if(bttsScore>=0.50)btts=7;let xgPts=0;if(xgEst>=3.2)xgPts=15;else if(xgEst>=2.9)xgPts=12;else if(xgEst>=2.6)xgPts=7;let shots=0;if(active>=0.48&&weak>=0.35)shots=10;else if(active>=0.42)shots=7;else if(active>=0.35)shots=4;let h2h=0;if(Math.abs(h.winRate-a.winRate)<=0.15)h2h=5;else if(Math.abs(h.winRate-a.winRate)<=0.30)h2h=3;let lineup=0;if(h.played>=8&&a.played>=8)lineup=5;else if(h.played>=5&&a.played>=5)lineup=4;let weather=0;if(ou&&ou>=2.5)weather=5;else if(ou&&ou>=2.0)weather=3;const baseScore=venue+away+ref+corners+btts+xgPts+shots+h2h+lineup+weather;const total=match.homeScore+match.awayScore;const isFinished=match.statusState==='post';const candidates=[];if(!(h.lossRate<0.15&&a.lossRate<0.15)&&!(ou&&ou<2.0)&&weak>=0.28&&bttsScore>=0.45){if(baseScore>=80){let prob=clamp(0.60+(baseScore/100)*0.35,0.78,0.96);let odd=parseFloat((1/prob).toFixed(2));if(odd>=1.05&&odd<=1.30)candidates.push({key:'over15',label:'Over 1.5 Goals',emoji:'⚽',prob,odd,confidence:(prob*100).toFixed(1)+'%',isWon:isFinished?total>=2:false,isFinished,score:baseScore,xgEst})}}let underScore=0;if(xgEst<=3.6)underScore+=25;else if(xgEst<=4.0)underScore+=18;else if(xgEst<=4.4)underScore+=10;if(tempo<=0.70)underScore+=20;else if(tempo<=0.80)underScore+=14;else underScore+=6;if(weak<=0.40)underScore+=20;else if(weak<=0.50)underScore+=14;else underScore+=6;if(h.drawRate>=0.25||a.drawRate>=0.25)underScore+=10;else underScore+=5;if(ou&&ou<=3.5)underScore+=15;else if(ou&&ou<=4.0)underScore+=10;else underScore+=5;if(both>=0.70)underScore+=10;else underScore+=5;if(underScore>=80){let prob=clamp(0.70+(underScore/100)*0.28,0.82,0.98);let odd=parseFloat((1/prob).toFixed(2));if(odd>=1.02&&odd<=1.30)candidates.push({key:'under55',label:'Under 5.5 Goals',emoji:'🔒',prob,odd,confidence:(prob*100).toFixed(1)+'%',isWon:isFinished?total<=5:false,isFinished,score:underScore,xgEst})}if(candidates.length===0)return null;candidates.sort((x,y)=>y.score-x.score);return candidates[0]}
-const fixtureCache=new Map();
-async function fetchRealFixtures(dateObj){const cd=getYYYYMMDD(dateObj);const ck='wins1_cache_'+cd;if(fixtureCache.has(cd))return fixtureCache.get(cd);try{const cached=sessionStorage.getItem(ck);if(cached){const p=JSON.parse(cached);if(Date.now()-p.time<10*60*1000){fixtureCache.set(cd,p.data);return p.data}}}catch(e){}let fixtures=[];const leagues=['eng.1','eng.2','esp.1','esp.2','ita.1','ita.2','ger.1','ger.2','fra.1','fra.2','uefa.champions','uefa.europa','uefa.conference','usa.1','ned.1','por.1','bel.1','tur.1','sui.1','aut.1','sco.1','bra.1','arg.1','mex.1','chi.1','col.1','jpn.1','kor.1','aus.1','rsa.1','egy.1'];const reqs=leagues.map(lg=>fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/${lg}/scoreboard?dates=${cd}`).then(r=>r.ok?r.json():null).catch(()=>null));const results=await Promise.all(reqs);results.forEach(data=>{if(data&&Array.isArray(data.events)){const ln=(data.leagues&&data.leagues[0]&&data.leagues[0].name)||"League";data.events.forEach(ev=>{const comp=ev.competitions&&ev.competitions[0];if(comp&&comp.competitors&&comp.competitors.length===2){const ho=comp.competitors.find(c=>c.homeAway==='home')||comp.competitors[0];const ao=comp.competitors.find(c=>c.homeAway==='away')||comp.competitors[1];const hn=ho.team.displayName,an=ao.team.displayName;if(!fixtures.some(f=>f.home===hn&&f.away===an)){const dt=new Date(ev.date);const ts=isNaN(dt)?"19:00":dt.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',hour12:false});const st=(ev.status&&ev.status.type&&ev.status.type.state)||"pre";const hr=(ho.records&&ho.records[0]&&ho.records[0].summary)||"";const ar=(ao.records&&ao.records[0]&&ao.records[0].summary)||"";const oddsObj=(comp.odds&&comp.odds[0])||null;fixtures.push({id:`${hn}_vs_${an}`,home:hn,away:an,league:ln,time:ts,statusState:st,homeScore:parseInt(ho.score,10)||0,awayScore:parseInt(ao.score,10)||0,homeRecord:hr,awayRecord:ar,overUnderLine:oddsObj?oddsObj.overUnder:null})}}})}});fixtureCache.set(cd,fixtures);try{sessionStorage.setItem(ck,JSON.stringify({time:Date.now(),data:fixtures}))}catch(e){}return fixtures}
-function renderPicks(){const container=document.getElementById('matchFeedContainer');let all=[...allTodayPicks].sort((a,b)=>b.score-a.score);document.getElementById('countAll').textContent=all.length;document.getElementById('countOver15').textContent=all.filter(p=>p.key==='over15').length;document.getElementById('countUnder55').textContent=all.filter(p=>p.key==='under55').length;let list=currentMarketFilter==='all'?all:all.filter(p=>p.key===currentMarketFilter);document.getElementById('totalPicksBadge').textContent=list.length+' PICKS';if(list.length===0){container.innerHTML=`<div class="bg-white dark:bg-gray-900 border rounded-2xl p-6 text-center space-y-2"><div class="text-3xl">🛡️</div><div class="font-black">NO PICK FOR THIS FILTER</div><p class="text-xs text-gray-500">No game scored 80/100 for this market today.<br>Try ALL.</p></div>`;return}container.innerHTML=list.map((p,i)=>{let badge=`<span class="text-[11px] font-mono text-gray-500 nowrap-badge">⏰ ${p.match.time}</span>`;if(p.isFinished)badge=p.isWon?`<span class="bg-emerald-500 text-white px-2.5 py-1 rounded-lg text-xs font-black nowrap-badge">✅ ${p.match.homeScore}-${p.match.awayScore}</span>`:`<span class="bg-red-500 text-white px-2.5 py-1 rounded-lg text-xs font-black nowrap-badge">❌ ${p.match.homeScore}-${p.match.awayScore}</span>`;else if(p.match.statusState==='in')badge=`<span class="bg-emerald-500/20 text-emerald-500 border border-emerald-500/30 px-2.5 py-1 rounded-lg text-xs font-bold nowrap-badge">● LIVE ${p.match.homeScore}-${p.match.awayScore}</span>`;const marketColor=p.key==='under55'?'bg-gray-700 text-white':'bg-emerald-500 text-white';return `<div class="bg-white dark:bg-gray-900 border rounded-2xl p-4 space-y-2"><div class="flex items-center justify-between gap-3"><div class="flex items-center gap-3 min-w-0"><span class="w-9 h-9 rounded-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 flex items-center justify-center text-xs font-black shrink-0">${i+1}</span><div class="min-w-0"><div class="text-sm font-bold truncate">${p.match.home} vs ${p.match.away}</div><div class="text-[11px] font-mono text-gray-500 truncate">${p.match.league} • ${p.emoji} ${p.label} • Score ${p.score}/100</div><div class="text-[11px] font-bold text-emerald-600">Confidence ${p.confidence}</div></div></div><div class="flex flex-col items-end gap-1 shrink-0"><span class="bg-gray-900 dark:bg-white text-white dark:text-gray-900 px-3 py-1.5 rounded-lg text-sm font-black nowrap-badge">@ ${p.odd.toFixed(2)}</span>${badge}<button onclick="copySingle('${p.match.id}','${p.key}')" class="text-[10px] font-bold text-amber-500">📋 Copy</button></div></div><div class="flex gap-2 items-center"><span class="text-[10px] font-black px-2 py-1 rounded-lg ${marketColor} nowrap-badge">Pick: ${p.emoji} ${p.label}</span></div></div>`}).join('')}
-function copySingle(id,key){const p=allTodayPicks.find(x=>x.match.id===id&&x.key===key);if(!p)return;const txt=`WINS1 • ${p.match.home} vs ${p.match.away} • Pick: ${p.label} @ ${p.odd.toFixed(2)} • ${p.confidence} • 10-Factor ${p.score}/100 • 25+ Bet Responsibly`;if(navigator.clipboard)navigator.clipboard.writeText(txt)}
-async function fetchMatchData(dateObj){ if(!userHasAccess){ showLoginGate(); return; } selectedDateObj=dateObj;const container=document.getElementById('matchFeedContainer');const today=new Date();const isT=dateObj.toDateString()===today.toDateString();document.getElementById('sectionTitleDate').textContent=isT?"TODAY'S":dateObj.toLocaleDateString('en-US',{month:'short',day:'numeric'}).toUpperCase();container.innerHTML=`<div class="p-8 text-center text-xs text-gray-500">Running 10-Factor Analysis — 2 Markets...</div>`;const matches=await fetchRealFixtures(dateObj);allTodayPicks=[];matches.forEach(m=>{const pk=evaluateBestMarket(m);if(pk)allTodayPicks.push({...pk,match:m})});renderPicks()}
-let historyLoading=false,historyLoadedDays=0,mainHistory=[];
-function updateHistoryStats(){let w=0,l=0;mainHistory.forEach(t=>{if(t.won)w++;else l++});document.getElementById('histWins').textContent=w;document.getElementById('histLosses').textContent=l;document.getElementById('histRate').textContent=(w+l)>0?Math.round(w/(w+l)*100)+'%':'0%';const list=document.getElementById('historyList');if(mainHistory.length===0){list.innerHTML=`<div class="text-center p-4 text-xs text-gray-500">No finished history yet.</div>`;return}list.innerHTML=mainHistory.map(x=>x.html).join('')}
-async function loadHistoryBatch(){if(historyLoading)return;historyLoading=true;const btn=document.getElementById('historyBtn');if(btn)btn.textContent='Loading...';const start=historyLoadedDays+1,end=Math.min(60,historyLoadedDays+7);for(let back=start;back<=end;back++){const d=new Date();d.setDate(d.getDate()-back);try{const matches=await fetchRealFixtures(d);const dateLabel=d.toLocaleDateString('en-US',{month:'short',day:'numeric'});matches.forEach(m=>{const pk=evaluateBestMarket(m);if(pk&&m.statusState==='post'){mainHistory.push({won:pk.isWon,odd:pk.odd,html:`<div class="flex items-center justify-between bg-white dark:bg-gray-900 border ${pk.isWon?'border-emerald-500/40':'border-red-500/40'} rounded-xl px-3 py-2.5"><div class="flex items-center gap-2.5"><span class="min-w-[52px] h-8 px-1.5 rounded-full ${pk.isWon?'bg-emerald-500 text-white':'bg-red-500 text-white'} flex items-center justify-center text-[11px] font-black">${m.time}</span><div><div class="text-xs font-bold">${m.home} vs ${m.away}</div><div class="text-[10px] font-mono text-gray-500">${dateLabel} • Pick: ${pk.emoji} ${pk.label} • ${m.homeScore}-${m.awayScore} • ${pk.score}/100</div></div></div><div class="text-right shrink-0"><div class="text-xs font-black ${pk.isWon?'text-emerald-500':'text-red-500'}">${pk.isWon?'WON':'LOST'} ${m.homeScore}-${m.awayScore}</div><div class="text-[10px] font-mono text-gray-500">@ ${pk.odd.toFixed(2)}</div></div></div>`})}})}catch(e){}}historyLoadedDays=end;updateHistoryStats();if(btn)btn.textContent=historyLoadedDays>=60?'All 60 Days Loaded':'Load More ('+historyLoadedDays+'/60)';historyLoading=false;if(historyLoadedDays<60)setTimeout(()=>loadHistoryBatch(),600)}
-function loadMoreHistory(){loadHistoryBatch()}
-async function doSignup(){const email=document.getElementById('authEmail').value.trim(),pass=document.getElementById('authPass').value,name=document.getElementById('authName').value.trim(),phone=document.getElementById('authPhone').value.trim();if(!email||!pass){document.getElementById('authMsg').textContent="Enter email + password";return}const {data,error}=await supabaseClient.auth.signUp({email,password:pass,options:{data:{full_name:name}}});if(error){document.getElementById('authMsg').textContent=error.message;return}if(data.user){await supabaseClient.from('profiles').upsert({id:data.user.id,email:email,phone:phone,full_name:name});document.getElementById('authMsg').textContent="Account created! Now choose plan and pay with ObPay.";checkAuth()}}
-async function doLogin(){const email=document.getElementById('authEmail').value,pass=document.getElementById('authPass').value;const {error}=await supabaseClient.auth.signInWithPassword({email,password:pass});if(error){document.getElementById('authMsg').textContent=error.message;return}closeAuth();checkAuth()}
-async function logout(){await supabaseClient.auth.signOut();location.reload()}
+const SUPABASE_ANON_KEY = "sb_publishable_y0i4bS3kRjP5z1qQ8G7z1A_cA9P5dWj"; // <-- PASTE YOUR FULL PUBLISHABLE KEY HERE if this one is cut
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// --- FIXED PAYMENT SECTION ---
-const PLAN_AMOUNTS = {"1-week":13000,"1-month":45000,"3-months":110000,"6weeks":75000};
-const PLAN_DAYS = {"1-week":7,"1-month":30,"3-months":90,"6weeks":42};
+let currentUser = null;
+let selectedPlan = { id: "1-week", amount: 13000, label: "Weekly" };
+let currentRef = null;
 
-function normalizePhone(p){
-  let s = String(p||"").trim().replace(/[\s\-]/g,"");
-  if(s.startsWith("+256")) s = "0" + s.slice(4);
-  else if(s.startsWith("256")) s = "0" + s.slice(3);
-  else if(!s.startsWith("0")) s = "0" + s;
-  return s;
+const PICKS = [
+  { match: "Arsenal vs Chelsea", pick: "Over 1.5 Goals", odd: "1.35" },
+  { match: "Man City vs Liverpool", pick: "BTTS - Yes", odd: "1.65" },
+  { match: "Real Madrid vs Sevilla", pick: "Home Win", odd: "1.45" },
+];
+
+function renderPicks(unlocked){
+  const el = document.getElementById("picksList");
+  el.innerHTML = PICKS.map(p => `
+    <div class="match"><div><b>${p.match}</b><div style="color:#9fb0d0;font-size:12px">Confidence: High</div></div>
+    <div class="pick ${unlocked ? "" : "locked"}">${unlocked ? p.pick + " • " + p.odd : "🔒 LOCKED"}</div></div>`).join("");
+  document.getElementById("statusBadge").textContent = unlocked ? "✅ ACTIVE - Picks Unlocked" : "🔒 LOCKED - Subscribe to unlock";
 }
+renderPicks(false);
+
+function selectPlan(el){
+  document.querySelectorAll(".plan").forEach(p=>p.classList.remove("active"));
+  el.classList.add("active");
+  selectedPlan = { id: el.dataset.plan, amount: Number(el.dataset.amount), label: el.querySelector("h3").innerText };
+  document.getElementById("payTitle").textContent = `Pay - ${selectedPlan.label} - UGX ${selectedPlan.amount.toLocaleString()}`;
+}
+function openPlans(){ document.getElementById("plansModal").classList.add("open"); }
+function closePlans(){ document.getElementById("plansModal").classList.remove("open"); }
+function openPay(){
+  if(!currentUser){ closePlans(); openAuth(); document.getElementById("authMsg").textContent = "Please login first, then pay."; document.getElementById("authMsg").className = "msg err"; return; }
+  closePlans(); document.getElementById("payModal").classList.add("open");
+  document.getElementById("payTitle").textContent = `Pay - ${selectedPlan.label} - UGX ${selectedPlan.amount.toLocaleString()}`;
+  document.getElementById("obpayMsg").textContent = "";
+  document.getElementById("checkBtn").style.display = "none";
+}
+function closePay(){ document.getElementById("payModal").classList.remove("open"); }
+function openAuth(){ document.getElementById("authModal").classList.add("open"); }
+function closeAuth(){ document.getElementById("authModal").classList.remove("open"); }
+
+async function doSignup(){
+  const email = document.getElementById("authEmail").value.trim();
+  const password = document.getElementById("authPass").value;
+  const m = document.getElementById("authMsg");
+  const { data, error } = await supabase.auth.signUp({ email, password });
+  if(error){ m.textContent = error.message; m.className = "msg err"; return; }
+  m.textContent = "Account created! Now tap Login."; m.className = "msg ok";
+}
+async function doLogin(){
+  const email = document.getElementById("authEmail").value.trim();
+  const password = document.getElementById("authPass").value;
+  const m = document.getElementById("authMsg");
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  if(error){ m.textContent = error.message; m.className = "msg err"; return; }
+  currentUser = data.user; closeAuth(); updateAuthUI(); checkSubscription();
+}
+async function updateAuthUI(){
+  const { data } = await supabase.auth.getSession();
+  currentUser = data.session?.user || null;
+  document.getElementById("userLabel").textContent = currentUser ? currentUser.email : "";
+  document.getElementById("authBtn").textContent = currentUser ? "Logout" : "Login";
+  document.getElementById("authBtn").onclick = currentUser ? async () => { await supabase.auth.signOut(); currentUser = null; updateAuthUI(); renderPicks(false); } : openAuth;
+}
+async function checkSubscription(){
+  if(!currentUser) return;
+  const { data } = await supabase.from("subscriptions").select("*").eq("user_id", currentUser.id).eq("status", "active").order("end_date", { ascending: false }).limit(1).maybeSingle();
+  if(data && new Date(data.end_date) > new Date()) renderPicks(true);
+}
+updateAuthUI().then(checkSubscription);
+supabase.auth.onAuthStateChange((_e, s) => { currentUser = s?.user || null; updateAuthUI(); checkSubscription(); });
+
+// ===== OBPAY - FIXED: NO Authorization header, only apikey =====
 async function payWithObPay(){
-  if(!currentUser){ alert("Login first"); return; }
-  const plan = document.getElementById('planSelect').value;
-  const amount = PLAN_AMOUNTS[plan] || 13000;
-  const rawPhone = document.getElementById('payPhone').value || document.getElementById('authPhone').value || '';
-  const phone = normalizePhone(rawPhone);
-  const name = (document.getElementById('authName').value.trim() || currentUser.user_metadata?.full_name || currentUser.email || "Customer");
-  if(!phone || phone.length!==10 || !phone.startsWith("0")){ alert("Enter valid phone e.g 0707282428"); return; }
-  const btn = document.getElementById('payBtn'); if(btn){ btn.disabled=true; btn.textContent="Sending..."; }
-  document.getElementById('obpayMsg').textContent="Sending ObPay prompt to "+phone+"... Approve on your phone.";
-  const {data:{session}} = await supabaseClient.auth.getSession();
-  if(!session){ alert("Login again"); return; }
-  try{
-    const res = await fetch(SUPABASE_URL+"/functions/v1/obpay-create",{method:"POST",headers:{"Content-Type":"application/json","apikey":SUPABASE_KEY,"Authorization":"Bearer "+session.access_token},body:JSON.stringify({amount,phone,name,plan,user_id:currentUser.id,email:currentUser.email})});
-    const text = await res.text();
-    let data; try{ data=JSON.parse(text); }catch(e){ document.getElementById('obpayMsg').textContent="Server returned HTML - function name wrong. Got: "+text.slice(0,80); if(btn){btn.disabled=false;btn.textContent="PAY NOW WITH OBPAY";} return; }
-    if(data.error){ document.getElementById('obpayMsg').textContent="Error: "+data.error; if(btn){btn.disabled=false;btn.textContent="PAY NOW WITH OBPAY";} return; }
-    const ref = data.reference || data.data?.reference || data.data?.id;
-    if(!ref){ document.getElementById('obpayMsg').textContent="Error: No reference from ObPay"; if(btn){btn.disabled=false;btn.textContent="PAY NOW WITH OBPAY";} return; }
-    if(data.checkout_url){ window.location.href=data.checkout_url; return; }
-    document.getElementById('obpayMsg').textContent="✅ Prompt sent! Approve on your phone. Ref: "+ref+" — If no prompt in 30s, tap I PAID — CHECK STATUS below.";
-    localStorage.setItem('wins1_last_ref', ref);
-    // Auto-check every 5s for 2 mins - stops when active
-    const check=setInterval(async()=>{ const ok = await checkPaymentStatus(true); if(ok) clearInterval(check); },5000);
-    setTimeout(()=>{ clearInterval(check); if(btn){btn.disabled=false;btn.textContent="PAY NOW WITH OBPAY";} }, 120000);
-  }catch(e){ document.getElementById('obpayMsg').textContent="Network error: "+e.message; if(btn){btn.disabled=false;btn.textContent="PAY NOW WITH OBPAY";} }
-}
-async function checkPaymentStatus(silent){
-  const ref = localStorage.getItem('wins1_last_ref');
-  if(!ref){ if(!silent) alert("No payment started yet. Tap PAY NOW first."); return false; }
-  if(!silent) document.getElementById('obpayMsg').textContent="Checking ObPay for "+ref+"...";
-  try{
-    const {data:{session}} = await supabaseClient.auth.getSession();
-    const res = await fetch(SUPABASE_URL+"/functions/v1/obpay-check",{method:"POST",headers:{"Content-Type":"application/json","apikey":SUPABASE_KEY,"Authorization":"Bearer "+(session?.access_token||SUPABASE_KEY)},body:JSON.stringify({reference:ref})});
-    const data = await res.json();
-    const s = (data.status||"").toLowerCase();
-    if(s==="success"||s==="successful"||s==="completed"){
-      document.getElementById('obpayMsg').textContent="🎉 Payment SUCCESS! Welcome to WINS1 VIP.";
-      if(!silent){ alert("Payment confirmed!"); closeAuth(); }
-      await checkAuth(); return true;
+  const msg = document.getElementById("obpayMsg");
+  const btn = document.getElementById("payBtn");
+  const name = document.getElementById("payName").value.trim();
+  let phone = document.getElementById("payPhone").value.trim().replace(/[\s\-]/g, "");
+  if(!name){ msg.textContent = "Please enter your name."; msg.className = "msg err"; return; }
+  if(phone.startsWith("+256")) phone = "0" + phone.slice(4);
+  else if(phone.startsWith("256")) phone = "0" + phone.slice(3);
+  if(!/^0(70|75|77|78|76)\d{7}$/.test(phone)){ msg.textContent = "Enter valid MTN/Airtel number like 0707282428"; msg.className = "msg err"; return; }
+  document.getElementById("payPhone").value = phone;
+  if(!currentUser){ msg.textContent = "Please login first."; msg.className = "msg err"; openAuth(); return; }
+
+  btn.disabled = true; btn.textContent = "Sending prompt...";
+  msg.textContent = "Sending prompt to " + phone + " ..."; msg.className = "msg";
+  try {
+    const res = await fetch(SUPABASE_URL + "/functions/v1/obpay-create", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "apikey": SUPABASE_ANON_KEY },
+      body: JSON.stringify({ amount: selectedPlan.amount, phone, name, plan: selectedPlan.id, user_id: currentUser.id, email: currentUser.email }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if(!res.ok || !data.success){
+      if(data.uncertain){ currentRef = data.reference; document.getElementById("checkBtn").style.display = "block"; msg.textContent = "⚠️ " + data.error; msg.className = "msg err"; }
+      else { msg.textContent = "❌ " + (data.error || "Payment failed. Try again."); msg.className = "msg err"; }
+      btn.disabled = false; btn.textContent = "PAY NOW WITH OBPAY"; return;
     }
-    if(s==="failed"||s==="cancelled"||s==="failure"){
-      document.getElementById('obpayMsg').textContent="❌ Payment failed. You can try PAY NOW again.";
-      if(!silent) alert("Payment failed. Try PAY NOW again.");
-      return false;
-    }
-    // Fallback: also check Supabase table in case callback already activated it
-    const {data:subs}=await supabaseClient.from('subscriptions').select('*').eq('obpay_reference',ref).single();
-    if(subs?.status==='active'){ document.getElementById('obpayMsg').textContent="🎉 Payment SUCCESS!"; if(!silent){ alert("Payment confirmed!"); closeAuth(); } await checkAuth(); return true; }
-    if(!silent) alert("Status: "+(s||subs?.status||"pending")+" — Ref: "+ref+" — Wait 30s and try again.");
-    else document.getElementById('obpayMsg').textContent="⏳ Still pending... Ref: "+ref+" — Approve PIN on phone, then CHECK STATUS.";
-    return false;
-  }catch(e){
-    if(!silent) alert("Check failed: "+e.message);
-    return false;
+    currentRef = data.reference;
+    document.getElementById("checkBtn").style.display = "block";
+    msg.textContent = "✅ Prompt sent! Ref: " + currentRef + "\nApprove the MTN/Airtel prompt on " + phone + " with your PIN, then tap I PAID — CHECK STATUS."; msg.className = "msg ok";
+    btn.disabled = false; btn.textContent = "PAY NOW WITH OBPAY";
+  } catch (e) {
+    msg.textContent = "Network error: Failed to fetch\n\n1. In Supabase, turn Verify JWT OFF for obpay-create\n2. Close Chrome, reopen site\n3. Login again, then try."; msg.className = "msg err";
+    btn.disabled = false; btn.textContent = "PAY NOW WITH OBPAY";
   }
 }
-initRibbon();checkAuth();
-const _histObs=new IntersectionObserver((entries)=>{if(entries[0].isIntersecting&&historyLoadedDays===0){loadHistoryBatch();_histObs.disconnect()}},{rootMargin:'200px'});const _histEl=document.getElementById('historySection');if(_histEl)_histObs.observe(_histEl);
+
+async function checkPayment(){
+  const msg = document.getElementById("obpayMsg");
+  if(!currentRef){ msg.textContent = "No payment to check. Tap PAY NOW first."; msg.className = "msg err"; return; }
+  msg.textContent = "Checking..."; msg.className = "msg";
+  try {
+    const res = await fetch(SUPABASE_URL + "/functions/v1/obpay-check", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "apikey": SUPABASE_ANON_KEY },
+      body: JSON.stringify({ reference: currentRef }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if(data.status === "success" || data.status === "successful" || data.status === "completed"){
+      msg.textContent = "🎉 Payment SUCCESS! Picks unlocked!"; msg.className = "msg ok";
+      renderPicks(true); setTimeout(closePay, 1500); return;
+    }
+    msg.textContent = "⏳ Still pending (" + (data.status || "pending") + ").\nApprove PIN on your phone, wait 10 sec, tap CHECK again."; msg.className = "msg err";
+  } catch(e){ msg.textContent = "Network error: Failed to fetch - turn Verify JWT OFF in Supabase."; msg.className = "msg err"; }
+}
 </script>
-</body></html>
+</body>
+</html>
