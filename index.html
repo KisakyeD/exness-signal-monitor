@@ -32,7 +32,7 @@
       <button onclick="goToHomepage()" class="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl bg-amber-500 text-gray-950 font-black text-xs">⚽ TODAY'S PICKS</button>
     </nav>
         <div class="pt-3 border-t border-gray-200 dark:border-gray-800 relative">
-      <button onclick="toggleSettingsDropdown()" id="settingsDropdownBtn" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold bg-gray-100 dark:bg-gray-800">⚙️ SETTINGS <span id="settingsArrow">▼</span></button>
+      <button onclick="toggleSettingsDropdown()" id="settingsDropdownBtn" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold bg-gray-100 dark:bg-gray-800">⚙️ SETTINGS <span id="settingsArrow" class="pill-arrow">⌄</span></button>
       <div id="settingsDropdown" class="hidden mt-2 space-y-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-2 shadow-lg">
         <button onclick="setTheme('dark');toggleSettingsDropdown(false)" class="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold bg-gray-900 text-white">🌙 Dark <span class="ml-auto" id="checkDark">✓</span></button>
         <button onclick="setTheme('light');toggleSettingsDropdown(false)" class="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold bg-white text-gray-900 border">☀️ Light <span class="ml-auto" id="checkLight">✓</span></button>
@@ -221,11 +221,11 @@ function renderPicks(){
       <div class="flex items-center gap-3 min-w-0"><span class="w-9 h-9 rounded-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 flex items-center justify-center text-xs font-black shrink-0">${i+1}</span>
       <div class="min-w-0"><div class="text-sm font-bold truncate">${p.match.home} vs ${p.match.away}</div><div class="text-[11px] font-mono text-gray-500 truncate">${p.match.league} • ${p.emoji} ${p.label} • Score ${p.score}/100</div><div class="text-[11px] font-bold text-emerald-600">Confidence ${p.confidence}</div></div></div>
       <div class="flex flex-col items-end gap-1 shrink-0"><span class="bg-gray-900 dark:bg-white text-white dark:text-gray-900 px-3 py-1.5 rounded-lg text-sm font-black nowrap-badge">@ ${p.odd.toFixed(2)}</span>${badge}<button onclick="copySingle('${p.match.id}','${p.key}')" class="text-[10px] font-bold text-amber-500">📋 Copy</button></div></div>
-      <div class="flex gap-2 items-center"><span class="text-[10px] font-black px-2 py-1 rounded-lg ${marketColor} nowrap-badge">${p.emoji} ${p.label}</span></div></div>`;
+      <div class="flex gap-2 items-center"><span class="text-[10px] font-black px-2 py-1 rounded-lg ${marketColor} nowrap-badge">Pick: ${p.emoji} ${p.label}</span></div></div>`;
   }).join('');
 }
 function copySingle(id,key){
-  const p=allTodayPicks.find(x=>x.match.id===id&&x.key===key);if(!p)return;const txt=`WINS1 • ${p.match.home} vs ${p.match.away} • ${p.label} @ ${p.odd.toFixed(2)} • ${p.confidence} • 10-Factor ${p.score}/100 • 25+ Bet Responsibly`;
+  const p=allTodayPicks.find(x=>x.match.id===id&&x.key===key);if(!p)return;const txt=`WINS1 • ${p.match.home} vs ${p.match.away} • Pick: ${p.label} @ ${p.odd.toFixed(2)} • ${p.confidence} • 10-Factor ${p.score}/100 • 25+ Bet Responsibly`;
   if(navigator.clipboard)navigator.clipboard.writeText(txt);
 }
 async function fetchMatchData(dateObj){
