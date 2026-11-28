@@ -1,0 +1,25 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>WINS1 Admin</title><script src="https://cdn.tailwindcss.com"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script></head>
+<body class="bg-gray-950 text-white p-4 max-w-5xl mx-auto">
+<h1 class="text-2xl font-black">WINS1 ADMIN 👑</h1>
+<p class="text-xs text-gray-400">Only admin email can see this. Set is_admin=true in Supabase for yourself.</p>
+<div class="flex gap-2 my-4"><input id="adminEmail" placeholder="Admin Email" class="flex-1 bg-gray-800 rounded-xl px-3 py-2 text-sm"><input id="adminPass" type="password" placeholder="Password" class="bg-gray-800 rounded-xl px-3 py-2 text-sm"><button onclick="adminLogin()" class="bg-amber-500 text-black font-black px-4 rounded-xl text-sm">Login</button></div>
+<div class="grid grid-cols-3 gap-2 text-center my-4"><div class="bg-gray-900 rounded-xl p-3"><div id="statUsers" class="text-xl font-black">0</div><div class="text-[10px]">USERS</div></div><div class="bg-gray-900 rounded-xl p-3"><div id="statActive" class="text-xl font-black text-emerald-400">0</div><div class="text-[10px]">ACTIVE SUBS</div></div><div class="bg-gray-900 rounded-xl p-3"><div id="statPending" class="text-xl font-black text-amber-400">0</div><div class="text-[10px]">PENDING PAYMENTS</div></div></div>
+<h2 class="font-black mt-4">⏳ Pending Payments — Approve / Reject</h2><div id="pendingList" class="space-y-2 mt-2"></div>
+<h2 class="font-black mt-6">👥 All Users & Subscriptions</h2><div id="usersList" class="space-y-2 mt-2"></div>
+<script>
+const supabaseClient = supabase.createClient("PASTE_YOUR_SUPABASE_URL","PASTE_YOUR_SUPABASE_ANON_KEY");
+async function adminLogin(){ const {error}=await supabaseClient.auth.signInWithPassword({email:document.getElementById('adminEmail').value,password:document.getElementById('adminPass').value}); if(error) alert(error.message); else loadAdmin(); }
+async function loadAdmin(){
+  const {data:profiles}=await supabaseClient.from('profiles').select('*').order('created_at',{ascending:false});
+  const {data:subs}=await supabaseClient.from('subscriptions').select('*, profiles(email,phone)').order('created_at',{ascending:false});
+  document.getElementById('statUsers').textContent=profiles?.length||0;
+  document.getElementById('statActive').textContent=subs?.filter(s=>s.status==='active').length||0;
+  document.getElementById('statPending').textContent=subs?.filter(s=>s.status==='pending').length||0;
+  document.getElementById('pendingList').innerHTML=(subs?.filter(s=>s.status==='pending')||[]).map(s=>`<div class="bg-gray-900 rounded-xl p-3 flex justify-between items-center"><div><b>${s.profiles?.email}</b> • ${s.profiles?.phone||''}<br><span class="text-xs">${s.plan} - $${s.amount_usd} - Tx: ${s.transaction_id} - Ends: ${new Date(s.end_date).toLocaleDateString()}</span></div><div class="flex gap-2"><button onclick="approveSub('${s.id}')" class="bg-emerald-500 px-3 py-1 rounded-lg text-xs font-black">APPROVE</button><button onclick="rejectSub('${s.id}')" class="bg-red-500 px-3 py-1 rounded-lg text-xs font-black">REJECT</button></div></div>`).join('')||'No pending';
+  document.getElementById('usersList').innerHTML=(subs||[]).map(s=>`<div class="bg-gray-900 rounded-xl p-3 flex justify-between"><div><b>${s.profiles?.email}</b><br><span class="text-xs">${s.plan} - ${s.status} - Until ${new Date(s.end_date).toLocaleDateString()}</span></div><div class="flex gap-1"><button onclick="extendSub('${s.id}',7)" class="bg-blue-500 px-2 py-1 rounded text-xs">+7 Days</button><button onclick="blockUser('${s.user_id}')" class="bg-red-600 px-2 py-1 rounded text-xs">Block</button></div></div>`).join('');
+}
+async function approveSub(id){ await supabaseClient.from('subscriptions').update({status:'active'}).eq('id',id); await supabaseClient.from('payments').update({status:'approved'}).eq('subscription_id',id); alert('Approved! User now has access.'); loadAdmin(); }
+async function rejectSub(id){ await supabaseClient.from('subscriptions').update({status:'rejected'}).eq('id',id); loadAdmin(); }
+async function extendSub(id,days){ const {data}=await supabaseClient.from('subscriptions').select('end_date').eq('id',id).single(); let d=new Date(data.end_date); d.setDate(d.getDate()+days); await supabaseClient.from('subscriptions').update({end_date:d.toISOString(), status:'active'}).eq('id',id); loadAdmin(); }
+async function blockUser(uid){ await supabaseClient.from('profiles').update({is_blocked:true}).eq('id',uid); alert('Blocked'); loadAdmin(); }
+</script></body></html>
