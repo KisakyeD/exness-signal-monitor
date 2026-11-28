@@ -104,20 +104,26 @@ function loadMoreHistory(){loadHistoryBatch()}
 async function doSignup(){const email=document.getElementById('authEmail').value.trim(),pass=document.getElementById('authPass').value,name=document.getElementById('authName').value.trim(),phone=document.getElementById('authPhone').value.trim();if(!email||!pass){document.getElementById('authMsg').textContent="Enter email + password";return}const {data,error}=await supabaseClient.auth.signUp({email,password:pass,options:{data:{full_name:name}}});if(error){document.getElementById('authMsg').textContent=error.message;return}if(data.user){await supabaseClient.from('profiles').upsert({id:data.user.id,email:email,phone:phone,full_name:name});document.getElementById('authMsg').textContent="Account created! Now choose plan and pay with ObPay.";checkAuth()}}
 async function doLogin(){const email=document.getElementById('authEmail').value,pass=document.getElementById('authPass').value;const {error}=await supabaseClient.auth.signInWithPassword({email,password:pass});if(error){document.getElementById('authMsg').textContent=error.message;return}closeAuth();checkAuth()}
 async function logout(){await supabaseClient.auth.signOut();location.reload()}
-function normalizePhone(p){ p=p.trim().replace(/[\s\+]/g,''); if(p.startsWith('0')) p='256'+p.slice(1); return p; }
+// --- FIXED OBPAY ---
+const PLAN_PRICES = { "1-week": 13000, "1-month": 45000, "3-months": 110000, "6weeks": 75000 };
+const PLAN_DAYS = { "1-week": 7, "1-month": 30, "3-months": 90, "6weeks": 42 };
+function normalizePhone(p){ p=String(p||"").trim().replace(/[\s\-]/g,''); if(p.startsWith('+')) return p; if(p.startsWith('0')) return '+256'+p.slice(1); if(p.startsWith('256')) return '+'+p; return '+'+p; }
 async function payWithObPay(){
   if(!currentUser){ alert("Login first"); return; }
   const plan=document.getElementById('planSelect').value;
-  const phone=normalizePhone(document.getElementById('payPhone').value||document.getElementById('authPhone').value||'');
-  if(!phone||phone.length<12||!phone.startsWith('256')){ alert("Enter valid phone e.g 256772... or 0772..."); return; }
-  document.getElementById('obpayMsg').textContent="Sending ObPay prompt to "+phone+"... Approve on your phone.";
+  const amount = PLAN_PRICES[plan] || 13000;
+  const rawPhone = document.getElementById('payPhone').value || document.getElementById('authPhone').value || '';
+  const phone = normalizePhone(rawPhone);
+  const name = (document.getElementById('authName').value || currentUser.user_metadata?.full_name || currentUser.email || "Customer").trim();
+  if(!phone || phone.replace(/\D/g,'').length < 12){ alert("Enter valid phone e.g 256772... or 0772..."); return; }
+  document.getElementById('obpayMsg').textContent="Sending ObPay prompt ("+amount+" UGX) to "+phone+"... Approve on your phone.";
   const {data:{session}} = await supabaseClient.auth.getSession();
   if(!session){ alert("Login again"); return; }
   try{
-    const res=await fetch(SUPABASE_URL+"/functions/v1/obpay-create",{method:"POST",headers:{"Content-Type":"application/json","apikey":SUPABASE_KEY,"Authorization":"Bearer "+session.access_token},body:JSON.stringify({plan,phone})});
+    const res=await fetch(SUPABASE_URL+"/functions/v1/obpay-create",{method:"POST",headers:{"Content-Type":"application/json","apikey":SUPABASE_KEY,"Authorization":"Bearer "+session.access_token},body:JSON.stringify({plan, amount, phone, name, user_id: currentUser.id, email: currentUser.email})});
     const text=await res.text();
-    let data; try{ data=JSON.parse(text); }catch(e){ document.getElementById('obpayMsg').textContent="Server returned HTML - function name wrong. Got: "+text.slice(0,80); return; }
-    if(data.error){ document.getElementById('obpayMsg').textContent="Error: "+data.error; return; }
+    let data; try{ data=JSON.parse(text); }catch(e){ document.getElementById('obpayMsg').textContent="Server returned HTML - function not deployed. Got: "+text.slice(0,80); return; }
+    if(data.error || data.success===false){ document.getElementById('obpayMsg').textContent="Error: "+(data.error||"Unknown"); return; }
     const ref = data.reference || data.data?.reference || data.data?.id;
     document.getElementById('obpayMsg').textContent="✅ Prompt sent! Approve on your phone. Ref: "+ref+" — If no prompt, tap I PAID — CHECK STATUS below.";
     if(ref) localStorage.setItem('wins1_last_ref', ref);
