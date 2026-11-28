@@ -117,7 +117,7 @@ async function payWithObPay(){
   if(!email||email.includes('test@test.com')||!email.includes('@')){ alert("Login with your REAL email - ObPay rejects test@test.com"); return; }
   document.getElementById('obpayMsg').textContent="Sending ObPay prompt to "+phone+"... Approve on your phone.";
   try{
-    const { data, error } = await supabaseClient.functions.invoke("obpay-create", { body: { amount, phone, name, plan, user_id: currentUser.id, email } });
+    const { data, error } = await supabaseClient.functions.invoke("dynamic-responder", { body: { amount, phone, name, plan, user_id: currentUser.id, email } });
     if(error){ document.getElementById('obpayMsg').textContent="Error: "+error.message; return; }
     if(!data){ document.getElementById('obpayMsg').textContent="No response from server. Try again."; return; }
     if(data.error){ document.getElementById('obpayMsg').textContent="Error: "+data.error; return; }
@@ -132,15 +132,6 @@ async function payWithObPay(){
 async function checkPaymentStatus(){
   const ref=localStorage.getItem('wins1_last_ref');
   if(!ref){ alert("No payment started yet. Tap PAY NOW first."); return; }
-  document.getElementById('obpayMsg').textContent="Checking "+ref+"...";
-  try{
-    const { data, error } = await supabaseClient.functions.invoke("obpay-check", { body: { reference: ref } });
-    if(!error && data){
-      const st = data.status || data.data?.status || data.subscription?.status;
-      if(st==='active' || data.success===true){ alert("Payment confirmed!"); closeAuth(); checkAuth(); return; }
-      if(st){ document.getElementById('obpayMsg').textContent="Status: "+st+" - Ref: "+ref; if(st!=='pending'){ alert("Status: "+st); } else { alert("Status: pending - Approve PIN on your phone, then check again."); } return; }
-    }
-  }catch(e){}
   const {data:subs}=await supabaseClient.from('subscriptions').select('*').eq('obpay_reference',ref).single();
   if(!subs){ alert("Still pending. Wait 30s and try again."); return; }
   if(subs.status==='active'){ alert("Payment confirmed!"); closeAuth(); checkAuth(); }
